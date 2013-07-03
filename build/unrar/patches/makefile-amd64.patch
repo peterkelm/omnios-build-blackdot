@@ -1,0 +1,43 @@
+--- makefile.illumos64	2013-07-04 00:00:26.448860995 +0200
++++ makefile.illumos64	2013-07-04 00:05:17.427396756 +0200
+@@ -8,9 +8,9 @@
+ # Linux using GCC
+ #CXX=g++
+ #CXXFLAGS=-O2
+-DEFINES=-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+-STRIP=strip
+-DESTDIR=/usr
++#DEFINES=-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
++#STRIP=strip
++#DESTDIR=/usr
+ 
+ # Linux using LCC
+ #CXX=lcc
+@@ -55,12 +55,12 @@
+ #STRIP=strip
+ #DESTDIR=/usr
+ 
+-# Solaris using GCC (optimized for UltraSPARC 1 CPU)
+-#CXX=g++
+-#CXXFLAGS=-O3 -mcpu=v9 -mtune=ultrasparc -m32
+-#DEFINES=-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE
+-#STRIP=/usr/ccs/bin/strip
+-#DESTDIR=/usr
++# Solaris using GCC (Illumos)
++CXX=g++
++CXXFLAGS=-O3 -m64
++DEFINES=-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -DLITTLE_ENDIAN
++STRIP=strip
++DESTDIR=/usr/local
+ 
+ # Tru64 5.1B using GCC3
+ #CXX=g++
+@@ -95,7 +95,7 @@
+ ##########################
+ 
+ COMPILE=$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(DEFINES)
+-LINK=$(CXX)
++LINK=$(CXX) $(CXXFLAGS)
+ 
+ WHAT=UNRAR
+ 
