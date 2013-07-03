@@ -1,0 +1,10 @@
+<transform dir path=kernel.* -> set group sys>
+<transform file path=kernel.* -> set group sys>
+<transform dir path=platform.* -> set group sys>
+<transform file path=platform.* -> set group sys>
+<transform dir path=boot.* -> set group sys>
+<transform file path=boot.* -> set group sys>
+<transform dir path=etc.* -> set group sys>
+<transform file path=etc.* -> set group sys>
+driver name=arcsas class=scsi-self-identifying alias=pci17d3,1300 alias=pci17d3,1320 perms="* 0666 root sys"
+license /etc/notices/COPYRIGHT.arcsas license="Copyright 2010 Areca Technology Corporation, Inc."
