@@ -1,2 +1,0 @@
-t_op_getppid.t.patch -p0
-rehash.patch
