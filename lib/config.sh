@@ -35,7 +35,7 @@ PVER=0.$RELVER
 MIRROR=mirrors.omniti.com
 
 # Default prefix for packages (may be overridden)
-PREFIX=/usr
+PREFIX=/opt/obd
 
 # Temporary directories
 # TMPDIR is used for source archives and build directories
