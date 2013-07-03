@@ -1,0 +1,11 @@
+--- sysincludes.h.orig  2012-09-03 16:59:09.351904279 +0000
++++ sysincludes.h       2012-09-03 16:59:54.388720160 +0000
+@@ -131,6 +131,8 @@
+ #include <netpacket/packet.h>
+ #endif
+ #if HAVE_NETINET_IF_ETHER_H
++#include <net/if.h>
++#include <netinet/in.h>
+ #include <netinet/if_ether.h>
+ #endif
+ #if HAVE_LINUX_IF_TUN_H
