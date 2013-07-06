@@ -1,0 +1,8 @@
+This is the home folder of the 'znc' user.
+
+When the SMF Manifest in this folder is imported it will start znc as the user znc.
+Before you do this you must execute:
+# znc --makeconf --datadir=/opt/obd/share/znc/service --allow-root
+# chown -R znc:znc /opt/obd/share/znc/service
+
+After this the manifest can be imported and the service started

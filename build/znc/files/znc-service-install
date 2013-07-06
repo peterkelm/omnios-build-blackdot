@@ -1,0 +1,13 @@
+#!/bin/sh
+
+echo Welcome to the ZNC Service Installer.
+echo ---------------------------------------------
+if [ "$(id -u)" != "0" ]; then
+	echo "This script must be run as root" 1>&2
+	exit 1
+fi
+echo Please ignore the warning about znc being run as root.
+znc --makeconf --datadir=/opt/obd/share/znc/service --allow-root
+chown -R znc:znc /opt/obd/share/znc/service
+svccfg import /opt/obd/share/znc/service/smf_manifest.xml
+svcadm enable znc
