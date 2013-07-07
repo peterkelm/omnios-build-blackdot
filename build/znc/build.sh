@@ -32,8 +32,8 @@ VER=1.0                                     # App version
 VERHUMAN=$VER-4                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=network/znc                             # Package name (e.g. library/foo)
-SUMMARY="ZNC, an advanced IRC bouncer that is left connected so an IRC client can disconnect/reconnect without losing the chat session."
-DESC=${SUMMARY}
+SUMMARY="An advanced IRC proxy"
+DESC="ZNC, an advanced IRC proxy that is left connected so an IRC client can disconnect/reconnect without losing the chat session."
 DEPENDS_IPS="library/security/openssl"
 
 BUILDARCH=both
@@ -100,6 +100,8 @@ build32 () {
     chmod +x znc-buildmod
     cp znc ${TMPDIR}/staging/i386/bin/
     cp znc-buildmod ${TMPDIR}/staging/i386/bin/
+    sed "s#${TMPDIR}/staging/i386#/opt/obd#" ${TMPDIR}/staging/i386/lib/pkgconfig/znc.pc > ${TMPDIR}/staging/i386/lib/pkgconfig/znc.pc-sed
+    mv ${TMPDIR}/staging/i386/lib/pkgconfig/znc.pc-sd ${TMPDIR}/staging/i386/lib/pkgconfig/znc.pc
 
     popd > /dev/null
 }
