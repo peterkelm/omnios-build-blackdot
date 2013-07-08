@@ -1,0 +1,4 @@
+group groupname=dnsmasq gid=5300
+user ftpuser=false gcos-field="dnsmasq privsep user" group=dnsmasq login-shell=/bin/false password=NP uid=5300 username=dnsmasq home-dir=/var/empty
+<transform file path=(var|lib)/svc/manifest/network/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
+license files/license license=GPL
