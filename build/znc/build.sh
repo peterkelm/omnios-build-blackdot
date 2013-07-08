@@ -63,12 +63,14 @@ prep_build () {
     export BASE=`pwd`
 
     # cleanup source
+    logmsg "Cleanup"
     [ -d ${TMPDIR}/src/ ] && rm -rf ${TMPDIR}/src/
     [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
 
     # fetch source
+    logmsg "Downloading Source"
     mkdir ${TMPDIR}/src
-    wget -cq http://znc.in/releases/${PROG}-${VER}.tar.gz -O ${TMPDIR}/src/${PROG}-${VER}.tar.gz
+    wget -c http://znc.in/releases/${PROG}-${VER}.tar.gz -O ${TMPDIR}/src/${PROG}-${VER}.tar.gz
 
     # expand source and patching
     tar xzf ${TMPDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src

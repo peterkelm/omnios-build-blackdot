@@ -62,14 +62,17 @@ prep_build () {
     fi
 
     # cleanup source
+    logmsg "Cleanup"
+    [ -d ${TMPDIR}/src/ ] && rm -rf ${TMPDIR}/src/
     [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
 
     # fetch source
+    logmsg "Downloading Source"
     mkdir ${TMPDIR}/staging/
     cd ${TMPDIR}/staging/
-    wget -cq http://www.areca.us/support/s_solaris/non_driver/1.00.00.04-20120831.zip
-    wget -cq http://www.areca.us/support/s_illumos/non_driver/cli/V1.9.0_120314/x86_64.zip
-    wget -cq http://www.areca.us/support/s_illumos/non_driver/cli/V1.9.0_120314/i386.zip
+    wget -c http://www.areca.us/support/s_solaris/non_driver/1.00.00.04-20120831.zip
+    wget -c http://www.areca.us/support/s_illumos/non_driver/cli/V1.9.0_120314/x86_64.zip
+    wget -c http://www.areca.us/support/s_illumos/non_driver/cli/V1.9.0_120314/i386.zip
 
     # expand source
     unzip 1.00.00.04-20120831.zip

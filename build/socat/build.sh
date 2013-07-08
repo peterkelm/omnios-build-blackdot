@@ -64,9 +64,12 @@ prep_build () {
     [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
 
     # fetch source
+    logmsg "Cleanup"
     mkdir ${TMPDIR}/src
     cd ${TMPDIR}/src
-    wget -cq http://www.dest-unreach.org/socat/download/${PROG}-${VER}.tar.gz
+
+    logmsg "Downloading Source"
+    wget -c http://www.dest-unreach.org/socat/download/${PROG}-${VER}.tar.gz
 
     # expand source
     tar xzf ${PROG}-${VER}.tar.gz

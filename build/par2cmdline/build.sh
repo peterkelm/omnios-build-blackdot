@@ -60,6 +60,7 @@ prep_build () {
     fi
 
     # cleanup source
+    logmsg "Cleanup"
     [ -d ${TMPDIR}/src/ ] && rm -rf ${TMPDIR}/src/
     [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
 

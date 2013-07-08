@@ -60,6 +60,7 @@ prep_build () {
     fi
 
     # cleanup source
+    logmsg "Cleanup"
     [ -d ${TMPDIR}/src/ ] && rm -rf ${TMPDIR}/src/
     [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
 
@@ -67,6 +68,7 @@ prep_build () {
     mkdir ${TMPDIR}/src
 
     # fetch source
+    logmsg "Downloading Source"
     wget -c http://www.rarlab.com/rar/unrarsrc-${VER}.tar.gz -O ${TMPDIR}/src/${PROG}-${VER}.tar.gz
 
     # expand source and copy patches
