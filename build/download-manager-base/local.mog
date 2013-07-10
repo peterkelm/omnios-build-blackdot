@@ -1,8 +1,8 @@
 group groupname=dlmgr gid=999
-user ftpuser=false gcos-field="Download Manager privsep user" group=dlmgr login-shell=/bin/false password=NP uid=999 username=dlmgr home-dir=/var/empty
+user ftpuser=false gcos-field="Download Manager privsep user" group=dlmgr login-shell=/bin/false password=NP uid=999 username=dlmgr home-dir=/opt/obd-apps/dlmgr/.config
 <transform dir path=opt/obd-apps/dlmgr.* -> set owner dlmgr>
 <transform dir path=opt/obd-apps/dlmgr.* -> set group dlmgr>
-<transform dir path=opt/obd-apps/dlmgr.* -> set mode 0640>
+<transform dir path=opt/obd-apps/dlmgr.* -> set mode 0750>
 <transform file path=opt/obd-apps/dlmgr.* -> set owner dlmgr>
 <transform file path=opt/obd-apps/dlmgr.* -> set group dlmgr>
 <transform file path=opt/obd-apps/dlmgr.* -> set mode 0640>
