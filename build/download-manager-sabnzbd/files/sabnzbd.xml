@@ -57,7 +57,7 @@
     <exec_method
         type='method'
         name='start'
-        exec='/usr/bin/python /opt/obd-apps/dlmgr/sabnzbd/SABnzbd.py -f /opt/obd-apps/dlmgr/.config/sabnzbd/sabnzbd.ini'
+        exec='/usr/bin/python /opt/obd-apps/dlmgr/sabnzbd/SABnzbd.py -d -f /opt/obd-apps/dlmgr/.config/sabnzbd/sabnzbd.ini'
         timeout_seconds='60'>
     </exec_method>
 
