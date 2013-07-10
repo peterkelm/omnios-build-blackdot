@@ -31,7 +31,7 @@
 
 PROG=download-manager-base                   # App name
 VER=1.0                                      # App version
-VERHUMAN=$VER                                # Human-readable version
+VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=network/download-manager/base            # Package name (e.g. library/foo)
 SUMMARY="shared bit for download-manager range of packages."
