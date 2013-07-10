@@ -1,1 +1,2 @@
+depend fmri=shell/zsh type=require
 license files/license license=Public-Domain

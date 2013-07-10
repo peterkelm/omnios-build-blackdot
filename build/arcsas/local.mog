@@ -6,5 +6,6 @@
 <transform file path=boot.* -> set group sys>
 <transform dir path=etc.* -> set group sys>
 <transform file path=etc.* -> set group sys>
+depend fmri=system/kernel type=require
 driver name=arcsas class=scsi-self-identifying alias=pci17d3,1300 alias=pci17d3,1320 perms="* 0666 root sys"
 license /etc/notices/COPYRIGHT.arcsas license="Copyright 2010 Areca Technology Corporation, Inc."

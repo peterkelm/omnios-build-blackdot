@@ -36,7 +36,7 @@ VERHUMAN=$VER                                # Human-readable version
 PKG=network/mdns-announcer                   # Package name (e.g. library/foo)
 SUMMARY="Service that announces service over mdns." # One-liner, must be filled in
 DESC="Service that announces service over mdns. Using python and pybonjour."
-DEPENDS_IPS="runtime/python-26 library/python-2/pybonjour"
+DEPENDS_IPS=""
 
 BUILDARCH=32
 

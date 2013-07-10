@@ -6,4 +6,5 @@ user ftpuser=false gcos-field="ZNC Bouncer privsep user" group=znc login-shell=/
 <transform file path=opt/obd/share/znc/service.* -> set owner znc>
 <transform file path=opt/obd/share/znc/service.* -> set group znc>
 <transform file path=opt/obd/share/znc/service.* -> set mode 0640>
+depend fmri=library/security/openssl type=require
 license files/license license=GPL

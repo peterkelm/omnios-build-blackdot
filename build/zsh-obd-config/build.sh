@@ -38,7 +38,7 @@ VERHUMAN=$VER-1                             # Human-readable version
 PKG=shell/zsh-obd-config                    # Package name (e.g. library/foo)
 SUMMARY="Z-Shell configuration found at docu.blackdot.be."
 DESC="This package will install the zsh configuration found at docu.blackdot.be into /etc/skel1. New users will have the configuration avaible when they run zsh. If the user is create with -s /bin/zsh the shell will also be the default."
-DEPENDS_IPS="shell/zsh"
+DEPENDS_IPS=""
 
 PREFIX=
 BUILDARCH=both

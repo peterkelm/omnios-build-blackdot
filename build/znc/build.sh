@@ -36,7 +36,7 @@ VERHUMAN=$VER-4                             # Human-readable version
 PKG=network/znc                             # Package name (e.g. library/foo)
 SUMMARY="An advanced IRC proxy"
 DESC="ZNC, an advanced IRC proxy that is left connected so an IRC client can disconnect/reconnect without losing the chat session."
-DEPENDS_IPS="library/security/openssl"
+DEPENDS_IPS=""
 
 BUILDARCH=both
 

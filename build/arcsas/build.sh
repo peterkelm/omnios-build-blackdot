@@ -36,7 +36,7 @@ VERHUMAN=$VER-1                             # Human-readable version
 PKG=driver/storage/arcsas                   # Package name (e.g. library/foo)
 SUMMARY="Areca SAS non-RAID HBA Driver and Utility"
 DESC=${SUMMARY}
-DEPENDS_IPS="system/kernel"
+DEPENDS_IPS=""
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=/usr
