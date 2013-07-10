@@ -31,11 +31,11 @@
 
 PROG=SABnzbd                                 # App name
 VER=0.7.14                                   # App version
-VERHUMAN=$VER                                # Human-readable version
+VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=network/download-manager/sabnzbd         # Package name (e.g. library/foo)
-SUMMARY="shared bit for download-manager range of packages."
-DESC="Shared bits for the download-manager range of packages."
+SUMMARY="SABnzbd is an Open Source Binary Newsreader written in Python."
+DESC="SABnzbd makes Usenet as simple and streamlined as possible by automating everything we can. All you have to do is add an .nzb. SABnzbd takes over from there, where it will be automatically downloaded, verified, repaired, extracted and filed away with zero human interaction."
 DEPENDS_IPS=""
 
 PREFIX=${PREFIX}-apps
