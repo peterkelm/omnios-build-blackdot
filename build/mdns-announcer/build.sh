@@ -31,7 +31,7 @@
 
 PROG=mdns-announcer                          # App name
 VER=1.6                                      # App version
-VERHUMAN=$VER                                # Human-readable version
+VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=network/mdns-announcer                   # Package name (e.g. library/foo)
 SUMMARY="Service that announces service over mdns." # One-liner, must be filled in

@@ -30,6 +30,7 @@
 cleanup_source () {
     # cleanup source
     logmsg "--- cleanup source"
+    cd ${TMPDIR}/
     [ -d ${TMPDIR}/src/ ] && rm -rf ${TMPDIR}/src/
     [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
 }
