@@ -26,6 +26,7 @@
 #
 # Load support functions
 . ../../lib/functions.sh
+. ../myfunc.sh
 
 NZSHRC="https://docu.blackdot.be/getRaw.php?onlyCode=true&id=configuration:zsh"
 

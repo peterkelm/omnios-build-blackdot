@@ -26,6 +26,7 @@
 #
 # Load support functions
 . ../../lib/functions.sh
+. ../myfunc.sh
 
 PROG=par2cmdline                            # App name
 VER=0.4                                     # App version
@@ -39,35 +40,14 @@ DEPENDS_IPS=""
 BUILDARCH=both
 
 # Nothing to configure or build, just package
-prep_build () {
-    logmsg "Preparing for build"
-
-    # Get the current date/time for the package timestamp
-    DATETIME=`TZ=UTC /usr/bin/date +"%Y%m%dT%H%M%SZ"`
-
-    logmsg "--- Creating temporary install dir"
-    # We might need to encode some special chars
-    PKGE=$(url_encode $PKG)
-    # For DESTDIR the '%' can cause problems for some install scripts
-    PKGD=${PKGE//%/_}
-    DESTDIR=$DTMPDIR/${PKGD}_pkg
-    if [[ -z $DONT_REMOVE_INSTALL_DIR ]]; then
-        logcmd chmod -R u+w $DESTDIR > /dev/null 2>&1
-        logcmd rm -rf $DESTDIR || \
-            logerr "Failed to remove old temporary install dir"
-        mkdir -p $DESTDIR || \
-            logerr "Failed to create temporary install dir"
-    fi
-
-    # cleanup source
-    logmsg "Cleanup"
-    [ -d ${TMPDIR}/src/ ] && rm -rf ${TMPDIR}/src/
-    [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
+download_source () {
+    cleanup_source
 
     # fetch source
     mkdir ${TMPDIR}/src
 
     # expand source
+    logmsg "--- unpacking source"
     tar xzf src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src
     cp patches/* ${TMPDIR}/src/${PROG}-${VER}/
     cd ${TMPDIR}/src/${PROG}-${VER}/
@@ -122,11 +102,13 @@ make_install() {
 
 init
 prep_build
+download_source
 build
 make_install
 make_isa_stub
 make_package
 clean_up
+cleanup_source
 
 # Vim hints
 # vim:ts=4:sw=4:et:

@@ -26,6 +26,7 @@
 #
 # Load support functions
 . ../../lib/functions.sh
+. ../myfunc.sh
 
 PROG=mdns-announcer                          # App name
 VER=1.6                                      # App version

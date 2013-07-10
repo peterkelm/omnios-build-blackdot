@@ -26,6 +26,7 @@
 #
 # Load support functions
 . ../../lib/functions.sh
+. ../myfunc.sh
 
 PROG=arcsas                                 # App name
 VER=1.00.00.04                              # App version
@@ -41,33 +42,11 @@ PREFIX=/usr
 BUILDARCH=both
 
 # Nothing to configure or build, just package
-prep_build () {
-    logmsg "Preparing for build"
-
-    # Get the current date/time for the package timestamp
-    DATETIME=`TZ=UTC /usr/bin/date +"%Y%m%dT%H%M%SZ"`
-
-    logmsg "--- Creating temporary install dir"
-    # We might need to encode some special chars
-    PKGE=$(url_encode $PKG)
-    # For DESTDIR the '%' can cause problems for some install scripts
-    PKGD=${PKGE//%/_}
-    DESTDIR=$DTMPDIR/${PKGD}_pkg
-    if [[ -z $DONT_REMOVE_INSTALL_DIR ]]; then
-        logcmd chmod -R u+w $DESTDIR > /dev/null 2>&1
-        logcmd rm -rf $DESTDIR || \
-            logerr "Failed to remove old temporary install dir"
-        mkdir -p $DESTDIR || \
-            logerr "Failed to create temporary install dir"
-    fi
-
-    # cleanup source
-    logmsg "Cleanup"
-    [ -d ${TMPDIR}/src/ ] && rm -rf ${TMPDIR}/src/
-    [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
+download_source () {
+    cleanup_source
 
     # fetch source
-    logmsg "Downloading Source"
+    logmsg "--- download source"
     mkdir ${TMPDIR}/staging/
     cd ${TMPDIR}/staging/
     wget -c http://www.areca.us/support/s_solaris/non_driver/1.00.00.04-20120831.zip
@@ -75,6 +54,7 @@ prep_build () {
     wget -c http://www.areca.us/support/s_illumos/non_driver/cli/V1.9.0_120314/i386.zip
 
     # expand source
+    logmsg "--- unpacking source"
     unzip 1.00.00.04-20120831.zip
     unzip 1.00.00.04-20120831/SUNWarcsas.zip
     unzip i386.zip
@@ -123,11 +103,13 @@ make_install() {
 
 init
 prep_build
+download_source
 build
 make_install
 make_isa_stub
 make_package
 clean_up
+cleanup_source
 
 # Vim hints
 # vim:ts=4:sw=4:et:

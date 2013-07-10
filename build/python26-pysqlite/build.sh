@@ -26,6 +26,7 @@
 #
 # Load support functions
 . ../../lib/functions.sh
+. ../myfunc.sh
 
 PROG=pysqlite
 VER=2.6.3

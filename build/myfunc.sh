@@ -4,7 +4,7 @@
 #
 # The contents of this file are subject to the terms of the
 # Common Development and Distribution License, Version 1.0 only
-# (the "License"). You may not use this file except in compliance
+# (the "License").  You may not use this file except in compliance
 # with the License.
 #
 # You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
@@ -21,35 +21,15 @@
 # CDDL HEADER END
 #
 #
-# Copyright 2011-2012 OmniTI Computer Consulting, Inc. All rights reserved.
+# Copyright 2013 Jorge Schrauwen.  All rights reserved.
 # Use is subject to license terms.
 #
 # Load support functions
 . ../../lib/functions.sh
-. ../myfunc.sh
 
-PROG=yenc
-VER=0.4.0
-PKG=library/python-2/yenc
-SUMMARY="Module providing only raw yEnc encoding/decoding with built-in crc32 calculation. "
-DESC="$SUMMARY"
-
-DEPENDS_IPS="runtime/python-26"
-
-download_source() {
-    logmsg "Downloading Source"
-
-    cd ${TMPDIR}
-    wget -c http://www.golug.it/pub/${PROG}/${PROG}-${VER}.tar.gz 
-
-    tar xvf ${PROG}-${VER}.tar.gz
+cleanup_source () {
+    # cleanup source
+    logmsg "--- cleanup source"
+    [ -d ${TMPDIR}/src/ ] && rm -rf ${TMPDIR}/src/
+    [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
 }
-
-
-init
-download_source $PROG $PROG $VER
-patch_source
-prep_build
-python_build
-PROG=yEnc make_package
-clean_up
