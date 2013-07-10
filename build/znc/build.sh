@@ -44,9 +44,6 @@ BUILDARCH=both
 download_source () {
     cleanup_source
 
-    # base
-    export BASE=`pwd`
-
     # fetch source
     logmsg "--- download source"
     mkdir ${TMPDIR}/src
@@ -55,7 +52,7 @@ download_source () {
     # expand source and patching
     logmsg "--- unpacking source"
     tar xzf ${TMPDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src
-    cp patches/*.patch ${TMPDIR}/src/${PROG}-${VER}/
+    cp ${SRCDIR}/patches/*.patch ${TMPDIR}/src/${PROG}-${VER}/
     cd ${TMPDIR}/src/${PROG}-${VER}/
     for p in `ls *.patch`; do
         patch -p1 < $p
@@ -130,11 +127,11 @@ make_install() {
     logcmd cp -r ${TMPDIR}/staging/i386/libexec/znc $DESTDIR$PREFIX/libexec/ || \
         logerr "------ Failed to copy i386 modules."
 
-    logcmd cp ${BASE}/files/smf.xml  $DESTDIR$PREFIX/share/znc/service/smf_manifest.xml || \
+    logcmd cp ${SRCDIR}/files/smf.xml  $DESTDIR$PREFIX/share/znc/service/smf_manifest.xml || \
         logerr "------ Failed to copy service manifest."
-    logcmd cp ${BASE}/files/README  $DESTDIR$PREFIX/share/znc/service/README || \
+    logcmd cp ${SRCDIR}/files/README  $DESTDIR$PREFIX/share/znc/service/README || \
         logerr "------ Failed to copy service readme."
-    logcmd cp ${BASE}/files/znc-service-install  $DESTDIR$PREFIX/bin/ || \
+    logcmd cp ${SRCDIR}/files/znc-service-install  $DESTDIR$PREFIX/bin/ || \
         logerr "------ Failed to copy service installer."
 }
 

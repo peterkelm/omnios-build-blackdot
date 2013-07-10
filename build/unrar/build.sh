@@ -52,8 +52,8 @@ download_source () {
     # expand source and copy patches
     logmsg "--- unpacking source"
     tar xzf ${TMPDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src
-    cp patches/* ${TMPDIR}/src/${PROG}/
-    cp files/unrar.1 ${TMPDIR}/src/${PROG}/
+    cp ${SRCDIR}/patches/* ${TMPDIR}/src/${PROG}/
+    cp ${SRCDIR}/files/unrar.1 ${TMPDIR}/src/${PROG}/
 
 }
 

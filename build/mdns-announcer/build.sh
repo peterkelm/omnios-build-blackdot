@@ -45,7 +45,7 @@ make_install() {
     logmsg "--- make install"
     logcmd mkdir -p ${DESTDIR}${PREFIX}/ || \
         logerr "------ Failed to create destination directory."
-    logcmd tar xjpf ${PROG}.tar.bz2 -C ${DESTDIR}${PREFIX} || \
+    logcmd tar xjpf ${TMPDIR}/${PROG}.tar.bz2 -C ${DESTDIR}${PREFIX} || \
         logerr "------ Failed to unpack ${PROG}.tar.bz2"
     logcmd rm ${PROG}.tar.bz2 || \
         logerr "------ Failed to cleanup ${PROG}.tar.bz2"
@@ -59,7 +59,7 @@ make_install() {
 
 build32() {
     pushd $TMPDIR > /dev/null
-    tar cpjf ${PROG}.tar.bz2 -C $SRCDIR/staging/ .
+    tar cpjf ${TMPDIR}/${PROG}.tar.bz2 -C ${SRCDIR}/staging/ .
     make_install
     popd > /dev/null
 }

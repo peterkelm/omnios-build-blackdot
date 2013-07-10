@@ -49,8 +49,8 @@ download_source () {
 
     # expand source
     logmsg "--- unpacking source"
-    tar xzf src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src
-    cp patches/* ${TMPDIR}/src/${PROG}-${VER}/
+    tar xzf ${SRCDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src
+    cp ${SRCDIR}/patches/* ${TMPDIR}/src/${PROG}-${VER}/
     cd ${TMPDIR}/src/${PROG}-${VER}/
     for p in `ls *.patch`; do
 	patch < $p

@@ -96,9 +96,9 @@ make_install() {
         logerr "------ Failed to move i386 binary."
     logcmd cp ${TMPDIR}/staging/amd64/sbin/dnsmasq $DESTDIR$PREFIX/sbin/amd64 || \
         logerr "------ Failed to copy amd64 binary."
-    logcmd cp files/dnsmasq.conf $DESTDIR$PREFIX/etc || \
+    logcmd cp ${SRCDIR}/files/dnsmasq.conf $DESTDIR$PREFIX/etc || \
         logerr "------ Failed to copy dnsmasq configuration."
-    logcmd cp files/smf.xml $DESTDIR/lib/svc/manifest/network/dnsmasq.xml || \
+    logcmd cp ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/dnsmasq.xml || \
         logerr "------ Failed to copy dnsmasq manifest."
 }
 

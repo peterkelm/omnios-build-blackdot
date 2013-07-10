@@ -107,7 +107,7 @@ make_install() {
 
     logcmd mkdir -p $DESTDIR$PREFIX/share/man/man1 || \
         logerr "------ Failed to create man1."
-    logcmd install -m 755 doc/socat.1 $DESTDIR$PREFIX/share/man/man1/ || \
+    logcmd install -m 755 ${TMPDIR}/src/${PROG}-${VER}/doc/socat.1 $DESTDIR$PREFIX/share/man/man1/ || \
         logerr "------ Failed to install man pages."
 }
 

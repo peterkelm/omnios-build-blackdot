@@ -60,16 +60,16 @@ download_source () {
     unzip 1.00.00.04-20120831/SUNWarcsas.zip
     unzip i386.zip
     unzip x86_64.zip
+
+    # strip source
+    rm -rf ${TMPDIR}/staging/SUNWarcsas/reloc/boot/
 }
 
 build32 () {
     pushd $TMPDIR > /dev/null
 
     # setting execution bits
-    chmod +x staging/i386/cli32
-
-    # cleanup
-    rm -rf staging/SUNWarcsas/reloc/boot/
+    chmod +x ${TMPDIR}/staging/i386/cli32
 
     popd > /dev/null
 }
@@ -78,7 +78,7 @@ build64() {
     pushd $TMPDIR > /dev/null
 
     # setting execution bits
-    chmod +x staging/x86_64/cli64
+    chmod +x ${TMPDIR}/staging/x86_64/cli64
 
     popd > /dev/null
 }
