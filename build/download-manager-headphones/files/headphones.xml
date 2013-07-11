@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<!--
+  Assumes user=dlmgr group=dlmgr
+  Assumes '/opt/obd-apps/dlmgr/headphones' is installation directory
+
+  To enable/disable
+    svcadm enable headphones
+    svcadm disable headphones
+
+  To check logs
+    tail /var/svc/log/network-headphones\:default.log
+-->
+
+<service_bundle type='manifest' name='headphones'>
+
+  <service
+    name='network/headphones'
+    type='service'
+    version='1'>
+
+    <create_default_instance enabled='false' />
+    <single_instance />
+
+   <!-- Only start in muti-user mode -->
+   <dependency name='multi-user'
+      grouping='require_all'
+      restart_on='none'
+      type='service'>
+      <service_fmri value='svc:/milestone/multi-user' />
+   </dependency>
+
+    <!-- Wait for network interfaces to be initialized. -->
+    <dependency name='network'
+        grouping='require_all'
+        restart_on='none'
+        type='service'>
+        <service_fmri value='svc:/milestone/network:default'/>
+    </dependency>
+
+    <!-- Wait for all local filesystems to be mounted. -->
+    <dependency name='filesystem-local'
+        grouping='require_all'
+        restart_on='none'
+        type='service'>
+        <service_fmri value='svc:/system/filesystem/local:default'/>
+    </dependency>
+
+    <!-- execute as user USERNAME -->
+    <method_context>
+        <method_credential user='dlmgr' group='dlmgr' />
+	<method_environment>
+		<envvar name="PATH" value="/opt/obd/bin:/opt/omni/bin:/usr/gnu/bin:/usr/bin:/bin" />
+	</method_environment>
+    </method_context>
+
+    <exec_method
+        type='method'
+        name='start'
+        exec='/usr/bin/python /opt/obd-apps/dlmgr/headphones/Headphones.py -d --nolaunch --datadir=/opt/obd-apps/dlmgr/.config/headphones'
+        timeout_seconds='60'>
+    </exec_method>
+
+    <exec_method
+        type='method'
+        name='stop'
+        exec=':kill'
+        timeout_seconds='2'>
+    </exec_method>
+
+    <template>
+       <common_name>
+          <loctext xml:lang='C'>Headphones</loctext>
+       </common_name>
+       <documentation>
+          <doc_link name='Headphones'
+                    uri='https://github.com/rembo10/headphones' />
+       </documentation>
+    </template>
+
+  </service>
+
+</service_bundle>
