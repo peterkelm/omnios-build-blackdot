@@ -36,7 +36,9 @@ VERHUMAN=$VER-1                             # Human-readable version
 PKG=compress/unrar                          # Package name (e.g. library/foo)
 SUMMARY="RAR archive extractor"
 DESC="WinRAR is a powerful archive manager. It can backup your data and reduce the size of email attachments, decompress RAR, ZIP and other files downloaded from Internet and create new archives in RAR and ZIP file format. You can try WinRAR before buy, its trial version is available in downloads"
-DEPENDS_IPS=""
+
+RUN_DEPENDS_IPS=""
+BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
 

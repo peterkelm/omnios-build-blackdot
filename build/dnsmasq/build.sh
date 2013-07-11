@@ -36,7 +36,9 @@ VERHUMAN=${VER}-1                             # Human-readable version
 PKG=network/dnsmasq                         # Package name (e.g. library/foo)
 SUMMARY="Dnsmasq is a lightweight server designed to provide DNS, DHCP and TFTP services to a small-scale network."
 DESC="Dnsmasq is a lightweight server designed to provide DNS, DHCP and TFTP services to a small-scale network. It can serve the names of local machines which are not in the global DNS. The DHCP server integrates with the DNS server and allows machines with DHCP-allocated addresses to appear in the DNS with names configured either in each host or in a central configuration file. Dnsmasq supports static and dynamic DHCP leases and BOOTP for network booting of diskless machines."
-DEPENDS_IPS=""
+
+RUN_DEPENDS_IPS=""
+BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
 

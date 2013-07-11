@@ -35,7 +35,8 @@ PKG=library/python-2/pysqlite
 SUMMARY="DB-API 2.0 interface for SQLite databases"
 DESC="$SUMMARY"
 
-DEPENDS_IPS="runtime/python-26"
+RUN_DEPENDS_IPS="runtime/python-26"
+BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
     logmsg "Downloading Source"

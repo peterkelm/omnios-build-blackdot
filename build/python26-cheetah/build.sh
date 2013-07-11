@@ -35,7 +35,8 @@ PKG=library/python-2/cheetah
 SUMMARY="Cheetah is an open source template engine and code generation tool, written in Python."
 DESC="$SUMMARY"
 
-DEPENDS_IPS="runtime/python-26"
+RUN_DEPENDS_IPS="runtime/python-26"
+BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
     logmsg "Downloading Source"

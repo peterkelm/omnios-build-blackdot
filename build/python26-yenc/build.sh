@@ -35,7 +35,8 @@ PKG=library/python-2/yenc
 SUMMARY="Module providing only raw yEnc encoding/decoding with built-in crc32 calculation. "
 DESC="$SUMMARY"
 
-DEPENDS_IPS="runtime/python-26"
+RUN_DEPENDS_IPS="runtime/python-26"
+BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
     logmsg "Downloading Source"

@@ -36,7 +36,8 @@ VERHUMAN=$VER-1                              # Human-readable version
 PKG=network/download-manager/couchpotato     # Package name (e.g. library/foo)
 SUMMARY="An automatic NZB and torrent downloader, just fill in what you want to see and CouchPotato will add it to your 'want to watch'-list. Every day it will search through multiple NZBs & Torrents sites, looking for the best possible match."
 DESC=${SUMMARY}
-DEPENDS_IPS=""
+
+RUN_DEPENDS_IPS=""
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=${PREFIX}-apps

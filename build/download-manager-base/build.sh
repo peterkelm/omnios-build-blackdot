@@ -36,7 +36,9 @@ VERHUMAN=$VER-1                              # Human-readable version
 PKG=network/download-manager/base            # Package name (e.g. library/foo)
 SUMMARY="shared bit for download-manager range of packages."
 DESC="Shared bits for the download-manager range of packages."
-DEPENDS_IPS=""
+
+RUN_DEPENDS_IPS=""
+BUILD_DEPENDS_IPS=""
 
 PREFIX=${PREFIX}-apps
 

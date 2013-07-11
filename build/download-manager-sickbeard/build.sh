@@ -36,7 +36,8 @@ VERHUMAN=$VER-1                              # Human-readable version
 PKG=network/download-manager/sickbeard       # Package name (e.g. library/foo)
 SUMMARY="Sick Beard is a PVR for newsgroup users (with limited torrent support)."
 DESC="Sick Beard is a PVR for newsgroup users (with limited torrent support). It watches for new episodes of your favorite shows and when they are posted it downloads them, sorts and renames them, and optionally generates metadata for them."
-DEPENDS_IPS=""
+
+RUN_DEPENDS_IPS=""
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=${PREFIX}-apps

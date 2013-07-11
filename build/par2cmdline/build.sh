@@ -36,7 +36,9 @@ VERHUMAN=$VER-1                             # Human-readable version
 PKG=archiver/par2cmdline                    # Package name (e.g. library/foo)
 SUMMARY="Providing a tool to apply the data-recovery capability concepts of RAID-like systems to the posting & recovery of multi-part archives on Usenet"
 DESC=${SUMMARY}
-DEPENDS_IPS=""
+
+RUN_DEPENDS_IPS=""
+BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
 
