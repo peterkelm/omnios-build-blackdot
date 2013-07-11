@@ -37,7 +37,7 @@ PKG=network/znc                             # Package name (e.g. library/foo)
 SUMMARY="An advanced IRC proxy"
 DESC="ZNC, an advanced IRC proxy that is left connected so an IRC client can disconnect/reconnect without losing the chat session."
 
-RUN_DEPENDS_IPS=""
+RUN_DEPENDS_IPS="library/security/openssl"
 BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both

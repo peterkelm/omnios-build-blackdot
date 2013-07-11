@@ -37,7 +37,7 @@ PKG=network/download-manager/sabnzbd         # Package name (e.g. library/foo)
 SUMMARY="SABnzbd is an Open Source Binary Newsreader written in Python."
 DESC="SABnzbd makes Usenet as simple and streamlined as possible by automating everything we can. All you have to do is add an .nzb. SABnzbd takes over from there, where it will be automatically downloaded, verified, repaired, extracted and filed away with zero human interaction."
 
-RUN_DEPENDS_IPS=""
+RUN_DEPENDS_IPS="archiver/par2cmdline compress/unrar compress/unzip runtime/python-26 library/python-2/yenc library/python-2/cheetah library/python-2/pyopenssl-26 network/download-manager/base"
 BUILD_DEPENDS_IPS=""
 
 PREFIX=${PREFIX}-apps

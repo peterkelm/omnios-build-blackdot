@@ -1,6 +1,4 @@
 group groupname=mdns gid=5353
 user ftpuser=false gcos-field="Multicast DNS privsep user" group=mdns login-shell=/bin/false password=NP uid=5353 username=mdns home-dir=/var/empty
 <transform file path=(var|lib)/svc/manifest/network/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
-depend fmri=library/python-2/pybonjour type=require
-depend fmri=runtime/python-26 type=require
 license files/license license=BSD

@@ -5,12 +5,4 @@
 <transform file path=opt/obd-apps/dlmgr.* -> set group dlmgr>
 <transform file path=opt/obd-apps/dlmgr.* -> set mode 0640>
 <transform file path=(var|lib)/svc/manifest/network/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
-depend type=require fmri=archiver/par2cmdline
-depend type=require fmri=compress/unrar
-depend type=require fmri=compress/unzip
-depend type=require fmri=runtime/python-26
-depend type=require fmri=library/python-2/yenc
-depend type=require fmri=library/python-2/cheetah
-depend type=require fmri=library/python-2/pyopenssl-26
-depend type=require fmri=network/download-manager/base
 license files/license license=GPL

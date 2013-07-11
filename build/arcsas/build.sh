@@ -37,7 +37,7 @@ PKG=driver/storage/arcsas                   # Package name (e.g. library/foo)
 SUMMARY="Areca SAS non-RAID HBA Driver and Utility"
 DESC=${SUMMARY}
 
-RUN_DEPENDS_IPS=""
+RUN_DEPENDS_IPS="system/kernel"
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=/usr
