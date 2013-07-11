@@ -2,7 +2,7 @@
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 <!--
   Assumes user=dlmgr group=dlmgr
-  Assumes '/opt/obd-apps/dlmgr/sabnzbd' is installation directory
+  Assumes '/opt/obd-apps/dlmgr/sickbeard' is installation directory
 
   To enable/disable
     svcadm enable sickbeard
