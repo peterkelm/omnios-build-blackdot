@@ -31,7 +31,7 @@
 
 PROG=dnsmasq                                # App name
 VER=2.67test7                               # App version
-VERHUMAN=${VER}-1                             # Human-readable version
+VERHUMAN=${VER}-1                           # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=network/dnsmasq                         # Package name (e.g. library/foo)
 SUMMARY="Dnsmasq is a lightweight server designed to provide DNS, DHCP and TFTP services to a small-scale network."
@@ -42,63 +42,56 @@ BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
 
-# Nothing to configure or build, just package
-download_source () {
-    cleanup_source
+# package specific
+MIRROR=www.thekelleys.org.uk
+DLPATH=dnsmasq/
+[ `echo ${VER} | grep -c test` -gt 0 ] && DLPATH=${DLPATH}test-releases
 
-    # fetch source
-    mkdir ${TMPDIR}/src
-
-    DLPATH=
-    logmsg "--- download source"
-    [ `echo ${VER} | grep -c test` -gt 0 ] && DLPATH=test-releases/
-    wget -c http://www.thekelleys.org.uk/dnsmasq/${DLPATH}/${PROG}-${VER}.tar.gz -O ${TMPDIR}/src/${PROG}-${VER}.tar.gz
-
-    # expand source
-    logmsg "--- unpacking source"
-    tar xzf ${TMPDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src
+# some deviation from default build
+configure32() {
+    echo -n ""
 }
 
-build32 () {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    gmake clean
-    gmake PREFIX=${TMPDIR}/staging/i386 CC=gcc CFLAGS=-m32 LDFLAGS=-m32 COPTS="-DCONFFILE='\"/opt/obd/etc/dnsmasq.conf\"'"
-    gmake PREFIX=${TMPDIR}/staging/i386 install
-
-    popd > /dev/null
+configure64() {
+    echo -n ""
 }
 
-build64() {
-    pushd $TMPDIR > /dev/null
+make_prog32() {
+    [[ -n $NO_PARALLEL_MAKE ]] && MAKE_JOBS=""
 
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    gmake clean
-    gmake PREFIX=${TMPDIR}/staging/amd64 CC=gcc CFLAGS=-m64 LDFLAGS=-m64 COPTS="-DCONFFILE='\"/opt/obd/etc/dnsmasq.conf\"'"
-    gmake PREFIX=${TMPDIR}/staging/amd64 install
+    if [[ -n $LIBTOOL_NOSTDLIB ]]; then
+        libtool_nostdlib $LIBTOOL_NOSTDLIB $LIBTOOL_NOSTDLIB_EXTRAS
+    fi
+    logmsg "--- make"
+    logcmd $MAKE $MAKE_JOBS PREFIX=$PREFIX BINDIR=$PREFIX/sbin/$ISAPART CC=$CC CFLAGS="$CFLAGS $CFLAGS32" LDFLAGS="$LDFLAGS $LDFLAGS32" || \
+        logerr "--- Make failed"
+}
+make_prog64() {
+    [[ -n $NO_PARALLEL_MAKE ]] && MAKE_JOBS=""
 
-    popd > /dev/null
+    if [[ -n $LIBTOOL_NOSTDLIB ]]; then
+        libtool_nostdlib $LIBTOOL_NOSTDLIB $LIBTOOL_NOSTDLIB_EXTRAS
+    fi
+    logmsg "--- make"
+    logcmd $MAKE $MAKE_JOBS PREFIX=$PREFIX BINDIR=$PREFIX/sbin/$ISAPART64 CC=$CC CFLAGS="$CFLAGS $CFLAGS64" LDFLAGS="$LDFLAGS $LDFLAGS64" || \
+        logerr "--- Make failed"
 }
 
-make_install() {
+make_install32() {
     logmsg "--- make install"
-    logcmd mkdir -p $DESTDIR$PREFIX/sbin/{i386,amd64} || \
-        logerr "------ Failed to create architecture destination directory."
-    logcmd mkdir -p $DESTDIR$PREFIX/etc || \
-        logerr "------ Failed to create configuration destination directory."
+    logcmd $MAKE PREFIX=${PREFIX} BINDIR=$PREFIX/sbin/$ISAPART DESTDIR=${DESTDIR} install || \
+        logerr "--- Make install failed"
+}
+make_install64() {
+    logmsg "--- make install"
+    logcmd $MAKE PREFIX=${PREFIX} BINDIR=$PREFIX/sbin/$ISAPART64 DESTDIR=${DESTDIR} install || \
+        logerr "--- Make install failed"
+}
+make_install_extras() {
+    logmsg "--- make install extras"
     logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
         logerr "------ Failed to create manifest directory."
-
-    logcmd cp -r ${TMPDIR}/staging/i386/* $DESTDIR$PREFIX/ || \
-        logerr "------ Failed to copy base files."
-    logcmd mv $DESTDIR$PREFIX/sbin/dnsmasq $DESTDIR$PREFIX/sbin/i386 || \
-        logerr "------ Failed to move i386 binary."
-    logcmd cp ${TMPDIR}/staging/amd64/sbin/dnsmasq $DESTDIR$PREFIX/sbin/amd64 || \
-        logerr "------ Failed to copy amd64 binary."
-    logcmd cp ${SRCDIR}/files/dnsmasq.conf $DESTDIR$PREFIX/etc || \
+    logcmd cp ${SRCDIR}/files/dnsmasq.conf $DESTDIR$SYSCONFDIR || \
         logerr "------ Failed to copy dnsmasq configuration."
     logcmd cp ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/dnsmasq.xml || \
         logerr "------ Failed to copy dnsmasq manifest."
@@ -106,14 +99,14 @@ make_install() {
 
 init
 prep_build
-download_source
+download_source ${DLPATH} ${PROG} ${VER}
 build
-make_install
+make_install_extras
 make_isa_stub
 VER=2.67.0.7
 make_package
 clean_up
-cleanup_source
+#cleanup_source
 
 # Vim hints
 # vim:ts=4:sw=4:et:
