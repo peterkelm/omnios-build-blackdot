@@ -45,7 +45,8 @@ BUILDARCH=both
 
 # Nothing to configure or build, just package
 download_source () {
-    cleanup_source
+    logmsg "--- clear source"
+    [ -d ${TMPDIR}/staging ] && rm -rf ${TMPDIR}/staging/
 
     # fetch source
     logmsg "--- download source"
@@ -111,7 +112,7 @@ make_install
 make_isa_stub
 make_package
 clean_up
-cleanup_source
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
