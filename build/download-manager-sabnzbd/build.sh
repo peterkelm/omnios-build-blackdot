@@ -40,22 +40,19 @@ DESC="SABnzbd makes Usenet as simple and streamlined as possible by automating e
 RUN_DEPENDS_IPS="archiver/par2cmdline compress/unrar compress/unzip runtime/python-26 library/python-2/yenc library/python-2/cheetah library/python-2/pyopenssl-26 network/download-manager/base"
 BUILD_DEPENDS_IPS=""
 
-PREFIX=${PREFIX}-apps
+PREFIX=/opt/obd
 
 # Nothing to configure or build, just package
 download_source () {
-    cleanup_source
+    pushd $TMPDIR > /dev/null
+    
+    logmsg "--- checkout source"
+    wget -c http://downloads.sourceforge.net/project/sabnzbdplus/sabnzbdplus/${VER}/${PROG}-${VER}-src.tar.gz -O ${TMPDIR}/${PROG}-${VER}.tar.gz
 
-    # fetch source
-    mkdir ${TMPDIR}/src
-
-    logmsg "--- download source"
-    wget -c http://downloads.sourceforge.net/project/sabnzbdplus/sabnzbdplus/0.7.14/${PROG}-${VER}-src.tar.gz -O ${TMPDIR}/src/${PROG}-${VER}.tar.gz
-
-    # expand source
     logmsg "--- unpacking source"
-    tar xzf ${TMPDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src/
+    tar xzf ${TMPDIR}/${PROG}-${VER}.tar.gz -C ${TMPDIR}
 
+    popd > /dev/null
 }
 
 make_install() {
@@ -69,19 +66,21 @@ make_install() {
     logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
         logerr "------ Failed to create manifest directory."
 
-    logcmd cp -r ${TMPDIR}/src/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/sabnzbd/ || \
+    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/sabnzbd/ || \
         logerr "------ Failed to copy app."
-    logcmd cp -r ${SRCDIR}/files/sabnzbd.xml $DESTDIR/lib/svc/manifest/network/ || \
+    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/sabnzbd.xml || \
         logerr "------ Failed to copy manifest."
 }
 
 init
+auto_publish_wipe
 prep_build
 download_source
 make_install
 make_package
 clean_up
 cleanup_source
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
