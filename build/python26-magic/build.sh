@@ -29,13 +29,13 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=bottle
-VER=0.11.6
-PKG=library/python-2/bottle
-SUMMARY="Bottle is a fast, simple and lightweight WSGI micro web-framework for Python."
-DESC="${SUMMARY} It is distributed as a single file module and has no dependencies other than the Python Standard Library."
+PROG=python-magic
+VER=0.4.3
+PKG=library/python-2/magic
+SUMMARY="This module uses ctypes to access the libmagic file type identification library. It makes use of the local magic database and supports both textual and MIME-type output."
+DESC=${SUMMARY}
 
-RUN_DEPENDS_IPS="runtime/python-26"
+RUN_DEPENDS_IPS="runtime/python-26 file/gnu-file"
 BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
