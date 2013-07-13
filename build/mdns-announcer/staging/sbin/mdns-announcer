@@ -116,7 +116,8 @@ class MulticastDNSAnnouncer():
 			print "==> No configuration file found at %s/etc/mdns.conf!" % self.basepath
 			sys.exit(3)			
 
-		with open("%s/etc/mdns.conf" % self.basepath) as config_raw:
+
+		with open("%s/etc/mdns.conf" % self.basepath if self.basepath <> '/usr' else '') as config_raw:
 			config_json = ""
 			for line in config_raw:
 				if line.strip()[0:2] <> '//' and line.strip()[0:1] <> '#':
@@ -190,4 +191,4 @@ class MulticastDNSAnnouncer():
 
 ## init
 if __name__ == "__main__":
-	MulticastDNSAnnouncer("/opt/obd").run()
+	MulticastDNSAnnouncer("/usr").run()

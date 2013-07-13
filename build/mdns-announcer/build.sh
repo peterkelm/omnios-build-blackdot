@@ -57,6 +57,12 @@ make_install() {
         logcmd rmdir ${DESTDIR}${PREFIX}/_rootfs_/ || \
             logerr "------ Failed to remove _rootfs_ directoru."
     fi
+
+    if [ ${PREFIX} = "/usr" ]; then
+        logcmd mv ${DESTDIR}${PREFIX}/etc ${DESTDIR}/ || \
+            logerr "------ Failed to move etc."
+
+    fi
 }
 
 build32() {
@@ -67,10 +73,12 @@ build32() {
 }
 
 init
+auto_publish_wipe
 prep_build
 build
 make_package
 clean_up
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
