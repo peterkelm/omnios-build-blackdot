@@ -27,10 +27,35 @@
 # Load support functions
 . ../../lib/functions.sh
 
-cleanup_source () {
+cleanup_source() {
     # cleanup source
     logmsg "--- cleanup source"
-    cd ${TMPDIR}/
-    [ -d ${TMPDIR}/src/ ] && rm -rf ${TMPDIR}/src/
-    [ -d ${TMPDIR}/staging/ ] && rm -rf ${TMPDIR}/staging/
+    rm -rf ${TMPDIR}/${PROG}*
+}
+
+
+auto_publish_wipe() {
+    logmsg "Auto Publish"
+    logmsg "--- removing old version of $PKG"
+
+    pkgrepo list -s /export/omnios-repository | grep -c "$PKG" > /dev/null
+    if [ $? -eq 0 ]; then
+        logcmd pkgrepo remove -s /export/omnios-repository $PKG || \
+            logerr "------ Failed to remove old versions."
+    else
+        logmsg "------ no old $PKG version found."
+    fi
+}
+
+auto_publish() {
+    logmsg "Auto Publish"
+    logmsg "--- stopping pkg/server"
+    logcmd pfexec svcadm disable pkg/server || \
+            logerr "------ Failed to stop pkg/server."
+    logmsg "--- clearing cache"
+    logcmd pfexec rm -rf /var/pkgserv/omnios-repository/publisher || \
+            logerr "------ Failed clear cache."
+    logmsg "--- starting pkg/server"
+    logcmd pfexec svcadm enable pkg/server || \
+            logerr "------ Failed to stqrt pkg/server."
 }
