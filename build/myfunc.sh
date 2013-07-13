@@ -30,6 +30,7 @@
 cleanup_source() {
     # cleanup source
     logmsg "--- cleanup source"
+    cd ${TMPDIR}/
     rm -rf ${TMPDIR}/${PROG}*
 }
 
