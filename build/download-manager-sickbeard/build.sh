@@ -44,8 +44,6 @@ PREFIX=${PREFIX}-apps
 
 # Nothing to configure or build, just package
 download_source () {
-    cleanup_source
-
     # fetch source
     mkdir ${TMPDIR}/src
     cd ${TMPDIR}/src
