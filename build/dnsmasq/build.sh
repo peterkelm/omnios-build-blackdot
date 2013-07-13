@@ -98,6 +98,7 @@ make_install_extras() {
 }
 
 init
+auto_publish_wipe
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
 build
@@ -107,6 +108,7 @@ VER=2.67.0.7
 make_package
 clean_up
 #cleanup_source
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
