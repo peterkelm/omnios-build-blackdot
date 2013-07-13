@@ -1,5 +1,5 @@
 group groupname=dlmgr gid=999
-user ftpuser=false gcos-field="Download Manager privsep user" group=dlmgr login-shell=/bin/false password=NP uid=999 username=dlmgr home-dir=/opt/obd-apps/dlmgr/.config
+user ftpuser=false gcos-field="Download Manager privsep user" group=dlmgr login-shell=/bin/false password=NP uid=999 username=dlmgr home-dir=/opt/obd/dlmgr/.config
 <transform dir path=opt/obd/dlmgr.* -> set owner dlmgr>
 <transform dir path=opt/obd/dlmgr.* -> set group dlmgr>
 <transform dir path=opt/obd/dlmgr.* -> set mode 0750>
