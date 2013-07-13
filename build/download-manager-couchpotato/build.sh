@@ -40,19 +40,16 @@ DESC=${SUMMARY}
 RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah library/python-2/pysqlite network/download-manager/base"
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
-PREFIX=${PREFIX}-apps
+PREFIX=/opt/obd
 
 # Nothing to configure or build, just package
 download_source () {
-    cleanup_source
-
-    # fetch source
-    mkdir ${TMPDIR}/src
-    cd ${TMPDIR}/src
-
+    pushd $TMPDIR > /dev/null
+    
     logmsg "--- checkout source"
-    git clone https://github.com/RuudBurger/CouchPotatoServer.git ${PROG}
+    git clone https://github.com/RuudBurger/CouchPotatoServer.git ${PROG}-${VER}
 
+    popd > /dev/null
 }
 
 make_install() {
@@ -66,19 +63,21 @@ make_install() {
     logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
         logerr "------ Failed to create manifest directory."
 
-    logcmd cp -r ${TMPDIR}/src/${PROG}/* ${DESTDIR}${PREFIX}/dlmgr/couchpotato/ || \
+    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/couchpotato/ || \
         logerr "------ Failed to copy app."
-    logcmd cp -r ${SRCDIR}/files/couchpotato.xml $DESTDIR/lib/svc/manifest/network/ || \
+    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/couchpotato.xml || \
         logerr "------ Failed to copy manifest."
 }
 
 init
+auto_publish_wipe
 prep_build
 download_source
 make_install
 make_package
 clean_up
 cleanup_source
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
