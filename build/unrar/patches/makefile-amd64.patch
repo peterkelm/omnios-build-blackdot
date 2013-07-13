@@ -1,5 +1,5 @@
---- makefile.illumos64	2013-07-04 00:00:26.448860995 +0200
-+++ makefile.illumos64	2013-07-04 00:05:17.427396756 +0200
+--- makefile.illumos64	2010-03-30 17:26:26.000000000 +0200
++++ makefile.illumos64	2013-07-14 00:45:54.148195076 +0200
 @@ -8,9 +8,9 @@
  # Linux using GCC
  #CXX=g++
@@ -13,6 +13,15 @@
  
  # Linux using LCC
  #CXX=lcc
+@@ -46,7 +46,7 @@
+ #DEFINES=-D_LARGE_FILES -D_LARGE_FILE_API
+ #LIBS=-lbsd
+ #STRIP=strip
+-#DESTDIR=/usr
++DESTDIR=/usr
+ 
+ # Solaris using CC
+ #CXX=CC
 @@ -55,12 +55,12 @@
  #STRIP=strip
  #DESTDIR=/usr
@@ -28,7 +37,7 @@
 +CXXFLAGS=-O3 -m64
 +DEFINES=-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -DLITTLE_ENDIAN
 +STRIP=strip
-+DESTDIR=/usr/local
++#DESTDIR=/usr/local
  
  # Tru64 5.1B using GCC3
  #CXX=g++
@@ -41,3 +50,23 @@
  
  WHAT=UNRAR
  
+@@ -136,13 +136,15 @@
+ 	$(LINK) -shared -o libunrar.so $(LDFLAGS) $(OBJECTS) $(LIB_OBJ)
+ 
+ install-unrar:
+-			install -D unrar $(DESTDIR)/bin/unrar
++			install -D unrar $(DESTDIR)/bin/amd64/unrar
++			install -D unrar.1 $(DESTDIR)/share/man/man1/
+ 
+ uninstall-unrar:
+-			rm -f $(DESTDIR)/bin/unrar
++			rm -f $(DESTDIR)/bin/amd64/unrar
++			rm -f $(DESTDIR)/share/man/man1/
+ 
+ install-lib:
+-		install libunrar.so $(DESTDIR)/lib
++		install libunrar.so $(DESTDIR)/lib/amd64
+ 
+ uninstall-lib:
+-		rm -f $(DESTDIR)/lib/libunrar.so
++		rm -f $(DESTDIR)/lib/amd64/libunrar.so

@@ -1,5 +1,5 @@
---- makefile.illumos32	2013-07-04 00:00:26.448860995 +0200
-+++ makefile.illumos32	2013-07-04 00:03:28.983829977 +0200
+--- makefile.illumos32	2010-03-30 17:26:26.000000000 +0200
++++ makefile.illumos32	2013-07-14 00:45:38.950073110 +0200
 @@ -8,9 +8,9 @@
  # Linux using GCC
  #CXX=g++
@@ -28,7 +28,7 @@
 +CXXFLAGS=-O3 -m32
 +DEFINES=-D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -DLITTLE_ENDIAN
 +STRIP=strip
-+DESTDIR=/usr/local
++#DESTDIR=/usr/local
  
  # Tru64 5.1B using GCC3
  #CXX=g++
@@ -41,3 +41,18 @@
  
  WHAT=UNRAR
  
+@@ -136,10 +136,12 @@
+ 	$(LINK) -shared -o libunrar.so $(LDFLAGS) $(OBJECTS) $(LIB_OBJ)
+ 
+ install-unrar:
+-			install -D unrar $(DESTDIR)/bin/unrar
++			install -D unrar $(DESTDIR)/bin/i386/unrar
++			install -D unrar.1 $(DESTDIR)/share/man/man1/
+ 
+ uninstall-unrar:
+-			rm -f $(DESTDIR)/bin/unrar
++			rm -f $(DESTDIR)/bin/i386/unrar
++			rm -f $(DESTDIR)/share/man/man1/
+ 
+ install-lib:
+ 		install libunrar.so $(DESTDIR)/lib

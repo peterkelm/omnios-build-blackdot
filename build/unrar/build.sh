@@ -42,81 +42,52 @@ BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
 
-# Nothing to configure or build, just package
+# package specific
 download_source () {
-    cleanup_source
+    # tar and prog name disagreement
+    pushd $TMPDIR > /dev/null
 
-    # fetch source
-    mkdir ${TMPDIR}/src
     logmsg "--- download source"
-    wget -c http://www.rarlab.com/rar/unrarsrc-${VER}.tar.gz -O ${TMPDIR}/src/${PROG}-${VER}.tar.gz
+    wget -c http://www.rarlab.com/rar/unrarsrc-${VER}.tar.gz -O ${TMPDIR}/${PROG}-${VER}.tar.gz
 
     # expand source and copy patches
-    logmsg "--- unpacking source"
-    tar xzf ${TMPDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src
-    cp ${SRCDIR}/patches/* ${TMPDIR}/src/${PROG}/
-    cp ${SRCDIR}/files/unrar.1 ${TMPDIR}/src/${PROG}/
+    logmsg "--- extractomg source"
+    [ -d ${TMPDIR}/${PROG}-${VER} ] && rm -rf ${TMPDIR}/${PROG}-${VER}
+    tar xzvf ${TMPDIR}/${PROG}-${VER}.tar.gz -C ${TMPDIR}/
+    cp ${SRCDIR}/files/unrar.1 ${TMPDIR}/${PROG}/
+    cp ${SRCDIR}/patches/* ${TMPDIR}/${PROG}/
+    mv ${TMPDIR}/${PROG} ${TMPDIR}/${PROG}-${VER}
 
+    popd > /dev/null
 }
 
-build32 () {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    cd ${TMPDIR}/src/${PROG}/
-
+configure32() {
     cp makefile.unix makefile.illumos32
     patch < makefile-i386.patch
-
-    /usr/gnu/bin/make -f makefile.illumos32 clean
-    /usr/gnu/bin/make -f makefile.illumos32
-
-    cp unrar unrar-i386
-
-    popd > /dev/null
+    cp makefile.illumos32 Makefile
 }
-
-build64() {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    cd ${TMPDIR}/src/${PROG}/
-
+configure64() {
     cp makefile.unix makefile.illumos64
     patch < makefile-amd64.patch
-
-    /usr/gnu/bin/make -f makefile.illumos64 clean
-    /usr/gnu/bin/make -f makefile.illumos64
-    
-    cp unrar unrar-amd64
-
-    popd > /dev/null
+    cp makefile.illumos64 Makefile
 }
-
 make_install() {
     logmsg "--- make install"
-    logcmd mkdir -p $DESTDIR$PREFIX/bin/{i386,amd64} || \
-        logerr "------ Failed to create architecture destination directory."
-    logcmd cp ${TMPDIR}/src/${PROG}/unrar-i386 $DESTDIR$PREFIX/bin/i386/unrar || \
-        logerr "------ Failed to install i386 binaries."
-    logcmd cp ${TMPDIR}/src/${PROG}/unrar-amd64 $DESTDIR$PREFIX/bin/amd64/unrar || \
-        logerr "------ Failed to install amd64 binaries."
-
-    logcmd mkdir -p $DESTDIR$PREFIX/share/man/man1 || \
-        logerr "------ Failed to create man1."
-    logcmd cp ${TMPDIR}/src/${PROG}/unrar.1 $DESTDIR$PREFIX/share/man/man1/ || \
-        logerr "------ Failed to install man pages."
+    mkdir -p ${DESTDIR}${PREFIX}/share/man/man1/ &> /dev/null
+    logcmd $MAKE DESTDIR=${DESTDIR}${PREFIX} install || \
+        logerr "--- Make install failed"
 }
 
 init
+auto_publish_wipe
 prep_build
 download_source
 build
-make_install
 make_isa_stub
 make_package
 clean_up
 cleanup_source
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
