@@ -40,7 +40,7 @@ DESC="Shared bits for the download-manager range of packages."
 RUN_DEPENDS_IPS=""
 BUILD_DEPENDS_IPS=""
 
-PREFIX=${PREFIX}-apps
+PREFIX=/opt/obd
 
 # Nothing to configure or build, just package
 make_install() {
@@ -52,10 +52,12 @@ make_install() {
 }
 
 init
+auto_publish_wipe
 prep_build
 make_install
 make_package
 clean_up
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
