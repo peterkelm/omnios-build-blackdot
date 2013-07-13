@@ -44,74 +44,27 @@ BUILDARCH=both
 
 # Nothing to configure or build, just package
 download_source () {
-    cleanup_source
-
-    # fetch source
-    mkdir ${TMPDIR}/src
-
     # expand source
     logmsg "--- unpacking source"
-    tar xzf ${SRCDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src
-    cp ${SRCDIR}/patches/* ${TMPDIR}/src/${PROG}-${VER}/
-    cd ${TMPDIR}/src/${PROG}-${VER}/
+    tar xzf ${SRCDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/
+    cp ${SRCDIR}/patches/* ${TMPDIR}/${PROG}-${VER}/
+    cd ${TMPDIR}/${PROG}-${VER}/
     for p in `ls *.patch`; do
 	patch < $p
     done
 
 }
 
-build32 () {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    export CFLAGS=-m32
-    export CXXFLAGS=${CFLAGS}
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    [ -e config.nice ] && rm config.nice
-    ./configure --prefix=${TMPDIR}/staging/i386
-    make clean
-    make
-    make install
-
-    popd > /dev/null
-}
-
-build64() {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    export CFLAGS=-m64
-    export CXXFLAGS=${CFLAGS}
-    [ -e config.nice ] && rm config.nice
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    ./configure --prefix=${TMPDIR}/staging/amd64
-    make clean
-    make
-    make install
-
-    popd > /dev/null
-}
-
-make_install() {
-    logmsg "--- make install"
-    logcmd mkdir -p $DESTDIR$PREFIX/bin/{i386,amd64} || \
-        logerr "------ Failed to create architecture destination directory."
-
-    logcmd cp ${TMPDIR}/staging/i386/bin/* $DESTDIR$PREFIX/bin/i386/ || \
-        logerr "------ Failed to install i386 binaries."
-    logcmd cp ${TMPDIR}/staging/amd64/bin/* $DESTDIR$PREFIX/bin/amd64/ || \
-        logerr "------ Failed to install amd64 binaries."
-}
-
 init
+auto_publish_wipe
 prep_build
 download_source
 build
-make_install
 make_isa_stub
 make_package
 clean_up
 cleanup_source
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
