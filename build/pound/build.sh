@@ -42,92 +42,46 @@ BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
 
+# package specifics
+MIRROR=www.apsis.ch
+DLPATH=pound/
+CONFIGURE_OPTS=--with-ssl=/usr/lib
+
 # Nothing to configure or build, just package
-download_source () {
-    cleanup_source
-
-    # fetch source
-    mkdir ${TMPDIR}/src
-
-    logmsg "--- download source"
-    wget -c http://www.apsis.ch/pound/${PROG}-${VER}.tgz -O ${TMPDIR}/src/${PROG}-${VER}.tar.gz
-
-    # expand source
-    logmsg "--- unpacking source"
-    tar xzf ${TMPDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src/
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-
-}
-
-build32 () {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    export CFLAGS=-m32
-    export LDFLAGS=-m32
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    make clean
-    ./configure --prefix=/opt/obd --with-ssl=/usr/lib
-    make
-    mkdir -p ${TMPDIR}/staging/i386/sbin
-    cp pound ${TMPDIR}/staging/i386/sbin/
-    cp poundctl ${TMPDIR}/staging/i386/sbin/
-
-    popd > /dev/null
-}
-
-build64() {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    export CFLAGS=-m64
-    export LDFLAGS=-m64
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    make clean
-    ./configure --prefix=/opt/obd --with-ssl=/usr/lib
-    make
-    mkdir -p ${TMPDIR}/staging/amd64/sbin
-    cp pound ${TMPDIR}/staging/amd64/sbin/
-    cp poundctl ${TMPDIR}/staging/amd64/sbin/
-
-    popd > /dev/null
-}
-
 make_install() {
     logmsg "--- make install"
-    logcmd mkdir -p $DESTDIR$PREFIX/sbin/{i386,amd64} || \
-        logerr "------ Failed to create architecture destination directory."
-    logcmd  cp -r ${TMPDIR}/staging/amd64/sbin/* $DESTDIR$PREFIX/sbin/amd64/ || \
-        logerr "------ Failed to copy amd64 binaries."
-    logcmd  cp -r ${TMPDIR}/staging/i386/sbin/* $DESTDIR$PREFIX/sbin/i386/ || \
-        logerr "------ Failed to copy i385 binaries."
+    logcmd pfexec $MAKE DESTDIR=${DESTDIR} install || \
+        logerr "--- Make install failed"
 
+    logcmd pfexec chown -R ${USER} ${DESTDIR}/ || \
+        logerr "--- Make install owner"
+
+}
+
+make_install_extras() {
+    logmsg "--- make install extras"
     logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
         logerr "------ Failed to create manifest directory."
-    logcmd cp -r ${SRCDIR}/files/pound.xml $DESTDIR/lib/svc/manifest/network/ || \
+    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/pound.xml || \
         logerr "------ Failed to copy manifest."
 
-    logcmd mkdir -p $DESTDIR$PREFIX/share/man/man8 || \
-        logerr "------ Failed to create manual directory."
-    logcmd cp -r ${TMPDIR}/src/${PROG}-${VER}/*.8 $DESTDIR$PREFIX/share/man/man8/ || \
-        logerr "------ Failed to copy man pages."
-
-    logcmd mkdir -p $DESTDIR$PREFIX/etc || \
-        logerr "------ Failed to create manual directory."
-    logcmd cp -r ${SRCDIR}/files/pound.cfg $DESTDIR$PREFIX/etc/pound.cfg.example || \
+    logcmd mkdir -p $DESTDIR$SYSCONFDIR || \
+        logerr "------ Failed to create configuration directory."
+    logcmd cp -r ${SRCDIR}/files/pound.cfg $DESTDIR$SYSCONFDIR/pound.cfg.example || \
         logerr "------ Failed to copy config."
-
 }
 
 init
+auto_publish_wipe
 prep_build
-download_source
+download_source ${DLPATH} ${PROG} ${VER}
 build
-make_install
+make_install_extras
 make_isa_stub
 make_package
 clean_up
 cleanup_source
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
