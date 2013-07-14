@@ -37,7 +37,7 @@
     <exec_method
         type='method'
         name='start'
-                exec='/usr/sbin/pound'
+                exec='/usr/sbin/pound -v'
         timeout_seconds='60'>
     </exec_method>
 
