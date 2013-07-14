@@ -42,86 +42,21 @@ BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
 
-# Nothing to configure or build, just package
-download_source () {
-    cleanup_source
-
-    # fetch source
-    mkdir ${TMPDIR}/src
-
-    logmsg "--- download source"
-    wget -c http://www.dest-unreach.org/socat/download/${PROG}-${VER}.tar.gz -O ${TMPDIR}/src/${PROG}-${VER}.tar.gz
-
-    # expand source
-    logmsg "--- unpacking source"
-    tar xzf ${TMPDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src/
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    cat ${SRCDIR}/patches/fixheader.patch | patch
-
-}
-
-build32 () {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    export CFLAGS=-m32
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    make clean
-    ./configure --prefix=${TMPDIR}/staging/i386
-    make
-    make install
-
-    popd > /dev/null
-}
-
-build64() {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    export CFLAGS=-m64
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    make clean
-    ./configure --prefix=${TMPDIR}/staging/amd64
-    make
-    make install
-
-    popd > /dev/null
-}
-
-make_install() {
-    logmsg "--- make install"
-    logcmd mkdir -p $DESTDIR$PREFIX/bin/{i386,amd64} || \
-        logerr "------ Failed to create architecture destination directory."
-
-    logcmd install -m 755 ${TMPDIR}/staging/i386/bin/socat $DESTDIR$PREFIX/bin/i386 || \
-        logerr "------ Failed to install socat."
-    logcmd install -m 755 ${TMPDIR}/staging/i386/bin/procan $DESTDIR$PREFIX/bin/i386 || \
-        logerr "------ Failed to install procan."
-    logcmd install -m 755 ${TMPDIR}/staging/i386/bin/filan $DESTDIR$PREFIX/bin/i386 || \
-        logerr "------ Failed to install filan."
-
-    logcmd install -m 755 ${TMPDIR}/staging/amd64/bin/socat $DESTDIR$PREFIX/bin/amd64 || \
-        logerr "------ Failed to install socat."
-    logcmd install -m 755 ${TMPDIR}/staging/amd64/bin/procan $DESTDIR$PREFIX/bin/amd64 || \
-        logerr "------ Failed to install procan."
-    logcmd install -m 755 ${TMPDIR}/staging/amd64/bin/filan $DESTDIR$PREFIX/bin/amd64 || \
-        logerr "------ Failed to install filan."
-
-    logcmd mkdir -p $DESTDIR$PREFIX/share/man/man1 || \
-        logerr "------ Failed to create man1."
-    logcmd install -m 755 ${TMPDIR}/src/${PROG}-${VER}/doc/socat.1 $DESTDIR$PREFIX/share/man/man1/ || \
-        logerr "------ Failed to install man pages."
-}
+# package specific
+MIRROR=www.dest-unreach.org
+DLPATH=socat/download
 
 init
+auto_publish_wipe
 prep_build
-download_source
+download_source ${DLPATH} ${PROG} ${VER}
+patch_source
 build
-make_install
 make_isa_stub
 make_package
 clean_up
-cleanup_source
+#cleanup_source
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
