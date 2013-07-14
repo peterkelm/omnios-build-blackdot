@@ -1,0 +1,4 @@
+0001-check-for-and-define-timeradd-and-timersub.patch
+0002-fix-znc.1-manpage.patch
+0003-Fix-mt-libraries.patch
+0004-Use-proper-zoneinfo-path.patch

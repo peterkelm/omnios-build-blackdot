@@ -42,93 +42,15 @@ BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
 
+MIRROR=znc.in
+DLPATH=releases
+
+
 # Nothing to configure or build, just package
-download_source () {
-    cleanup_source
-
-    # fetch source
-    logmsg "--- download source"
-    mkdir ${TMPDIR}/src
-    wget -c http://znc.in/releases/${PROG}-${VER}.tar.gz -O ${TMPDIR}/src/${PROG}-${VER}.tar.gz
-
-    # expand source and patching
-    logmsg "--- unpacking source"
-    tar xzf ${TMPDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/src
-    cp ${SRCDIR}/patches/*.patch ${TMPDIR}/src/${PROG}-${VER}/
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    for p in `ls *.patch`; do
-        patch -p1 < $p
-    done
-
-}
-
-build32 () {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    export CFLAGS=-m32
-    export CXXFLAGS=-m32
-    export LDFLAGS=-m32
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    [ -e config.nice ] && rm config.nice
-    gmake clean
-    ./configure --prefix=${TMPDIR}/staging/i386 --with-openssl=/usr/lib --with-module-prefix=${TMPDIR}/staging/i386/libexec/znc
-    gmake
-    gmake install
-
-    gmake clean
-    ./configure --prefix=/opt/obd --with-openssl=/usr/lib --with-module-prefix=/opt/obd/libexec/znc
-    gmake
-    chmod +x znc-buildmod
-    cp znc ${TMPDIR}/staging/i386/bin/
-    cp znc-buildmod ${TMPDIR}/staging/i386/bin/
-    sed "s#${TMPDIR}/staging/i386#/opt/obd#" ${TMPDIR}/staging/i386/lib/pkgconfig/znc.pc > ${TMPDIR}/staging/i386/lib/pkgconfig/znc.pc-sed
-    mv ${TMPDIR}/staging/i386/lib/pkgconfig/znc.pc-sd ${TMPDIR}/staging/i386/lib/pkgconfig/znc.pc
-
-    popd > /dev/null
-}
-
-build64() {
-    pushd $TMPDIR > /dev/null
-
-    export PATH=/opt/gcc-4.7.2/bin:$PATH
-    export CFLAGS=-m64
-    export CXXFLAGS=-m64
-    export LDFLAGS=-m64
-    cd ${TMPDIR}/src/${PROG}-${VER}/
-    [ -e config.nice ] && rm config.nice
-    gmake clean
-    ./configure --prefix=${TMPDIR}/staging/amd64 --with-openssl=/usr/lib --with-module-prefix=${TMPDIR}/staging/amd64/libexec/amd64/znc
-    gmake
-    gmake install
-
-    gmake clean
-    ./configure --prefix=/opt/obd --with-openssl=/usr/lib --with-module-prefix=/opt/obd/libexec/amd64/znc
-    gmake
-    chmod +x znc-buildmod
-    cp znc ${TMPDIR}/staging/amd64/bin/
-    cp znc-buildmod ${TMPDIR}/staging/amd64/bin/
-
-    popd > /dev/null
-}
-
-make_install() {
-    logmsg "--- make install"
-    logcmd mkdir -p $DESTDIR$PREFIX/bin/{i386,amd64} || \
-        logerr "------ Failed to create architecture destination directory for bin."
+make_install_extras() {
+    logmsg "--- make install extras"
     logcmd mkdir -p $DESTDIR$PREFIX/share/znc/service || \
         logerr "------ Failed to create service directory for bin."
-    logcmd cp -r ${TMPDIR}/staging/amd64/* $DESTDIR$PREFIX/ || \
-        logerr "------ Failed to copy amd64 binaries."
-
-    logcmd mv $DESTDIR$PREFIX/bin/znc* $DESTDIR$PREFIX/bin/amd64 || \
-        logerr "------ Failed to move amd64 binaries."
-    logcmd cp -r ${TMPDIR}/staging/i386/bin/* $DESTDIR$PREFIX/bin/i386 || \
-        logerr "------ Failed to copy i386 binaries."
-
-    logcmd cp -r ${TMPDIR}/staging/i386/libexec/znc $DESTDIR$PREFIX/libexec/ || \
-        logerr "------ Failed to copy i386 modules."
-
     logcmd cp ${SRCDIR}/files/smf.xml  $DESTDIR$PREFIX/share/znc/service/smf_manifest.xml || \
         logerr "------ Failed to copy service manifest."
     logcmd cp ${SRCDIR}/files/README  $DESTDIR$PREFIX/share/znc/service/README || \
@@ -137,15 +59,18 @@ make_install() {
         logerr "------ Failed to copy service installer."
 }
 
+
 init
+auto_publish_wipe
 prep_build
-download_source
+download_source ${DLPATH} ${PROG} ${VER}
+patch_source
 build
-make_install
+make_install_extras
 make_isa_stub
 make_package
 clean_up
-cleanup_source
+auto_publish
 
 # Vim hints
 # vim:ts=4:sw=4:et:
