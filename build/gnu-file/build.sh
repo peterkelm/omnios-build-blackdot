@@ -44,11 +44,6 @@ BUILD_DEPENDS_IPS=""
 BUILDARCH=both
 
 download_source () {
-    cleanup_source
-
-    # fetch source
-    mkdir ${TMPDIR}/src
-
     logmsg "--- download source"
     wget -c ftp://ftp.astron.com/pub/file/${PROG}-${VER}.tar.gz -O ${TMPDIR}/${PROG}-${VER}.tar.gz
 
