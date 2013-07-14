@@ -65,7 +65,7 @@ make_install() {
 
     logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/couchpotato/ || \
         logerr "------ Failed to copy app."
-    logcmd cp -r ${SRCDIR}/files/config.ini ${DESTDIR}${PREFIX}/dlmgr/.config/couchpotato/ || \
+    logcmd cp -r ${SRCDIR}/files/settings.conf ${DESTDIR}${PREFIX}/dlmgr/.config/couchpotato/ || \
         logerr "------ Failed to inject minimal config."
     logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/couchpotato.xml || \
         logerr "------ Failed to copy manifest."
