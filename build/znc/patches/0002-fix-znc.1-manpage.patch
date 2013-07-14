@@ -16,16 +16,16 @@ index 7578adc..68e140e 100644
  .SH FILES
  .TP
 -.I /usr/local/share/znc/
-+.I /opt/obd/share/znc/
++.I /usr/share/znc/
  Static module data like webadmin skins
  .TP
 -.I /usr/local/lib/znc/
-+.I /opt/obd/lib/znc/
++.I /usr/lib/znc/
  .B znc
  installs its modules to this directory.
  .TP
 -.I /usr/local/include/znc/
-+.I /opt/obd/include/znc/
++.I /usr/include/znc/
  These are the headers needed for compiling own modules.
  .TP
  .I ~/.znc
