@@ -1,0 +1,6 @@
+0001-Debian-0.4-11-serial-000_unidentified.patch
+0002-Debian-0.4-11-serial-001_hardlinks.patch
+0003-Debian-0.4-11-serial-002_gcc_40_fixes.patch
+0004-Debian-0.4-11-serial-003_fix_crash_in_quiet_mode.patch
+0005-Fix-media-size-ioctl.patch
+0006-Fix-pretest-script.patch

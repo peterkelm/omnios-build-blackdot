@@ -46,19 +46,15 @@ BUILDARCH=both
 download_source () {
     # expand source
     logmsg "--- unpacking source"
+    [ -d ${TMPDIR}/${PROG}-${VER} ] && rm -rf ${TMPDIR}/${PROG}-${VER}
     tar xzf ${SRCDIR}/src/${PROG}-${VER}.tar.gz -C ${TMPDIR}/
-    cp ${SRCDIR}/patches/* ${TMPDIR}/${PROG}-${VER}/
-    cd ${TMPDIR}/${PROG}-${VER}/
-    for p in `ls *.patch`; do
-	patch < $p
-    done
-
 }
 
 init
 auto_publish_wipe
 prep_build
 download_source
+patch_source
 build
 make_isa_stub
 make_package
