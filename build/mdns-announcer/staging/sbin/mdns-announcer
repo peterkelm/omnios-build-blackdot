@@ -112,12 +112,11 @@ class MulticastDNSAnnouncer():
 		
 	def run(self):
 		## read config file
-		if not os.path.exists("%s/etc/mdns.conf" % self.basepath):
-			print "==> No configuration file found at %s/etc/mdns.conf!" % self.basepath
+		if not os.path.exists("%s/etc/mdns.conf" % (self.basepath if not self.basepath == '/usr' else '')):
+			print "==> No configuration file found at %s/etc/mdns.conf!" % (self.basepath if not self.basepath == '/usr' else '')
 			sys.exit(3)			
 
-
-		with open("%s/etc/mdns.conf" % self.basepath if self.basepath <> '/usr' else '') as config_raw:
+		with open("%s/etc/mdns.conf" % (self.basepath if self.basepath <> '/usr' else '')) as config_raw:
 			config_json = ""
 			for line in config_raw:
 				if line.strip()[0:2] <> '//' and line.strip()[0:1] <> '#':
