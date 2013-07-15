@@ -33,7 +33,7 @@ PROG=Pound                                  # App name
 VER=2.6                                     # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
-PKG=obd/server/web//pound                   # Package name (e.g. library/foo)
+PKG=obd/server/web/pound                   # Package name (e.g. library/foo)
 SUMMARY="The Pound program is a reverse proxy, load balancer and HTTPS front-end for Web server(s)."
 DESC="${SUMMARY} Pound was developed to enable distributing the load among several Web-servers and to allow for a convenient SSL wrapper for those Web servers that do not offer it natively."
 

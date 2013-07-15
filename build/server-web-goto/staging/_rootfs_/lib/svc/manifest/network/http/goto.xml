@@ -3,9 +3,10 @@
  
 <service_bundle type='manifest' name='goto'>
 
-  <service name='network/http' type='service' version='0'>
+  <service name='network/http/goto' type='service' version='1'>
 
-    <instance name='goto' enabled='false'>
+    <create_default_instance enabled='false' />
+    <single_instance />
   
     <!-- Wait for network to be initialized. -->
     <dependency name='network'
@@ -36,7 +37,6 @@
           <loctext xml:lang='C'>goto-daemon</loctext>
        </common_name>
     </template>
-    </instance>  
  
   </service>
  
