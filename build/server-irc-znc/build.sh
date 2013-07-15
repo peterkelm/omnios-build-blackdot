@@ -33,7 +33,7 @@ PROG=znc                                    # App name
 VER=1.0                                     # App version
 VERHUMAN=$VER-4                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
-PKG=network/znc                             # Package name (e.g. library/foo)
+PKG=obd/server/irc/znc                      # Package name (e.g. library/foo)
 SUMMARY="An advanced IRC proxy"
 DESC="ZNC, an advanced IRC proxy that is left connected so an IRC client can disconnect/reconnect without losing the chat session."
 
