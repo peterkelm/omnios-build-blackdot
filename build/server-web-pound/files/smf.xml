@@ -3,7 +3,7 @@
 <service_bundle type='manifest' name='pound'>
 
   <service
-    name='network/pound'
+    name='network/http/pound'
     type='service'
     version='1'>
 
