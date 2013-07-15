@@ -33,7 +33,7 @@ PROG=mdns-announcer                          # App name
 VER=1.6                                      # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
-PKG=network/mdns-announcer                   # Package name (e.g. library/foo)
+PKG=obd/server/dns/multicast-announcer                   # Package name (e.g. library/foo)
 SUMMARY="Service that announces service over mdns." # One-liner, must be filled in
 DESC="Service that announces service over mdns. Using python and pybonjour."
 

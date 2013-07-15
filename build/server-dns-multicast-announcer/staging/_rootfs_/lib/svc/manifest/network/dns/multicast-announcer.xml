@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
  
-<service_bundle type='manifest' name='mdns-announcer'>
+<service_bundle type='manifest' name='multicast-announcer'>
  
   <service
-    name='network/mdns-announcer'
+    name='network/dns/multicast-announcer'
     type='service'
     version='1'>
  
@@ -42,7 +42,7 @@
 
     <template>
        <common_name>
-          <loctext xml:lang='C'>mdnsd</loctext>
+          <loctext xml:lang='C'>mdns-announcer</loctext>
        </common_name>
     </template>
  
