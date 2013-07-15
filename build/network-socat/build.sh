@@ -33,7 +33,7 @@ PROG=socat                                  # App name
 VER=1.7.1.3                                 # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
-PKG=network/socat                           # Package name (e.g. library/foo)
+PKG=obd/network/socat                           # Package name (e.g. library/foo)
 SUMMARY="socat is a tool that connects different types of sockets together." # One-liner, must be filled in
 DESC="socat is a tool that connects different types of sockets together."
 
