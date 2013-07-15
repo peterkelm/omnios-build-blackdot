@@ -35,7 +35,7 @@ PROG=zsh-obd-config                         # App name
 VER=`curl -sk -m 3 ${NZSHRC} | head -n3 | tail -n1 | awk '{ print $3 }'` # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
-PKG=shell/zsh-obd-config                    # Package name (e.g. library/foo)
+PKG=obd/shell/zsh-config                    # Package name (e.g. library/foo)
 SUMMARY="Z-Shell configuration found at docu.blackdot.be."
 DESC="This package will install the zsh configuration found at docu.blackdot.be into /etc/skel1. New users will have the configuration avaible when they run zsh. If the user is create with -s /bin/zsh the shell will also be the default."
 
