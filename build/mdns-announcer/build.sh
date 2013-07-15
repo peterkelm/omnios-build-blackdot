@@ -40,7 +40,7 @@ DESC="Service that announces service over mdns. Using python and pybonjour."
 RUN_DEPENDS_IPS="runtime/python-26 library/python-2/pybonjour"
 BUILD_DEPENDS_IPS=""
 
-BUILDARCH=32
+BUILDARCH=both
 
 # Nothing to configure or build, just package
 make_install() {
@@ -65,7 +65,7 @@ make_install() {
     fi
 }
 
-build32() {
+build() {
     pushd $TMPDIR > /dev/null
     tar cpjf ${TMPDIR}/${PROG}.tar.bz2 -C ${SRCDIR}/staging/ .
     make_install
