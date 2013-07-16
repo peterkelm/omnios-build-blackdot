@@ -59,9 +59,10 @@ init
 auto_publish_wipe
 prep_build
 make_install
+prefix_updater
 make_package
-clean_up
 auto_publish
+clean_up
 
 # Vim hints
 # vim:ts=4:sw=4:et:
