@@ -1,0 +1,8 @@
+<transform dir path={{PREFIX}}/dlmgr.* -> set owner dlmgr>
+<transform dir path={{PREFIX}}/dlmgr.* -> set group dlmgr>
+<transform dir path={{PREFIX}}/dlmgr.* -> set mode 0750>
+<transform file path={{PREFIX}}/dlmgr.* -> set owner dlmgr>
+<transform file path={{PREFIX}}/dlmgr.* -> set group dlmgr>
+<transform file path={{PREFIX}}/dlmgr.* -> set mode 0640>
+<transform file path=(var|lib)/svc/manifest/network/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
+license files/license license=LGPL
