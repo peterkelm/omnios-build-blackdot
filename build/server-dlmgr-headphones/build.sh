@@ -40,7 +40,7 @@ DESC=${SUMMARY}
 RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah obd/server/dlmgr"
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
-PREFIX=/opt/obd
+PREFIX=${PREFIX}-apps
 
 # Nothing to configure or build, just package
 download_source () {
@@ -74,10 +74,11 @@ auto_publish_wipe
 prep_build
 download_source
 make_install
+prefix_updater
 make_package
-clean_up
-cleanup_source
 auto_publish
+cleanup_source
+clean_up
 
 # Vim hints
 # vim:ts=4:sw=4:et:
