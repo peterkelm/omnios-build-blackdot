@@ -33,7 +33,7 @@ PROG=par2cmdline                            # App name
 VER=0.4                                     # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
-PKG=archiver/par2cmdline                    # Package name (e.g. library/foo)
+PKG=obd/archiver/par2cmdline                    # Package name (e.g. library/foo)
 SUMMARY="Providing a tool to apply the data-recovery capability concepts of RAID-like systems to the posting & recovery of multi-part archives on Usenet"
 DESC=${SUMMARY}
 
