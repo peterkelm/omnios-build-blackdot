@@ -68,9 +68,10 @@ patch_source
 build
 make_install_extras
 make_isa_stub
+prefix_updater
 make_package
-clean_up
 auto_publish
+clean_up
 
 # Vim hints
 # vim:ts=4:sw=4:et:
