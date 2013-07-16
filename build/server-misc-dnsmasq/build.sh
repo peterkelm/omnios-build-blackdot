@@ -91,6 +91,8 @@ make_install_extras() {
     logmsg "--- make install extras"
     logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
         logerr "------ Failed to create manifest directory."
+    logcmd mkdir -p $DESTDIR/var/empty || \
+        logerr "------ Failed to create home directory."
     logcmd mkdir -p $DESTDIR$SYSCONFDIR || \
         logerr "------ Failed to create configuration directory."
     logcmd cp ${SRCDIR}/files/dnsmasq.conf $DESTDIR$SYSCONFDIR || \
