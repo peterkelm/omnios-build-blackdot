@@ -28,10 +28,19 @@
 . ../../lib/functions.sh
 
 cleanup_source() {
-    # cleanup source
-    logmsg "--- cleanup source"
-    cd ${TMPDIR}/
+    logmsg "Housekeeping"
+    logmsg "--- remove source directory"
     rm -rf ${TMPDIR}/${PROG}*
+
+    logmsg "--- checking for local.mog.in"
+    if [ -e ${SRCDIR}/local.mog.in ]; then
+        logmsg "------ removing local.mog"
+        if [ -e ${SRCDIR}/local.mog ]; then 
+            logcmd rm ${SRCDIR}/local.mog || \
+                logerr "--------- Failed to remove local.mog!"
+        fi
+    fi
+
 }
 
 

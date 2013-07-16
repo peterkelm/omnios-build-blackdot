@@ -1,6 +1,6 @@
 - switch prefix to /opt/obd
-   - sed prefix into local.mog and smf.xml's
-- multri threaded par2 replacement
+   - fix multi user svc deps for dlmgr
+   - cleanup .mog IF WE HAVE mog.in
 - adblock
 - ui package
   - dep on apache, sabnzbd,...
@@ -12,3 +12,5 @@
     - enable ipv6, set ports for all apps, configure sabnzbdin all apps
     - enable all services
     - enable apache
+- multri threaded par2 replacement
+  - intel tbb for solaris 

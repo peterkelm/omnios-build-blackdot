@@ -56,6 +56,7 @@ make_isa_stub
 prefix_updater
 make_package
 auto_publish
+cleanup_source
 clean_up
 
 # Vim hints
