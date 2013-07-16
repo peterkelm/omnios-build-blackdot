@@ -72,10 +72,16 @@ prefix_updater() {
     logmsg "--- checking for local.mog.in"
     if [ -e ${SRCDIR}/local.mog.in ]; then
         logmsg "------ removing local.mog"
-        [ -e ${SRCDIR}/local.mog ] && logcmd rm ${SRCDIR}/local.mog || \
-            logerr "--------- Failed to remove local.mog!"
+        if [ -e ${SRCDIR}/local.mog ]; then 
+            logcmd rm ${SRCDIR}/local.mog || \
+                logerr "--------- Failed to remove local.mog!"
+        fi
+
+
         logmsg "------ generating local.mog"
-        logcmd sed s#{{PREFIX}}#${PREFIX}#g ${SRCDIR}/local.mog.in > ${SRCDIR}/local.mog || \
+        logcmd cp ${SRCDIR}/local.mog.in ${SRCDIR}/local.mog || \
+            logerr "--------- Failed to generate local.mog!"
+        logcmd sed -i s#{{PREFIX}}#${PREFIX:1}#g ${SRCDIR}/local.mog || \
             logerr "--------- Failed to generate local.mog!"
     fi
 
