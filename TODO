@@ -1,5 +1,6 @@
 - switch prefix to /opt/obd
    - sed prefix into local.mog and smf.xml's
+- multri threaded par2 replacement
 - adblock
 - ui package
   - dep on apache, sabnzbd,...
