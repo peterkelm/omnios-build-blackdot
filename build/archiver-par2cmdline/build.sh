@@ -33,7 +33,7 @@ PROG=par2cmdline                            # App name
 VER=0.4                                     # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
-PKG=obd/archiver/par2cmdline                    # Package name (e.g. library/foo)
+PKG=obd/archiver/par2cmdline                # Package name (e.g. library/foo)
 SUMMARY="Providing a tool to apply the data-recovery capability concepts of RAID-like systems to the posting & recovery of multi-part archives on Usenet"
 DESC=${SUMMARY}
 
@@ -41,6 +41,7 @@ RUN_DEPENDS_IPS=""
 BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
+
 
 # Nothing to configure or build, just package
 download_source () {
