@@ -58,5 +58,24 @@ auto_publish() {
             logerr "------ Failed clear cache."
     logmsg "--- starting pkg/server"
     logcmd pfexec svcadm enable pkg/server || \
-            logerr "------ Failed to stqrt pkg/server."
+            logerr "------ Failed to start pkg/server."
+}
+
+update_prefix() {
+    logmsg "Update Prefix"
+    logmsg "--- checking for manifests"
+    for SMF in `find $DESTDIR/{var,lib}/svc/manifest/ -type f 2> /dev/null`; do
+        logmsg "------ updating {{PREFIX}} in $(echo ${SMF} | sed s#${DESTDIR}##)"
+        sed -i s#{{PREFIX}}#${PREFIX}#g ${SMF}
+    done
+
+    logmsg "--- checking for local.mog.in"
+    if [ -e ${SRCDIR}/local.mog.in ]; then
+        logmsg "------ removing local.mog"
+        [ -e ${SRCDIR}/local.mog ] && logcmd rm ${SRCDIR}/local.mog || \
+            logerr "--------- Failed to remove local.mog!"
+        logmsg "------ generating local.mog"
+        logcmd sed s#{{PREFIX}}#${PREFIX}#g ${SRCDIR}/local.mog.in > ${SRCDIR}/local.mog || \
+            logerr "--------- Failed to generate local.mog!"
+    fi
 }
