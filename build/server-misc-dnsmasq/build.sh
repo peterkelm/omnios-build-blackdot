@@ -106,12 +106,11 @@ download_source ${DLPATH} ${PROG} ${VER}
 build
 make_install_extras
 make_isa_stub
-update_prefix
+prefix_updater
 VER=2.67.0.7
 make_package
-clean_up
-#cleanup_source
 auto_publish
+clean_up
 
 # Vim hints
 # vim:ts=4:sw=4:et:
