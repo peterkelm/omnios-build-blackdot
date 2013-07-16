@@ -55,5 +55,5 @@ patch_source
 prep_build
 python_build
 make_package
-clean_up
 auto_publish
+clean_up
