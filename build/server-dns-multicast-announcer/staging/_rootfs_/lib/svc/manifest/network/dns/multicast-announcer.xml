@@ -32,7 +32,7 @@
         <method_credential user='mdns' group='mdns' />
     </method_context>
 
-    <exec_method type='method' name='start' exec='/usr/sbin/mdns-announcer' timeout_seconds='60' />
+    <exec_method type='method' name='start' exec='{{PREFIX}}/sbin/mdns-announcer' timeout_seconds='60' />
     <exec_method type='method' name='stop'  exec=':kill' timeout_seconds='60' />
 
     <property_group name="startd" type="framework">

@@ -190,4 +190,4 @@ class MulticastDNSAnnouncer():
 
 ## init
 if __name__ == "__main__":
-	MulticastDNSAnnouncer("/usr").run()
+	MulticastDNSAnnouncer("{{PREFIX}}").run()
