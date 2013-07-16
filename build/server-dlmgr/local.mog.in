@@ -1,0 +1,9 @@
+group groupname=dlmgr gid=999
+user ftpuser=false gcos-field="Download Manager privsep user" group=dlmgr login-shell=/bin/false password=NP uid=999 username=dlmgr home-dir=/{{PREFIX}}/dlmgr/.config
+<transform dir path={{PREFIX}}/dlmgr.* -> set owner dlmgr>
+<transform dir path={{PREFIX}}/dlmgr.* -> set group dlmgr>
+<transform dir path={{PREFIX}}/dlmgr.* -> set mode 0750>
+<transform file path={{PREFIX}}/dlmgr.* -> set owner dlmgr>
+<transform file path={{PREFIX}}/dlmgr.* -> set group dlmgr>
+<transform file path={{PREFIX}}/dlmgr.* -> set mode 0640>
+license files/license license=BSD

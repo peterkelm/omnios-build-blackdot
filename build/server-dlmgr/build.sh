@@ -40,7 +40,7 @@ DESC="${SUMMARY}"
 RUN_DEPENDS_IPS=""
 BUILD_DEPENDS_IPS=""
 
-PREFIX=/opt/obd
+PREFIX=${PREFIX}-apps
 
 # Nothing to configure or build, just package
 make_install() {
@@ -55,9 +55,10 @@ init
 auto_publish_wipe
 prep_build
 make_install
+prefix_updater
 make_package
-clean_up
 auto_publish
+clean_up
 
 # Vim hints
 # vim:ts=4:sw=4:et:
