@@ -37,7 +37,7 @@ PKG=obd/server/dlmgr/sickbeard       # Package name (e.g. library/foo)
 SUMMARY="Sick Beard is a PVR for newsgroup users (with limited torrent support)."
 DESC="Sick Beard is a PVR for newsgroup users (with limited torrent support). It watches for new episodes of your favorite shows and when they are posted it downloads them, sorts and renames them, and optionally generates metadata for them."
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah network/download-manager/base"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah obd/server/dlmgr"
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=/opt/obd

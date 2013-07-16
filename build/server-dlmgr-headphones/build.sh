@@ -37,7 +37,7 @@ PKG=obd/server/dlmgr/headphones              # Package name (e.g. library/foo)
 SUMMARY="Automatic music downloader for SABnzbd."
 DESC=${SUMMARY}
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah network/download-manager/base"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah obd/server/dlmgr"
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=/opt/obd
