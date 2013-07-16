@@ -2,7 +2,7 @@
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 <!--
   Assumes user=dlmgr group=dlmgr
-  Assumes '/opt/obd/dlmgr/sabnzbd' is installation directory
+  Assumes '{{PREFIX}}/dlmgr/sabnzbd' is installation directory
 
   To enable/disable
     svcadm enable sabnzbd
@@ -50,14 +50,14 @@
     <method_context>
         <method_credential user='dlmgr' group='dlmgr' />
 	<method_environment>
-		<envvar name="PATH" value="/opt/omni/bin:/usr/gnu/bin:/usr/bin:/bin" />
+		<envvar name="PATH" value="/opt/obd/bin:/opt/omni/bin:/usr/gnu/bin:/usr/bin:/bin" />
 	</method_environment>
     </method_context>
 
     <exec_method
         type='method'
         name='start'
-        exec='/usr/bin/python /opt/obd/dlmgr/sabnzbd/SABnzbd.py -d -f /opt/obd/dlmgr/.config/sabnzbd/sabnzbd.ini'
+        exec='/usr/bin/python {{PREFIX}}/dlmgr/sabnzbd/SABnzbd.py -d -f {{PREFIX}}/dlmgr/.config/sabnzbd/sabnzbd.ini'
         timeout_seconds='60'>
     </exec_method>
 

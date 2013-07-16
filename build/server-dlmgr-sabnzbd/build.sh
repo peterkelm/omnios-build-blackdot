@@ -40,7 +40,7 @@ DESC="SABnzbd makes Usenet as simple and streamlined as possible by automating e
 RUN_DEPENDS_IPS="archiver/par2cmdline compress/unrar compress/unzip runtime/python-26 library/python-2/yenc library/python-2/cheetah library/python-2/pyopenssl-26 obd/server/dlmgr"
 BUILD_DEPENDS_IPS=""
 
-PREFIX=/opt/obd
+PREFIX=${PREFIX}-apps
 
 # Nothing to configure or build, just package
 download_source () {
@@ -81,10 +81,11 @@ auto_publish_wipe
 prep_build
 download_source
 make_install
+prefix_updater
 make_package
-clean_up
-cleanup_source
 auto_publish
+cleanup_source
+clean_up
 
 # Vim hints
 # vim:ts=4:sw=4:et:
