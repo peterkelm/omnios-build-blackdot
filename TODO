@@ -1,0 +1,13 @@
+- switch prefix to /opt/obd
+   - sed prefix into local.mog and smf.xml's
+- adblock
+- ui package
+  - dep on apache, sabnzbd,...
+  - installser script
+    - enable all services
+    - sleep
+    - disable all services
+    - sleep
+    - enable ipv6, set ports for all apps, configure sabnzbdin all apps
+    - enable all services
+    - enable apache
