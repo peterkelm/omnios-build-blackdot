@@ -61,8 +61,8 @@ auto_publish() {
             logerr "------ Failed to start pkg/server."
 }
 
-update_prefix() {
-    logmsg "Update Prefix"
+prefix_updater() {
+    logmsg "Prefix Updater"
     logmsg "--- checking for manifests"
     for SMF in `find $DESTDIR/{var,lib}/svc/manifest/ -type f 2> /dev/null`; do
         logmsg "------ updating {{PREFIX}} in $(echo ${SMF} | sed s#${DESTDIR}##)"
@@ -78,4 +78,17 @@ update_prefix() {
         logcmd sed s#{{PREFIX}}#${PREFIX}#g ${SRCDIR}/local.mog.in > ${SRCDIR}/local.mog || \
             logerr "--------- Failed to generate local.mog!"
     fi
+
+    logmsg "--- checking for prefix_updater.extra"
+    if [ -e ${SRCDIR}/prefix_updater.extra ]; then
+        exec 3<"${SRCDIR}/prefix_updater.extra"
+        while read EFILE <&3 ; do
+            logmsg "------ updating {{PREFIX}} in ${PREFIX}${EFILE}"
+            if [ -e ${DESTDIR}${PREFIX}${EFILE} ]; then
+                sed -i s#{{PREFIX}}#${PREFIX}#g ${DESTDIR}${PREFIX}${EFILE}
+            else
+                logerr "--------- Not found!"
+            fi
+        done
+    fi    
 }
