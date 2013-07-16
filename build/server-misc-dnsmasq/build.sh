@@ -63,7 +63,7 @@ make_prog32() {
         libtool_nostdlib $LIBTOOL_NOSTDLIB $LIBTOOL_NOSTDLIB_EXTRAS
     fi
     logmsg "--- make"
-    logcmd $MAKE $MAKE_JOBS PREFIX=$PREFIX BINDIR=$PREFIX/sbin/$ISAPART CC=$CC CFLAGS="$CFLAGS $CFLAGS32" LDFLAGS="$LDFLAGS $LDFLAGS32" || \
+    logcmd $MAKE $MAKE_JOBS PREFIX=$PREFIX BINDIR=$PREFIX/sbin/$ISAPART COPTS="-DCONFFILE='\"$SYSCONFDIR/dnsmasq.conf\"'" CC=$CC CFLAGS="$CFLAGS $CFLAGS32" LDFLAGS="$LDFLAGS $LDFLAGS32" || \
         logerr "--- Make failed"
 }
 make_prog64() {
@@ -73,7 +73,7 @@ make_prog64() {
         libtool_nostdlib $LIBTOOL_NOSTDLIB $LIBTOOL_NOSTDLIB_EXTRAS
     fi
     logmsg "--- make"
-    logcmd $MAKE $MAKE_JOBS PREFIX=$PREFIX BINDIR=$PREFIX/sbin/$ISAPART64 CC=$CC CFLAGS="$CFLAGS $CFLAGS64" LDFLAGS="$LDFLAGS $LDFLAGS64" || \
+    logcmd $MAKE $MAKE_JOBS PREFIX=$PREFIX BINDIR=$PREFIX/sbin/$ISAPART64 COPTS="-DCONFFILE='\"$SYSCONFDIR/dnsmasq.conf\"'" CC=$CC CFLAGS="$CFLAGS $CFLAGS64" LDFLAGS="$LDFLAGS $LDFLAGS64" || \
         logerr "--- Make failed"
 }
 
@@ -106,6 +106,7 @@ download_source ${DLPATH} ${PROG} ${VER}
 build
 make_install_extras
 make_isa_stub
+update_prefix
 VER=2.67.0.7
 make_package
 clean_up
