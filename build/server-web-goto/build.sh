@@ -55,7 +55,7 @@ make_install() {
         logcmd mv ${DESTDIR}${PREFIX}/_rootfs_/* ${DESTDIR} || \
             logerr "------ Failed to move _rootfs_ files."
         logcmd rmdir ${DESTDIR}${PREFIX}/_rootfs_/ || \
-            logerr "------ Failed to remove _rootfs_ directoru."
+            logerr "------ Failed to remove _rootfs_ directory."
     fi
 
     if [ ${PREFIX} = "/usr" ]; then
@@ -76,9 +76,10 @@ init
 auto_publish_wipe
 prep_build
 build
+prefix_updater
 make_package
-clean_up
 auto_publish
+clean_up
 
 # Vim hints
 # vim:ts=4:sw=4:et:

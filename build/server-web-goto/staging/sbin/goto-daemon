@@ -142,4 +142,4 @@ class GoToDaemon():
 
 ## init
 if __name__ == "__main__":
-        GoToDaemon("/usr").run()
+        GoToDaemon("{{PREFIX}}").run()
