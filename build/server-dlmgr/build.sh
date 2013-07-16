@@ -29,54 +29,34 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=Headphones                              # App name
-VER=`date +%Y%m%d`                           # App version
+PROG=dlmgr-base                              # App name
+VER=1.0                                      # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
-PKG=network/download-manager/headphones      # Package name (e.g. library/foo)
-SUMMARY="Automatic music downloader for SABnzbd."
-DESC=${SUMMARY}
+PKG=obd/server/dlmgr                         # Package name (e.g. library/foo)
+SUMMARY="Shared bits for obd/server/dlmgr range of packages."
+DESC="${SUMMARY}"
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah network/download-manager/base"
-BUILD_DEPENDS_IPS="developer/versioning/git"
+RUN_DEPENDS_IPS=""
+BUILD_DEPENDS_IPS=""
 
 PREFIX=/opt/obd
 
 # Nothing to configure or build, just package
-download_source () {
-    pushd $TMPDIR > /dev/null
-    
-    logmsg "--- checkout source"
-    git clone https://github.com/rembo10/headphones.git ${PROG}-${VER}
-
-    popd > /dev/null
-}
-
 make_install() {
     logmsg "--- make install"
     logcmd mkdir -p ${DESTDIR}${PREFIX}/ || \
         logerr "------ Failed to create destination directory."
-    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/headphones || \
-        logerr "------ Failed to create app directory."
-    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/headphones || \
-        logerr "------ Failed to create app config directory."
-    logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
-        logerr "------ Failed to create manifest directory."
-
-    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/headphones/ || \
-        logerr "------ Failed to copy app."
-    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/headphones.xml || \
-        logerr "------ Failed to copy manifest."
+    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config || \
+        logerr "------ Failed to create config directory."
 }
 
 init
 auto_publish_wipe
 prep_build
-download_source
 make_install
 make_package
 clean_up
-cleanup_source
 auto_publish
 
 # Vim hints

@@ -29,16 +29,16 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=SABnzbd                                 # App name
-VER=0.7.14                                   # App version
+PROG=SickBeard                               # App name
+VER=`date +%Y%m%d`                           # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
-PKG=network/download-manager/sabnzbd         # Package name (e.g. library/foo)
-SUMMARY="SABnzbd is an Open Source Binary Newsreader written in Python."
-DESC="SABnzbd makes Usenet as simple and streamlined as possible by automating everything we can. All you have to do is add an .nzb. SABnzbd takes over from there, where it will be automatically downloaded, verified, repaired, extracted and filed away with zero human interaction."
+PKG=obd/server/dlmgr/sickbeard       # Package name (e.g. library/foo)
+SUMMARY="Sick Beard is a PVR for newsgroup users (with limited torrent support)."
+DESC="Sick Beard is a PVR for newsgroup users (with limited torrent support). It watches for new episodes of your favorite shows and when they are posted it downloads them, sorts and renames them, and optionally generates metadata for them."
 
-RUN_DEPENDS_IPS="archiver/par2cmdline compress/unrar compress/unzip runtime/python-26 library/python-2/yenc library/python-2/cheetah library/python-2/pyopenssl-26 network/download-manager/base"
-BUILD_DEPENDS_IPS=""
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah network/download-manager/base"
+BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=/opt/obd
 
@@ -47,10 +47,7 @@ download_source () {
     pushd $TMPDIR > /dev/null
     
     logmsg "--- checkout source"
-    wget -c http://downloads.sourceforge.net/project/sabnzbdplus/sabnzbdplus/${VER}/${PROG}-${VER}-src.tar.gz -O ${TMPDIR}/${PROG}-${VER}.tar.gz
-
-    logmsg "--- unpacking source"
-    tar xzf ${TMPDIR}/${PROG}-${VER}.tar.gz -C ${TMPDIR}
+    git clone git://github.com/midgetspy/Sick-Beard.git ${PROG}-${VER}
 
     popd > /dev/null
 }
@@ -59,21 +56,19 @@ make_install() {
     logmsg "--- make install"
     logcmd mkdir -p ${DESTDIR}${PREFIX}/ || \
         logerr "------ Failed to create destination directory."
-    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/sabnzbd || \
+    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/sickbeard || \
         logerr "------ Failed to create app directory."
-    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/sabnzbd || \
+    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/sickbeard || \
         logerr "------ Failed to create app config directory."
     logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
         logerr "------ Failed to create manifest directory."
 
-    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/sabnzbd/ || \
+    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/sickbeard/ || \
         logerr "------ Failed to copy app."
-    logcmd cp -r ${SRCDIR}/files/sabnzbd.ini ${DESTDIR}${PREFIX}/dlmgr/.config/sabnzbd/ || \
-        logerr "------ Failed to inject minimal config."
-    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/sabnzbd.xml || \
+    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/sickbeard.xml || \
         logerr "------ Failed to copy manifest."
-
-
+    logcmd cp -r ${SRCDIR}/files/version.py ${DESTDIR}${PREFIX}/dlmgr/sickbeard/sickbeard/version.py || \
+        logerr "------ Failed to copy version.py."
 }
 
 init

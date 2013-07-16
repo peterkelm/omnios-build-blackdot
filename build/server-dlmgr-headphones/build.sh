@@ -29,15 +29,15 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=CouchPotato                             # App name
+PROG=Headphones                              # App name
 VER=`date +%Y%m%d`                           # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
-PKG=network/download-manager/couchpotato     # Package name (e.g. library/foo)
-SUMMARY="An automatic NZB and torrent downloader, just fill in what you want to see and CouchPotato will add it to your 'want to watch'-list. Every day it will search through multiple NZBs & Torrents sites, looking for the best possible match."
+PKG=obd/server/dlmgr/headphones              # Package name (e.g. library/foo)
+SUMMARY="Automatic music downloader for SABnzbd."
 DESC=${SUMMARY}
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah library/python-2/pysqlite network/download-manager/base"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah network/download-manager/base"
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=/opt/obd
@@ -47,7 +47,7 @@ download_source () {
     pushd $TMPDIR > /dev/null
     
     logmsg "--- checkout source"
-    git clone https://github.com/RuudBurger/CouchPotatoServer.git ${PROG}-${VER}
+    git clone https://github.com/rembo10/headphones.git ${PROG}-${VER}
 
     popd > /dev/null
 }
@@ -56,18 +56,16 @@ make_install() {
     logmsg "--- make install"
     logcmd mkdir -p ${DESTDIR}${PREFIX}/ || \
         logerr "------ Failed to create destination directory."
-    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/couchpotato || \
+    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/headphones || \
         logerr "------ Failed to create app directory."
-    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/couchpotato || \
+    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/headphones || \
         logerr "------ Failed to create app config directory."
     logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
         logerr "------ Failed to create manifest directory."
 
-    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/couchpotato/ || \
+    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/headphones/ || \
         logerr "------ Failed to copy app."
-    logcmd cp -r ${SRCDIR}/files/settings.conf ${DESTDIR}${PREFIX}/dlmgr/.config/couchpotato/ || \
-        logerr "------ Failed to inject minimal config."
-    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/couchpotato.xml || \
+    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/headphones.xml || \
         logerr "------ Failed to copy manifest."
 }
 

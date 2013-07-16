@@ -29,15 +29,15 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=SickBeard                               # App name
+PROG=CouchPotato                             # App name
 VER=`date +%Y%m%d`                           # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
-PKG=network/download-manager/sickbeard       # Package name (e.g. library/foo)
-SUMMARY="Sick Beard is a PVR for newsgroup users (with limited torrent support)."
-DESC="Sick Beard is a PVR for newsgroup users (with limited torrent support). It watches for new episodes of your favorite shows and when they are posted it downloads them, sorts and renames them, and optionally generates metadata for them."
+PKG=obd/server/dlmgr/couchpotato             # Package name (e.g. library/foo)
+SUMMARY="An automatic NZB and torrent downloader, just fill in what you want to see and CouchPotato will add it to your 'want to watch'-list. Every day it will search through multiple NZBs & Torrents sites, looking for the best possible match."
+DESC=${SUMMARY}
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah network/download-manager/base"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah library/python-2/pysqlite network/download-manager/base"
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=/opt/obd
@@ -47,7 +47,7 @@ download_source () {
     pushd $TMPDIR > /dev/null
     
     logmsg "--- checkout source"
-    git clone git://github.com/midgetspy/Sick-Beard.git ${PROG}-${VER}
+    git clone https://github.com/RuudBurger/CouchPotatoServer.git ${PROG}-${VER}
 
     popd > /dev/null
 }
@@ -56,19 +56,19 @@ make_install() {
     logmsg "--- make install"
     logcmd mkdir -p ${DESTDIR}${PREFIX}/ || \
         logerr "------ Failed to create destination directory."
-    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/sickbeard || \
+    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/couchpotato || \
         logerr "------ Failed to create app directory."
-    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/sickbeard || \
+    logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/couchpotato || \
         logerr "------ Failed to create app config directory."
     logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
         logerr "------ Failed to create manifest directory."
 
-    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/sickbeard/ || \
+    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/couchpotato/ || \
         logerr "------ Failed to copy app."
-    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/sickbeard.xml || \
+    logcmd cp -r ${SRCDIR}/files/settings.conf ${DESTDIR}${PREFIX}/dlmgr/.config/couchpotato/ || \
+        logerr "------ Failed to inject minimal config."
+    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/couchpotato.xml || \
         logerr "------ Failed to copy manifest."
-    logcmd cp -r ${SRCDIR}/files/version.py ${DESTDIR}${PREFIX}/dlmgr/sickbeard/sickbeard/version.py || \
-        logerr "------ Failed to copy version.py."
 }
 
 init
