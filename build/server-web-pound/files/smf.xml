@@ -33,6 +33,9 @@
        <common_name>
           <loctext xml:lang='C'>Pound Daemon</loctext>
        </common_name>
+       <documentation>
+          <manpage title='pound' section='8M' manpath='{{PREFIX}}/share/man'/>
+       </documentation>
     </template>
   </service>
 </service_bundle>
