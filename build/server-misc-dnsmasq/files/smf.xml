@@ -52,6 +52,9 @@
        <common_name>
           <loctext xml:lang='C'>dnsmasq</loctext>
        </common_name>
+       <documentation>
+          <manpage title='dnsmasq' section='8M' manpath='{{PREFIX}}/share/man'/>
+       </documentation>
     </template>
   </service>
 </service_bundle>
