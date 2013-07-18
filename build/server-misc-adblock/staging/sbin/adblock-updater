@@ -177,7 +177,7 @@ class AdblockUpdaterDaemon(object):
       signal.signal(signal.SIGINT, self.gracefulExit)
 
       ## main loop
-      self.scheduler.enter(15, 1, self.updateBlacklistTimer, ())
+      self.scheduler.enter(1, 1, self.updateBlacklistTimer, ())
       self.scheduler.run()
     except Exception, e:
       sys.stderr.write("%s Error: Unexpected error in run()! %s\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), e))
