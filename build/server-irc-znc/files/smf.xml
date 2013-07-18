@@ -58,8 +58,8 @@
           <loctext xml:lang='C'>ZNC</loctext>
        </common_name>
        <documentation>
-          <doc_link name='ZNC'
-                    uri='http://wiki.znc.in/' />
+          <doc_link name='ZNC' uri='http://wiki.znc.in/' />
+          <manpage title='znc' section='1M' manpath='{{PREFIX}}/share/man' />
        </documentation>
     </template>
   </service>
