@@ -1,0 +1,106 @@
+#!/usr/bin/env python
+
+## import
+import atexit
+import os, sys, time
+import subprocess, socket
+from time import sleep, strftime
+from bottle import *
+
+## goto daemon
+class AdServDaemon(object):
+  """AdServ Daemon"""
+
+  ## locals
+  bottle = None
+  basepath = ""
+  port = 80
+
+  def __init__(self, basepath="/"):
+    ## fork
+    if '--foreground' not in sys.argv:
+      try:
+        os.chdir("/")
+        os.setsid()
+        os.umask(0)
+      except OSError:
+        sys.stderr.write("%s Warning: unable to start new process group and set working directory.\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+        pass
+      finally:
+        try:
+          pid = os.fork()
+          if pid > 0:
+            sys.stdout.write("%s Info: forked! PID = %d\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), pid))
+            sys.exit(0)
+        except OSError, e:
+          sys.stderr.write("%s Error: unable to fork! (%d - %s)\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), e.errno, e.strerror))
+          sys.exit(1)
+    else:
+      sys.stdout.write("%s Info: running in foreground. (forced by --foreground)\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+
+    ## hooks
+    atexit.register(self.gracefulExit)
+
+    ## set variables
+    self.bottle = Bottle()
+    self.basepath = basepath
+    self.port = 80
+    self.hostname = '0.0.0.0'
+
+  def magicHandler(self, error):
+    ## locals
+    name, extension = os.path.splitext(request.path)
+    reqPath = os.path.join(self.basepath if self.basepath <> '/usr' else '', 'share/adblock/static/')
+
+    # default
+    reqFile = "autoclose.html"
+    reqMime = "text/html"
+
+    if extension[1:].lower() == "jpg" or extension[1:].lower() == "png" or extension[1:].lower() == "bmp" or extension[1:].lower() == "tiff" or extension[1:].lower() == "svg" or extension[1:].lower() == "gif":
+      reqFile = "image.gif"
+      reqMime = "image/gif" 
+
+    if extension[1:].lower() == "js":
+      reqFile = "javascript.js"
+      reqMime = "text/javascript" 
+
+    if extension[1:].lower() == "xml":
+      reqFile = "xml.xml"
+      reqMime = "application/xml" 
+
+    return static_file(reqFile, root=reqPath, mimetype=reqMime)
+
+  def gracefulExit(self):
+    self.bottle.close()
+    sys.exit(0)
+
+  def run(self):
+    ## check for adserv.hostname
+    if os.path.exists(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/adserv.hostname')):
+      with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/adserv.hostname'), 'r') as config_hostname:
+        for host in config_hostname:
+          listen = host.strip().split(':')
+          self.hostname = listen[0]
+          self.port = 80
+    else:
+      with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/adblock-dnsmasq.conf'), 'r') as dnsmasqconf:
+        for line in dnsmasqconf:
+          line = line.strip()
+          if line[:1] <> '#' and line <> '':
+            line = line.split('=')
+            if line[0] == 'listen-address':
+              self.hostname = line[1]
+              self.port = 80
+              break
+
+    ## start app server
+    try:
+      self.bottle.error(404)(self.magicHandler)
+      self.bottle.run(host=self.hostname, port=self.port)
+    except socket.error, e:
+      sys.stderr.write("Error: Unable to open socket! (%d - %s)\n" % (e.errno, e.strerror))
+      sys.exit(1)
+
+## init
+if __name__ == "__main__":
+  AdServDaemon("{{PREFIX}}").run()

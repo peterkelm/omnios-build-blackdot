@@ -1,7 +1,5 @@
-- switch prefix to /opt/obd
-   - fix multi user svc deps for dlmgr
-   - cleanup .mog IF WE HAVE mog.in
-- adblock
+- revisit goto and mdns for proper python code
+- cleanup smf.xml
 - ui package
   - dep on apache, sabnzbd,...
   - installser script
@@ -12,5 +10,6 @@
     - enable ipv6, set ports for all apps, configure sabnzbdin all apps
     - enable all services
     - enable apache
+- nano PR for ms.omniti.com to include bits in share/nano/
 - multri threaded par2 replacement
   - intel tbb for solaris 

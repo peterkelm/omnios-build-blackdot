@@ -1,0 +1,3 @@
+/sbin/adblock-adserv
+/sbin/adblock-updater
+/etc/adblock/adblock-dnsmasq.conf

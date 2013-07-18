@@ -1,0 +1,189 @@
+#!/usr/bin/env python
+
+## import
+import atexit
+import urllib2, zipfile
+import os, sys, time
+import subprocess, signal, shutil
+from tempfile import gettempdir
+from time import sleep, time, strftime
+from sched import scheduler
+from subprocess import *
+
+## AdblockUpdater Daemon
+class AdblockUpdaterDaemon(object):
+  """Adblock Updater"""
+  ## constants
+  SPYWARE_URL = "http://mirror3.malwaredomains.com/files/spywaredomains.zones.zip" 
+  MALWARE_URL = "http://mirror3.malwaredomains.com/files/malwaredomains.zones.zip"
+  ADWARE_URL  = "http://pgl.yoyo.org/adservers/serverlist.php?hostformat=nohtml&showintro=0"
+  RESTART_FMRI = ['network/adblock/dnsmasq']
+
+  ## locals
+  scheduler = scheduler(time, sleep)
+  basepath = '/'
+
+  def __init__(self, basepath="/"):
+    ## root check
+    if os.getuid() <>  0:
+      sys.stderr.write("%s Error: adblack-updater must be run as root!" % strftime("[%Y/%m/%d %H:%M:%S]"))
+
+    ## fork
+    if '--foreground' not in sys.argv:
+      try:
+        os.chdir("/")
+        os.setsid()
+        os.umask(0)
+      except OSError:
+        sys.stderr.write("%s Warning: unable to start new process group and set working directory.\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+        pass
+      finally:
+        try:
+          pid = os.fork()
+          if pid > 0:
+            sys.stdout.write("%s Info: forked! PID = %d\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), pid))
+            sys.exit(0)
+        except OSError, e:
+          sys.stderr.write("%s Error: unable to fork! (%d - %s)\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), e.errno, e.strerror))
+          sys.exit(1)
+    else:
+      sys.stdout.write("%s Info: running in foreground. (forced by --foreground)\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+
+    ## variables
+    self.basepath = basepath
+
+    ## hooks
+    atexit.register(self.gracefulExit)
+
+  def gracefulExit(self, signum=None, frame=None):
+    if signum == None:
+      sys.stdout.write("%s Info: signal to exit recieved, exiting ...\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+    else:
+      sys.stdout.write("%s Info: keyboard interupt recieved, ...\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+    sys.exit(0)
+
+  def updateBlacklist(self):
+    sys.stdout.write("%s Info: updating blacklist *.dns files ...\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+    ## update *.dns files
+    for url in [self.SPYWARE_URL, self.MALWARE_URL, self.ADWARE_URL]:
+      # download file
+      tmpfile = os.path.join(gettempdir(), urllib2.urlparse.urlsplit(url).path.split("/")[-1])
+      if os.path.exists(tmpfile):
+        os.unlink(tmpfile)
+
+      output = open(tmpfile, 'wb')
+      output.write(urllib2.urlopen(url).read())
+      output.close()
+
+      # unzip if zip file
+      if zipfile.is_zipfile(tmpfile):
+        tmpzipfile = zipfile.ZipFile(tmpfile, 'r')
+        tmpzipfile.extract(tmpzipfile.namelist()[0], gettempdir())
+        extractedfile = os.path.join(gettempdir(), tmpzipfile.namelist()[0])
+        tmpzipfile.close()
+        os.unlink(tmpfile)
+        tmpfile = extractedfile
+
+      # convert to .dns
+      outfile = None
+      if url == self.SPYWARE_URL:
+        outfile = 'spyware.dns'
+      if url == self.MALWARE_URL:
+        outfile = 'malware.dns'
+      if url ==  self.ADWARE_URL:
+        outfile = 'adware.dns'
+
+      if not os.path.exists(os.path.join(self.basepath if self.basepath <> '/usr' else '/', 'etc/adblock/dns/')):
+        os.makedirs(os.path.join(self.basepath if self.basepath <> '/usr' else '/', 'etc/adblock/dns/'))
+
+      if outfile:
+        if tmpfile.split('.')[-1] == 'zones':
+          # we have a bind zones file
+          with open(tmpfile, 'r') as zonedata:
+            with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/dns/', outfile), 'w') as dnsfile:
+              for entry in zonedata:
+                if entry[:2] <> '//':
+                  entry = entry.strip()
+                  dnsfile.write("%s\n" % entry[6:entry.find('"', 6)])
+        else:
+          # we have a simple host list
+          shutil.copy2(tmpfile, os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/dns/', outfile))
+
+      # cleanup
+      os.unlink(tmpfile)
+    
+    ## generate adblock-blacklist.conf
+    sys.stdout.write("%s Info: generating adblock-blacklist.conf ...\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+    
+    # load whitelist
+    whitelist = []
+    with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/dns/ignore.dns'), 'r') as ignorefile:
+      for entry in ignorefile:
+        whitelist.append(entry.strip())
+
+    # lookup ip
+    serverip = '127.0.0.1'
+    if os.path.exists("%s/etc/adblock/adserv.hostname" % (self.basepath if self.basepath <> '/usr' else '')):
+      with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/adserv.hostname'), 'r') as config_hostname:
+        for host in config_hostname:
+          listen = host.strip().split(':')
+          serverip = listen[0]
+    else:
+      with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/adblock-dnsmasq.conf'), 'r') as dnsmasqconf:
+        for line in dnsmasqconf:
+          line = line.strip()
+          if line[:1] <> '#' and line <> '':
+            line = line.split('=')
+            if line[0] == 'listen-address':
+              serverip = line[1]
+              break
+
+    # open blacklist
+    with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/adblock-blacklist.conf'), 'w') as blacklist:
+      # get all .dns files
+      for (dirpath, dirnames, filenames) in os.walk(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/dns/')):
+        for dnsfile in filenames:
+          # skip ignore.dns
+          if dnsfile <> 'ignore.dns':
+            with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/dns', dnsfile), 'r') as dnsfile:
+              for entry in dnsfile:
+                entry = entry.strip()
+                # filter out whitelisted entries
+                if entry not in whitelist:
+                  # write entry to blacklist
+                  blacklist.write("address=/%s/%s\n" % (entry, serverip))
+                  blacklist.write("address=/*.%s/%s\n" % (entry, serverip))
+
+    ## restart services
+    for fmri in self.RESTART_FMRI:
+      sys.stdout.write("%s Info: Restarting %s ...\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), fmri))
+      Popen(['svcadm', 'restart', fmri], stdout=PIPE)
+
+  def updateBlacklistTimer(self):
+    try:
+      self.updateBlacklist()
+    except Exception, e:
+      sys.stderr.write("%s Error: Unexpected error in updateBlacklist()! %s\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), e))
+      pass
+    finally:
+      sys.stdout.write("%s Info: scheduling next update in 4h ...\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+      self.scheduler.enter((60 * 60 * 4), 1, self.updateBlacklistTimer, ())
+
+  def run(self):
+    ## minimal logic to keep process alive
+    try:
+      ## additional hooks
+      # we want to exit cleanly on Ctrl+C
+      signal.signal(signal.SIGINT, self.gracefulExit)
+
+      ## main loop
+      self.scheduler.enter(15, 1, self.updateBlacklistTimer, ())
+      self.scheduler.run()
+    except Exception, e:
+      sys.stderr.write("%s Error: Unexpected error in run()! %s\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), e))
+      pass
+
+
+## init
+if __name__ == "__main__":
+  AdblockUpdaterDaemon("{{PREFIX}}").run()
