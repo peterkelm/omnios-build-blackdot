@@ -31,6 +31,8 @@ cleanup_source() {
     logmsg "Housekeeping"
     logmsg "--- remove source directory"
     rm -rf ${TMPDIR}/${PROG}*
+    [ -d ${TMPDIR}/staging ] && rm  -rf ${TMPDIR}/staging
+
 
     logmsg "--- checking for local.mog.in"
     if [ -e ${SRCDIR}/local.mog.in ]; then
