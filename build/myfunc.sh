@@ -76,6 +76,7 @@ prefix_updater() {
     for SMF in `find $DESTDIR/{var,lib}/svc/manifest/ -type f 2> /dev/null`; do
         logmsg "------ updating {{PREFIX}} in $(echo ${SMF} | sed s#${DESTDIR}##)"
         sed -i s#{{PREFIX}}#${PREFIX}#g ${SMF}
+        sed -i s#{{SYSCONFDIR}}#${SYSCONFDIR}#g ${SMF}
     done
 
     logmsg "--- checking for local.mog.in"
@@ -92,6 +93,8 @@ prefix_updater() {
             logerr "--------- Failed to generate local.mog!"
         logcmd sed -i s#{{PREFIX}}#${PREFIX:1}#g ${SRCDIR}/local.mog || \
             logerr "--------- Failed to generate local.mog!"
+        logcmd sed -i s#{{SYSCONFDIR}}#${SYSCONFDIR}#g ${SRCDIR}/local.mog || \
+            logerr "--------- Failed to generate local.mog!"
     fi
 
     logmsg "--- checking for prefix_updater.extra"
@@ -101,6 +104,12 @@ prefix_updater() {
             logmsg "------ updating {{PREFIX}} in ${PREFIX}${EFILE}"
             if [ -e ${DESTDIR}${PREFIX}${EFILE} ]; then
                 sed -i s#{{PREFIX}}#${PREFIX}#g ${DESTDIR}${PREFIX}${EFILE}
+            else
+                logerr "--------- Not found!"
+            fi
+            logmsg "------ updating {{SYSCONFDIR}} in ${PREFIX}${EFILE}"
+            if [ -e ${DESTDIR}${PREFIX}${EFILE} ]; then
+                sed -i s#{{SYSCONFDIR}}#${SYSCONFDIR}#g ${DESTDIR}${PREFIX}${EFILE}
             else
                 logerr "--------- Not found!"
             fi
