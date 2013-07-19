@@ -5,79 +5,50 @@
   Assumes '{{PREFIX}}/dlmgr/couchpotato' is installation directory
 
   To enable/disable
-    svcadm enable couchpotato
-    svcadm disable couchpotato
+  svcadm enable couchpotato
+  svcadm disable couchpotato
 
   To check logs
-    tail /var/svc/log/network-couchpotato\:default.log
+  tail /var/svc/log/network-couchpotato\:default.log
 -->
-
 <service_bundle type='manifest' name='couchpotato'>
-
-  <service
-    name='network/couchpotato'
-    type='service'
-    version='1'>
-
+  <service name='network/dlmgr/couchpotato' type='service' version='1'>
     <create_default_instance enabled='false' />
     <single_instance />
 
-   <!-- Only start in muti-user mode -->
-   <dependency name='multi-user'
-      grouping='require_all'
-      restart_on='none'
-      type='service'>
+    <!-- Only start in muti-user mode -->
+    <dependency name='multi-user' grouping='require_all' restart_on='none' type='service'>
       <service_fmri value='svc:/milestone/multi-user' />
-   </dependency>
+    </dependency>
 
     <!-- Wait for network interfaces to be initialized. -->
-    <dependency name='network'
-        grouping='require_all'
-        restart_on='none'
-        type='service'>
-        <service_fmri value='svc:/milestone/network:default'/>
+    <dependency name='network' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/milestone/network:default' />
     </dependency>
 
     <!-- Wait for all local filesystems to be mounted. -->
-    <dependency name='filesystem-local'
-        grouping='require_all'
-        restart_on='none'
-        type='service'>
-        <service_fmri value='svc:/system/filesystem/local:default'/>
+    <dependency name='filesystem-local' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/system/filesystem/local:default' />
     </dependency>
 
     <!-- execute as user USERNAME -->
     <method_context>
-        <method_credential user='dlmgr' group='dlmgr' />
-	<method_environment>
-		<envvar name="PATH" value="/opt/obd/bin:/opt/omni/bin:/usr/gnu/bin:/usr/bin:/bin" />
-	</method_environment>
+      <method_credential user='dlmgr' group='dlmgr' />
+      <method_environment>
+        <envvar name="PATH" value="/opt/obd/bin:/opt/omni/bin:/usr/gnu/bin:/usr/bin:/bin" />
+      </method_environment>
     </method_context>
 
-    <exec_method
-        type='method'
-        name='start'
-        exec='/usr/bin/python {{PREFIX}}/dlmgr/couchpotato/CouchPotato.py --daemon --data_dir {{PREFIX}}/dlmgr/.config/couchpotato'
-        timeout_seconds='60'>
-    </exec_method>
-
-    <exec_method
-        type='method'
-        name='stop'
-        exec=':kill'
-        timeout_seconds='2'>
-    </exec_method>
+    <exec_method type='method' name='start' exec='/usr/bin/python {{PREFIX}}/dlmgr/couchpotato/CouchPotato.py --daemon --data_dir {{PREFIX}}/dlmgr/.config/couchpotato' timeout_seconds='60' />
+    <exec_method type='method' name='stop' exec=':kill' timeout_seconds='2' />
 
     <template>
-       <common_name>
-          <loctext xml:lang='C'>CouchPotato</loctext>
-       </common_name>
-       <documentation>
-          <doc_link name='CouchPotato'
-                    uri='http://couchpota.to/' />
-       </documentation>
+      <common_name>
+        <loctext xml:lang='C'>CouchPotato</loctext>
+      </common_name>
+      <documentation>
+        <doc_link name='CouchPotato' uri='http://couchpota.to/' />
+      </documentation>
     </template>
-
   </service>
-
 </service_bundle>

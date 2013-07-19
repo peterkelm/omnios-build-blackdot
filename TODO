@@ -1,5 +1,4 @@
 - revisit goto and mdns for proper python code
-- cleanup smf.xml
 - ui package
   - dep on apache, sabnzbd,...
   - installser script
