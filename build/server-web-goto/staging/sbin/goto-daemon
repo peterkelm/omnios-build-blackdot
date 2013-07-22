@@ -4,142 +4,137 @@
 import atexit
 import os, sys, time
 import subprocess, socket
-from time import sleep
 from bottle import *
-from subprocess import *
 
 ## goto daemon
 class GoToDaemon():
-        """GoTo Daemon"""
-        ## locals
-	bottle = None
-        basepath = ""
-	port = 80
+  """GoTo Daemon"""
+  ## locals
+  bottle = None
+  basepath = ""
+  port = 80
 
-        def __init__(self, basepath="/"):
-                ## root check
-                #if os.getuid() == 0:
-                #        print "goto-daemon cannot run as root!"
-                #        sys.exit(2)
+  def __init__(self, basepath="/"):
+    ## fork
+    if '--foreground' not in sys.argv:
+      try:
+        os.chdir("/")
+        os.setsid()
+        os.umask(0)
+      except OSError:
+        sys.stderr.write("%s Warning: unable to start new process group and set working directory.\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+        pass
+      finally:
+        try:
+          pid = os.fork()
+          if pid > 0:
+            sys.stdout.write("%s Info: forked! PID = %d\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), pid))
+            sys.exit(0)
+        except OSError, e:
+          sys.stderr.write("%s Error: unable to fork! (%d - %s)\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), e.errno, e.strerror))
+          sys.exit(1)
+    else:
+      sys.stdout.write("%s Info: running in foreground. (forced by --foreground)\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
 
-                ## fork
-                try:
-                        os.chdir("/")
-                        os.setsid()
-                        os.umask(0)
-                except OSError:
-			sys.stderr.write("Warning: Unable to start new process group and set working directory.\n")
-			pass
-		finally:
-			try:
-	                        pid = os.fork()
-        	                if pid > 0:
-		                        sys.stdout.write("Info: Forked! PID = %d\n" % pid)
-                	                sys.exit(0)
-			except OSError, e:
-	                        sys.stderr.write("Error: Unable to fork! (%d - %s)\n" % (e.errno, e.strerror))
-        	                sys.exit(1)
+    ## hooks
+    atexit.register(self.gracefulExit)
 
-                ## hooks
-                atexit.register(self.gracefulExit)
+    ## set variables
+    self.bottle = Bottle()
+    self.basepath = basepath
+    self.port = 80
+    self.hostname = '0.0.0.0'
 
-                ## set variables
-		self.bottle = Bottle()
-                self.basepath = basepath
-		self.port = 80
-		self.hostname = '0.0.0.0'
+  def getMap(self):
+    map = {}
+    with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.map')) as mapFile:
+      for redirect in mapFile:
+        if redirect.strip() <> '' and redirect[:1] <> '#':
+          (uri, href) = redirect.strip().split(': ')
+          map[uri] = href
 
-	def getMap(self):
-                map = {}
-                with open("%s/etc/goto.map" % (self.basepath if self.basepath <> '/usr' else '')) as mapFile:
-                        for redirect in mapFile:
-                                if redirect.strip() <> '' and redirect[:1] <> '#':
-					(uri, href) = redirect.strip().split(': ')
-					map[uri] = href
+    return map
 
-		return map
+  def redirector(self, alias):
+    # locals
+    uri = request.path
+    href = "/"
 
-        def redirector(self, alias):
-                # locals
-		uri = request.path
-                href = "/"
+    # lookup uri
+    map = self.getMap()
+    for u in sorted(map.iterkeys()):
+      if u == request.path:
+        uri = u
+        href = map[u]
 
-		# lookup uri
-		map = self.getMap()
-		for u in sorted(map.iterkeys()):
-			if u == request.path:
-				uri = u
-				href = map[u]
+    # redirect code
+    return template(
+      '<!DOCTYPE HTML>' +
+      '<html>' +
+      '<head>' +
+      '<title>Go To Service :: Redirecting {{uri}} ...</title>' +
+      '<meta http-equiv="refresh" content="0;url={{href}}" />' +
+      '</head>' +
+      '<body>' +
+      '<p>Redirecting {{uri}} to <a href="{{href}}">{{href}}</a> ...</p>' +
+      '</body>' +
+      '</html>',
+      uri = uri,
+      href = href
+    )
 
-                # redirect code
-		return template(
-                        '<!DOCTYPE HTML>' +
-                        '<html>' +
-                       	'<head>' +
-               	        '<title>Go To Service :: Redirecting {{uri}} ...</title>' +
-       	                '<meta http-equiv="refresh" content="0;url={{href}}" />' +
-	                '</head>' +
-                       	'<body>' +
-             	        '<p>Redirecting {{uri}} to <a href="{{href}}">{{href}}</a> ...</p>' +
-        	        '</body>' +
-	                '</html>',
-			uri = uri,
-			href = href
-		)
+  def manager(self):
+    # local
+    data = ""
 
-        def manager(self):
-		# local
-		data = ""
+    # loop map
+    map = self.getMap()
+    for uri in sorted(map.iterkeys()):
+      data += template('<a href="{{uri}}">{{uri}}</a> =&gt; {{href}}<br />', uri=uri, href=map[uri])
 
-		# loop map
-		map = self.getMap()
-		for uri in sorted(map.iterkeys()):
-			data += template('<a href="{{uri}}">{{uri}}</a> =&gt; {{href}}<br />', uri=uri, href=map[uri])
+    # overview code
+    return template(
+      '<!DOCTYPE HTML>' +
+      '<html>' +
+      '<head>' +
+      '<title>Go To Service :: Listing</title>' +
+      '</head>' +
+      '<body>' +
+      '{{!data}}' +
+      '</body>' +
+      '</html>',
+      data = data
+    )
 
-		# overview code
-		return template(
-                        '<!DOCTYPE HTML>' +
-                        '<html>' +
-                       	'<head>' +
-               	        '<title>Go To Service :: Listing</title>' +
-	                '</head>' +
-                       	'<body>' +
-             	        '{{!data}}' +
-        	        '</body>' +
-	                '</html>',
-			data = data
-		)
- 
-        def gracefulExit(self):
-		self.bottle.close()
-		sys.exit(0)
+  def gracefulExit(self):
+    self.bottle.close()
+    sys.exit(0)
 
-        def run(self):
-                ## check for goto.map
-                if not os.path.exists("%s/etc/goto.map" % (self.basepath if self.basepath <> '/usr' else '')):
-                        print "==> No map found at %s/etc/goto.map!" % (self.basepath if self.basepath <> '/usr' else '')
-                        sys.exit(3)
+  def run(self):
+    ## check for goto.map
+    if not os.path.exists(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.map')):
+      print "==> No map found at %s/etc/goto.map!" % (self.basepath if self.basepath <> '/usr' else '')
+      sys.exit(3)
 
-		## check for goto.hostname
-                if os.path.exists("%s/etc/goto.hostname" % (self.basepath if self.basepath <> '/usr' else '')):
-			# update hostname and port
-			with open("%s/etc/goto.hostname" % (self.basepath if self.basepath <> '/usr' else '')) as config_hostname:
-				for host in config_hostname:				
-					listen = host.strip().split(':')
+    ## check for goto.hostname
+    if os.path.exists(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.hostname')):
+      # update hostname and port
+      with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.hostname')) as config_hostname:
+        for host in config_hostname:
+          listen = host.strip().split(':')
 
-					self.hostname = listen[0]
-					self.port = listen[1] if len(listen) > 1 else 80
+          self.hostname = listen[0]
+          self.port = listen[1] if len(listen) > 1 else 80
 
-		## start app server
-                with open("%s/etc/goto.map" % (self.basepath if self.basepath <> '/usr' else '')) as config_map:
-			self.bottle.route('/', method="GET", callback=self.manager)
-			self.bottle.route('/<alias>', method="GET", callback=self.redirector)
-			try:
-	                        self.bottle.run(host=self.hostname, port=self.port)
-			except socket.error, e:
-	                        sys.stderr.write("Error: Unable to open socket! (%d - %s)\n" % (e.errno, e.strerror))
-        	                sys.exit(1)
+    ## start app server
+    try:
+      self.bottle.route('/', method="GET", callback=self.manager)
+      self.bottle.error(404)(self.redirector)
+      self.bottle.run(host=self.hostname, port=self.port)
+    except socket.error, e:
+      sys.stderr.write("Error: Unable to open socket! (%d - %s)\n" % (e.errno, e.strerror))
+      sys.exit(1)
 
 ## init
 if __name__ == "__main__":
-        GoToDaemon("{{PREFIX}}").run()
+  GoToDaemon("{{PREFIX}}").run()

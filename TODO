@@ -1,4 +1,6 @@
-- revisit goto and mdns for proper python code
+- revisit mdns for proper python code
+- deluge
+- handbrake
 - ui package
   - dep on apache, sabnzbd,...
   - installser script
@@ -9,6 +11,5 @@
     - enable ipv6, set ports for all apps, configure sabnzbdin all apps
     - enable all services
     - enable apache
-- nano PR for ms.omniti.com to include bits in share/nano/
 - multri threaded par2 replacement
   - intel tbb for solaris 
