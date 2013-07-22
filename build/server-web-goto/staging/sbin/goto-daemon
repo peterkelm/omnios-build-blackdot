@@ -2,8 +2,9 @@
 
 ## import
 import atexit
-import os, sys, time
-import subprocess, socket
+import os
+import sys
+import socket
 from time import strftime
 from bottle import *
 
@@ -114,7 +115,7 @@ class GoToDaemon():
   def run(self):
     ## check for goto.map
     if not os.path.exists(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.map')):
-      print "==> No map found at %s/etc/goto.map!" % (self.basepath if self.basepath <> '/usr' else '')
+      sys.stderr.write("%s Warning: configuration not found at %s!\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.map')))
       sys.exit(3)
 
     ## check for goto.hostname

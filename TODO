@@ -1,4 +1,5 @@
 - revisit mdns for proper python code
+- sshpass
 - deluge
 - handbrake
 - ui package

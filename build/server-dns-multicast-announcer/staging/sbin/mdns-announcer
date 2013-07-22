@@ -3,191 +3,201 @@
 ## import
 import json
 import atexit
-import os, sys
+import os
+import sys
 import select
-import ctypes, ctypes.util
+import ctypes
+import ctypes.util
 import pybonjour
 from subprocess import Popen, PIPE
-from time import sleep
+from time import strftime
 
 ## mdns announcer
 class NetworkInterface():
-	"""Network Interface"""
-	## locals
-	name = None
-	index = None	
-	libsocket = None
+  """Network Interface"""
+  ## locals
+  name = None
+  index = None
+  libsocket = None
 
-	## Init
-	def __init__(self, name=None, index=None):
-		# load libsocket
-		self.libsocket = ctypes.CDLL(ctypes.util.find_library('socket'))
+  ## Init
+  def __init__(self, name=None, index=None):
+    # load libsocket
+    self.libsocket = ctypes.CDLL(ctypes.util.find_library('socket'))
 
-		# collect information
-		if name <> None:
-			if not isinstance (name, str):
-				raise TypeError ('name must be a string.')
+    # collect information
+    if name <> None:
+      if not isinstance (name, str):
+        raise TypeError ('name must be a string.')
 
-			self.name = name
-			self.index = self.libsocket.if_nametoindex(name)
+      self.name = name
+      self.index = self.libsocket.if_nametoindex(name)
 
-			if self.index == 0:
-				raise Exception('Unknown interface %s!' % self.name)
-		elif index <> None:
-			if not isinstance (index, int):
-				raise TypeError ('index must be an int.')
-			
-			self.libsocket.if_indextoname.argtypes = [ctypes.c_uint32, ctypes.c_char_p]
-			self.libsocket.if_indextoname.restype = ctypes.c_char_p
+      if self.index == 0:
+        raise Exception('Unknown interface %s!' % self.name)
+    elif index <> None:
+      if not isinstance (index, int):
+        raise TypeError ('index must be an int.')
 
-			if index > 0:
-				self.index = index
-				self.name = ctypes.create_string_buffer(32)
-				self.name = self.libsocket.if_indextoname(index, self.name)
-			else:
-				raise Exception('Please specify an index that is greater than 0!')
-		else:
-			raise Exception('Please specify name or index of interface!')
+      self.libsocket.if_indextoname.argtypes = [ctypes.c_uint32, ctypes.c_char_p]
+      self.libsocket.if_indextoname.restype = ctypes.c_char_p
 
-	## getters
-	def getname(self):
-		return self.name
-	
-	def getindex(self):
-		return self.index
+      if index > 0:
+        self.index = index
+        self.name = ctypes.create_string_buffer(32)
+        self.name = self.libsocket.if_indextoname(index, self.name)
+      else:
+        raise Exception('Please specify an index that is greater than 0!')
+    else:
+      raise Exception('Please specify name or index of interface!')
 
-	## return values
-	def __str__(self):
-		return self.name
+  ## getters
+  def getname(self):
+    return self.name
 
-	def __int__(self):
-		return self.index
+  def getindex(self):
+    return self.index
+
+  ## return values
+  def __str__(self):
+    return self.name
+
+  def __int__(self):
+    return self.index
 
 class MulticastDNSAnnouncer():
-	"""Multicast DNS Announcer"""
-	## locals
-	hostname = ""
-	basepath = ""
-	services = []
+  """Multicast DNS Announcer"""
+  ## locals
+  hostname = ""
+  basepath = ""
+  services = []
 
-	def __init__(self, basepath="/"):
-		## root check
-		if os.getuid() == 0:
-			print "mdns-announcer cannot run as root!"
-			sys.exit(2)
-		
-		## fork
-		try:
-			os.chdir("/")
-			os.setsid()
-			os.umask(0)		
-			pid = os.fork()
-			if pid > 0:
-				sys.exit(0)
-		except OSError, e:
-			sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
-			sys.exit(1)
+  def __init__(self, basepath="/"):
+    ## root check
+    if os.getuid() == 0:
+      sys.stderr.write("%s Error: mdns-announcer cannot run as root!\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+      sys.exit(2)
 
-		## hooks
-		atexit.register(self.cleanup)
+    ## fork
+    if '--foreground' not in sys.argv:
+      try:
+        os.chdir("/")
+        os.setsid()
+        os.umask(0)
+      except OSError:
+        sys.stderr.write("%s Warning: unable to start new process group and set working directory.\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+        pass
+      finally:
+        try:
+          pid = os.fork()
+          if pid > 0:
+            sys.stdout.write("%s Info: forked! PID = %d\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), pid))
+            sys.exit(0)
+        except OSError, e:
+          sys.stderr.write("%s Error: unable to fork! (%d - %s)\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), e.errno, e.strerror))
+          sys.exit(1)
+    else:
+      sys.stdout.write("%s Info: running in foreground. (forced by --foreground)\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
 
-		## set variables
-		self.basepath = basepath
-		self.hostname =	Popen(['hostname'], stdout=PIPE).communicate()[0].rstrip()
+    ## hooks
+    atexit.register(self.cleanup)
+
+    ## set variables
+    self.basepath = basepath
+    self.hostname = Popen(['hostname'], stdout=PIPE).communicate()[0].rstrip()
 
 
-	def cleanup(self):
-		for srv in self.services:
-			srv['sdRef'].close()
-			print "==> Unregistered: [name='%s', domain='%s', type='%s']" % (srv['name'], srv['domain'], srv['type'])
+  def cleanup(self):
+    for srv in self.services:
+      srv['sdRef'].close()
+      sys.stdout.write("%s Info: unregistered: [name='%s', domain='%s', type='%s']\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), srv['name'], srv['domain'], srv['type']))
 
-	def register_callback(self, sdRef, flags, errorCode, name, regtype, domain):
-		if errorCode == pybonjour.kDNSServiceErr_NoError:
-			print "==> Registered: [name='%s', domain='%s', type='%s']" % (name, domain, regtype)
-			for srv in self.services:
-				if srv['sdRef'] == sdRef:
-					srv['name']   = name
-					srv['domain'] = domain
-					srv['type']   = regtype
-		
-	def run(self):
-		## read config file
-		if not os.path.exists("%s/etc/mdns.conf" % (self.basepath if not self.basepath == '/usr' else '')):
-			print "==> No configuration file found at %s/etc/mdns.conf!" % (self.basepath if not self.basepath == '/usr' else '')
-			sys.exit(3)			
+  def register_callback(self, sdRef, flags, errorCode, name, regtype, domain):
+    if errorCode == pybonjour.kDNSServiceErr_NoError:
+      sys.stdout.write("%s Info: registered: [name='%s', domain='%s', type='%s']\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), name, domain, regtype))
+      for srv in self.services:
+        if srv['sdRef'] == sdRef:
+          srv['name']   = name
+          srv['domain'] = domain
+          srv['type']   = regtype
 
-		with open("%s/etc/mdns.conf" % (self.basepath if self.basepath <> '/usr' else '')) as config_raw:
-			config_json = ""
-			for line in config_raw:
-				if line.strip()[0:2] <> '//' and line.strip()[0:1] <> '#':
-					config_json += line
+  def run(self):
+    ## read config file
+    if not os.path.exists(os.path.join(self.basepath if not self.basepath == '/usr' else '', 'etc/mdns.conf')):
+      sys.stderr.write("%s Error: no configuration file found at %s!\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), os.path.join(self.basepath if not self.basepath == '/usr' else '', 'etc/mdns.conf')))
+      sys.exit(3)
 
-			## parse config
-			try:
-				config = json.loads(config_json)
-			except:
-				print "==> Unable to parse configuration file! Please check if valid JSON."
-				sys.exit(4)	
-			else:
-				try:
-					hasErrors = 0
-					for srv in config:
-						# defaults
-						if 'interface' in srv:
-							# FIXME (what on error)
-							try: 
-								srv[unicode('interface')] = int(NetworkInterface(name=str(srv['interface'])))
-							except Exception as e:
-								hasErrors += 1
-								continue
-						else:
-							srv[unicode('interface')] = pybonjour.kDNSServiceInterfaceIndexAny
-						if 'name' not in srv:
-							srv[unicode('name')] = None
-						if 'domain' not in srv:
-							srv[unicode('domain')] = None
-						if 'host' not in srv:
-							srv[unicode('host')] = None
-						if 'txtRecord' not in srv:
-							srv[unicode('txtRecord')] = unicode('')
-						else:
-							srv[unicode('txtRecord')] = pybonjour.TXTRecord(srv['txtRecord'])
+    with open(os.path.join(self.basepath if not self.basepath == '/usr' else '', 'etc/mdns.conf')) as config_raw:
+      config_json = ""
+      for line in config_raw:
+        if line.strip()[0:2] <> '//' and line.strip()[0:1] <> '#':
+          config_json += line
 
-						# requirments
-						if 'type' not in srv:
-							hasErrors += 1
-							continue
-						if 'port' not in srv:
-							hasErrors += 1
-							continue
-						else:
-							srv['port'] = int(srv['port'])
+      ## parse config
+      try:
+        config = json.loads(config_json)
+      except:
+        sys.stderr.write("%s Error: unable to parse configuration file! Please check if valid JSON.\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+        sys.exit(4)
+      else:
+        try:
+          hasErrors = 0
+          for srv in config:
+            # defaults
+            if 'interface' in srv:
+              try:
+                srv[unicode('interface')] = int(NetworkInterface(name=str(srv['interface'])))
+              except Exception as e:
+                hasErrors += 1
+                continue
+            else:
+              srv[unicode('interface')] = pybonjour.kDNSServiceInterfaceIndexAny
+            if 'name' not in srv:
+              srv[unicode('name')] = None
+            if 'domain' not in srv:
+              srv[unicode('domain')] = None
+            if 'host' not in srv:
+              srv[unicode('host')] = None
+            if 'txtRecord' not in srv:
+              srv[unicode('txtRecord')] = unicode('')
+            else:
+              srv[unicode('txtRecord')] = pybonjour.TXTRecord(srv['txtRecord'])
 
-						# register
-						self.services.append({'sdRef': pybonjour.DNSServiceRegister(
-							name           = srv['name'],
-							regtype        = srv['type'],
-							port           = srv['port'],
-							host           = srv['host'],
-							domain         = srv['domain'],
-							txtRecord      = srv['txtRecord'],
-							interfaceIndex = srv['interface'],
-							callBack       = self.register_callback
-						), 'name': '', 'type': '', 'domain': ''})
+            # requirments
+            if 'type' not in srv:
+              hasErrors += 1
+              continue
+            if 'port' not in srv:
+              hasErrors += 1
+              continue
+            else:
+              srv['port'] = int(srv['port'])
 
-						# errors?
-						if hasErrors > 0:
-							print "==> Error parsing some service. Not all services registered!"
+            # register
+            self.services.append({'sdRef': pybonjour.DNSServiceRegister(
+              name           = srv['name'],
+              regtype        = srv['type'],
+              port           = srv['port'],
+              host           = srv['host'],
+              domain         = srv['domain'],
+              txtRecord      = srv['txtRecord'],
+              interfaceIndex = srv['interface'],
+              callBack       = self.register_callback
+            ), 'name': '', 'type': '', 'domain': ''})
 
-					while True:
-						for srv in self.services:
-							ready = select.select([srv['sdRef']], [], [])
-							if srv['sdRef'] in ready[0]:
-								pybonjour.DNSServiceProcessResult(srv['sdRef'])
+            # errors?
+            if hasErrors > 0:
+              sys.stderr.write("%s Error: unable to parse some service. Not all services registered!\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
 
-				except KeyboardInterrupt:
-					pass
+          while True:
+            for srv in self.services:
+              ready = select.select([srv['sdRef']], [], [])
+              if srv['sdRef'] in ready[0]:
+                pybonjour.DNSServiceProcessResult(srv['sdRef'])
+
+        except KeyboardInterrupt:
+          pass
 
 ## init
 if __name__ == "__main__":
-	MulticastDNSAnnouncer("{{PREFIX}}").run()
+  MulticastDNSAnnouncer("{{PREFIX}}").run()
