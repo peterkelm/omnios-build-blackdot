@@ -1,5 +1,4 @@
 - deluge
-- handbrake
 - ui package
   - dep on apache, sabnzbd,...
   - installser script
