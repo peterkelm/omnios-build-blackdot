@@ -2,17 +2,17 @@
 <!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
 <!--
   Assumes user=dlmgr group=dlmgr
-  Assumes '{{PREFIX}}/dlmgr/sabnzbd' is installation directory
+  Assumes '{{PREFIX}}/dlmgr/deluge' is installation directory
 
   To enable/disable
-  svcadm enable sabnzbd
-  svcadm disable sabnzbd
+  svcadm enable deluged
+  svcadm disable deluged
 
   To check logs
-  tail /var/svc/log/network-sabnzbd\:default.log
+  tail /var/svc/log/network-deluged\:default.log
 -->
-<service_bundle type='manifest' name='sabnzbd'>
-  <service name='network/dlmgr/sabnzbd' type='service' version='1'>
+<service_bundle type='manifest' name='deluge-web'>
+  <service name='network/dlmgr/deluge-web' type='service' version='1'>
     <create_default_instance enabled='false' />
     <single_instance />
 
@@ -39,7 +39,7 @@
       </method_environment>
     </method_context>
 
-    <exec_method type='method' name='start' exec='/usr/bin/python {{PREFIX}}/dlmgr/sabnzbd/SABnzbd.py -d -f {{PREFIX}}/dlmgr/.config/sabnzbd/sabnzbd.ini' timeout_seconds='60' />
+    <exec_method type='method' name='start' exec='/usr/bin/deluge-web -f -c {{PREFIX}}/dlmgr/.config/deluge -l {{PREFIX}}/dlmgr/.config/deluge/deluge-web.log -L warning' timeout_seconds='60' />
     <exec_method type='method' name='stop' exec=':kill' timeout_seconds='2' />
 
     <property_group name="startd" type="framework">
@@ -49,10 +49,11 @@
 
     <template>
       <common_name>
-        <loctext xml:lang='C'>SABnzbd</loctext>
+        <loctext xml:lang='C'>deluge-web</loctext>
       </common_name>
       <documentation>
-        <doc_link name='SABnzbd'  uri='http://sabnzbd.org/' />
+        <doc_link name='deluge'  uri='http://dev.deluge-torrent.org/' />
+        <manpage title='deluge-web' section='1M' manpath='/usr/share/man' />
       </documentation>
     </template>
   </service>

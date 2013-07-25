@@ -1,0 +1,16 @@
+<transform dir path=opt/obd-apps/dlmgr.* -> set owner dlmgr>
+<transform dir path=opt/obd-apps/dlmgr.* -> set group dlmgr>
+<transform dir path=opt/obd-apps/dlmgr.* -> set mode 0750>
+<transform file path=opt/obd-apps/dlmgr.* -> set owner dlmgr>
+<transform file path=opt/obd-apps/dlmgr.* -> set group dlmgr>
+<transform file path=opt/obd-apps/dlmgr.* -> set mode 0640>
+
+<transform dir path=usr/share/icons.* -> set owner root>
+<transform dir path=usr/share/icons.* -> set group other>
+<transform dir path=usr/share/icons.* -> set mode 0755>
+<transform file path=usr/share/icons.* -> set owner root>
+<transform file path=usr/share/icons.* -> set group other>
+<transform file path=usr/share/icons.* -> set mode 0644>
+
+<transform file path=(var|lib)/svc/manifest/network/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
+license files/license license=GPL

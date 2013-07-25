@@ -1,6 +1,3 @@
-- deluge
-  - pythom boost
-  - http://forum.deluge-torrent.org/viewtopic.php?f=7&t=43193
 - ui package
   - dep on apache, sabnzbd,...
   - installser script
