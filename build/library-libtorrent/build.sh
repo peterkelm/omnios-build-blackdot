@@ -77,7 +77,7 @@ configure64() {
     export CPPFLAGS="${CFLAGS}"
     export LDFLAGS="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}"
 
-    CONFIGURE_OPTS="--with-boost=${PREFIX} --with-python-boost --with-boost-libdir=${PREFIX}/lib/amd64 --enable-python-binding"
+    CONFIGURE_OPTS="--with-boost=${PREFIX} --with-python-boost --with-boost-libdir=${PREFIX}/lib/${ISAPART64} --enable-python-binding"
 
     logmsg "--- configure (64-bit)"
     CFLAGS="$CFLAGS $CFLAGS64" \
