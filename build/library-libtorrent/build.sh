@@ -37,7 +37,7 @@ PKG=obd/library/libtorrent                  # Package name (e.g. library/foo)
 SUMMARY="libtorrent is a feature complete C++ bittorrent implementation focusing on efficiency and scalability."
 DESC="${SUMMARY}"
 
-RUN_DEPENDS_IPS=""
+RUN_DEPENDS_IPS="obd/developer/library/boost"
 BUILD_DEPENDS_IPS="obd/developer/library/boost"
 
 BUILDARCH=both
@@ -55,7 +55,7 @@ configure32() {
     export CPPFLAGS="${CFLAGS}"
     export LDFLAGS="-L${PREFIX}/lib -R${PREFIX}/lib"
 
-    CONFIGURE_OPTS="--with-boost=${PREFIX} --with-python-boost --with-boost-libdir=${PREFIX}/lib --enable-python-binding --enable-disk-stats --enable-statistics"
+    CONFIGURE_OPTS="--with-boost=${PREFIX} --with-python-boost --with-boost-libdir=${PREFIX}/lib --enable-python-binding"
 
     logmsg "--- configure (32-bit)"
     CFLAGS="$CFLAGS $CFLAGS32" \
