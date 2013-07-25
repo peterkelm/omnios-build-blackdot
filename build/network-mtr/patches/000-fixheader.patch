@@ -1,0 +1,38 @@
+diff -rupN a/curses.c b/curses.c
+--- a/curses.c	2013-07-25 21:17:31.363240420 +0200
++++ b/curses.c	2013-07-25 21:17:45.088048829 +0200
+@@ -37,6 +37,7 @@
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ 
++/**
+ #if defined(HAVE_NCURSES_H)
+ #  include <ncurses.h>
+ #elif defined(HAVE_NCURSES_CURSES_H)
+@@ -48,6 +49,8 @@
+ #else
+ #  error No curses header file available
+ #endif
++*/
++#include <curses.h>
+ 
+ #ifndef HAVE_ATTRON
+ #define attron(x) 
+diff -rupN a/net.c b/net.c
+--- a/net.c	2013-07-25 21:17:01.640025378 +0200
++++ b/net.c	2013-07-25 21:17:39.991914679 +0200
+@@ -30,6 +30,7 @@
+ #include <netinet/in.h>
+ #include <memory.h>
+ #include <unistd.h>
++#include <sys/filio.h> 
+ #ifdef HAVE_FCNTL_H
+ #include <fcntl.h>
+ #endif
+@@ -1562,4 +1563,4 @@ void net_harvest_fds(void)
+   net_add_fds(&writefd, &maxfd);
+   select(maxfd, NULL, &writefd, NULL, &tv);
+   net_process_fds(&writefd);
+-}
+\ No newline at end of file
++}
