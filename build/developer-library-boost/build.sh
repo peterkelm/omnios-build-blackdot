@@ -62,8 +62,8 @@ make_clean() {
     export CXXFLAGS64="-pthread"
 
     export CONFIGURE_CMD="./bootstrap.sh"
-    export CONFIGURE_OPTS_32="--prefix=${DESTDIR} --includedir=${DESTDIR}/include --libdir=${DESTDIR}/lib"
-    export CONFIGURE_OPTS_64="--prefix=${DESTDIR} --includedir=${DESTDIR}/include/${ISAPART64} --libdir=${DESTDIR}/lib/${ISAPART64}"
+    export CONFIGURE_OPTS_32="--prefix=${DESTDIR}${PREFIX} --includedir=${DESTDIR}${PREFIX}/include --libdir=${DESTDIR}${PREFIX}/lib"
+    export CONFIGURE_OPTS_64="--prefix=${DESTDIR}${PREFIX} --includedir=${DESTDIR}${PREFIX}/include/${ISAPART64} --libdir=${DESTDIR}${PREFIX}/lib/${ISAPART64}"
 
     logmsg "--- make (dist)clean"
     logcmd ./b2 clean || \
