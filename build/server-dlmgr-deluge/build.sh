@@ -44,7 +44,7 @@ download_source() {
     logmsg "Downloading Source"
 
     cd ${TMPDIR}
-    wget http://download.deluge-torrent.org/source/${PROG}-${VER}.tar.gz
+    wget -c http://download.deluge-torrent.org/source/${PROG}-${VER}.tar.gz -O ${PROG}-${VER}.tar.gz
 
     tar xvf ${PROG}-${VER}.tar.gz
 }
