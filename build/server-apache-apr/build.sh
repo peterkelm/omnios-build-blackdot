@@ -45,6 +45,8 @@ BUILDARCH=both
 # package specific
 MIRROR=www.eu.apache.org
 DLPATH=dist/apr
+CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --datadir=${PREFIX}/share/apr/${ISAPART}"
+CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --datadir=${PREFIX}/share/apr/${ISAPART64}"
 
 init
 auto_publish_wipe
