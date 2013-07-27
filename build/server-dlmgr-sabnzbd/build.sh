@@ -79,6 +79,7 @@ make_install() {
 init
 prep_build
 download_source
+patch_source
 make_install
 prefix_updater
 make_package

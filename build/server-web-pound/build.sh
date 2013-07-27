@@ -74,6 +74,7 @@ make_install_extras() {
 init
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
+patch_source
 build
 make_install_extras
 make_isa_stub

@@ -81,6 +81,7 @@ make_install() {
 init
 prep_build
 download_source
+patch_source
 build
 make_isa_stub
 prefix_updater
