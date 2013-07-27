@@ -30,9 +30,19 @@
 cleanup_source() {
     logmsg "Housekeeping"
     logmsg "--- remove source directory"
-    rm -rf ${TMPDIR}/${PROG}*
-    [ -d ${TMPDIR}/staging ] && rm  -rf ${TMPDIR}/staging
-
+    if [ -d ${TMPDIR} ]; then
+        cd ${TMPDIR}
+        logmsg "------ removing source"
+        logcmd rm -rf ${TMPDIR}/${PROG}* || \
+            logerr "--------- Failed to remove source!"
+        if [ -d ${TMPDIR}/staging ]; then
+            logmsg "------ removing staging directory"
+            logcmd rm  -rf ${TMPDIR}/staging || \
+                logerr "--------- Failed to remove staging!"
+        fi
+    else
+	logmsg "------ skipped"
+    fi
 
     logmsg "--- checking for local.mog.in"
     if [ -e ${SRCDIR}/local.mog.in ]; then
@@ -45,28 +55,35 @@ cleanup_source() {
 
 }
 
-
-auto_publish_wipe() {
-    logmsg "Auto Publish"
-    logmsg "--- removing old version of $PKG"
-
-    pkgrepo list -s /export/omnios-repository | grep -c "$PKG" > /dev/null
-    if [ $? -eq 0 ]; then
-        logcmd pkgrepo remove -s /export/omnios-repository $PKG || \
-            logerr "------ Failed to remove old versions."
-    else
-        logmsg "------ no old $PKG version found."
-    fi
-}
-
 auto_publish() {
+    WIPE=$1
+    [ -z "$1" ] && WIPE=1
+
     logmsg "Auto Publish"
+    if [ $WIPE -gt 0 ]; then
+        logmsg "--- removing old version of $PKG"
+        COUNT=1
+        MAX_COUNT=`pkgrepo list -s /export/omnios-repository | grep -c "$PKG"`
+        if [ $MAX_COUNT -gt 0 ]; then
+            for p in `pkgrepo list -s /export/omnios-repository | grep unrar | awk '{ print $2 "@"  $3 }'`; do
+                logcmd pkgrepo remove -s /export/omnios-repository $p || \
+                    logerr "------ Failed to remove old version ${p}."
+		COUNT=`expr ${COUNT} + 1`
+                [ $COUNT -eq $MAX_COUNT ] && break
+            done
+        else
+            logmsg "------ no old $PKG version found."
+        fi
+    fi
+
     logmsg "--- stopping pkg/server"
     logcmd pfexec svcadm disable pkg/server || \
             logerr "------ Failed to stop pkg/server."
+
     logmsg "--- clearing cache"
     logcmd pfexec rm -rf /var/pkgserv/omnios-repository/publisher || \
             logerr "------ Failed clear cache."
+
     logmsg "--- starting pkg/server"
     logcmd pfexec svcadm enable pkg/server || \
             logerr "------ Failed to start pkg/server."

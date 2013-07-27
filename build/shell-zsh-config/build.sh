@@ -56,7 +56,6 @@ make_install() {
 }
 
 init
-auto_publish_wipe
 prep_build
 make_install
 prefix_updater

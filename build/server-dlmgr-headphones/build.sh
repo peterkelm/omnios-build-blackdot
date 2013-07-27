@@ -70,7 +70,6 @@ make_install() {
 }
 
 init
-auto_publish_wipe
 prep_build
 download_source
 make_install

@@ -47,7 +47,6 @@ MIRROR=downloads.sourceforge.net
 DLPATH=project/sshpass/sshpass/${VER}
 
 init
-auto_publish_wipe
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
 patch_source

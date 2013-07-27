@@ -112,7 +112,7 @@ make_install
 make_isa_stub
 prefix_updater
 make_package
-auto_publish
+auto_publish 0
 cleanup_source
 clean_up
 

@@ -52,7 +52,6 @@ download_source () {
 }
 
 init
-auto_publish_wipe
 prep_build
 download_source
 patch_source

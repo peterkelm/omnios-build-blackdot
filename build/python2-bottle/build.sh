@@ -49,7 +49,6 @@ download_source() {
 
 
 init
-auto_publish_wipe
 download_source $PROG $PROG $VER
 patch_source
 prep_build

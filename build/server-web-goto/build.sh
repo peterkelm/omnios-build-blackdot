@@ -73,7 +73,6 @@ build() {
 }
 
 init
-auto_publish_wipe
 prep_build
 build
 prefix_updater

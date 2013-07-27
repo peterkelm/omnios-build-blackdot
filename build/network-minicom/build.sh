@@ -47,7 +47,6 @@ MIRROR=alioth.debian.org
 DLPATH=frs/download.php/file/3869
 
 init
-auto_publish_wipe
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
 patch_source
