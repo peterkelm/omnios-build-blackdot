@@ -1,8 +1,9 @@
 - swap auto_publish_wipe lower in order
 - add patch_source to all except python
 - cleanup OPTS_XX mess see APR as example
+  - also look into save_function and safe wrapping
 - apache httpd 2.2
-  - httpd
+  - httpd (apr/apr-util --- based omni os but in /opt/obd-apps/apache-httpd-2.2.x
   - mod_macro
   - mod_perl
   - mod_wsgi
