@@ -29,13 +29,13 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=WSGIProxy
-VER=0.2.2
-PKG=library/python-2/wsgiproxy
-SUMMARY="HTTP proxying tools for WSGI apps."
-DESC="${SUMMARY} WSGIProxy gives tools to proxy arbitrary(ish) WSGI requests to other processes over HTTP."
+PROG=Paste
+VER=1.7.5.1
+PKG=library/python-2/paste
+SUMMARY="Tools for using a Web Server Gateway Interface stack."
+DESC="These provide several pieces of "middleware" (or filters) that can be nested to build web applications. Each piece of middleware uses the WSGI (PEP 333) interface, and should be compatible with other middleware based on those interfaces."
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/paste"
+RUN_DEPENDS_IPS="runtime/python-26"
 BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
