@@ -1,0 +1,12 @@
+diff -rupN a/configure b/configure
+--- a/configure	2013-07-27 12:59:33.243480160 +0200
++++ b/configure	2013-07-27 12:59:24.154320873 +0200
+@@ -2042,7 +2042,7 @@ cat >>confdefs.h <<_ACEOF
+ #define ICONV_DEFAULT_PATH "$prefix/lib/iconv"
+ _ACEOF
+ 
+-iconv_libdir=$prefix/lib/iconv
++iconv_libdir=$libdir/iconv
+ 
+ 
+ case "$host_alias" in

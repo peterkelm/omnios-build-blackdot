@@ -1,3 +1,13 @@
+- swap auto_publish_wipe lower in order
+- add patch_source to all except python
+- cleanup OPTS_XX mess see APR as example
+- apache httpd 2.2
+  - httpd
+  - mod_macro
+  - mod_perl
+  - mod_wsgi
+  - php?
+  - mod_???
 - ui package
   - dep on apache, sabnzbd,...
   - installser script
