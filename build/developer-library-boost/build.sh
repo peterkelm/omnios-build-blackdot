@@ -52,7 +52,7 @@ download_source() {
     [ -d ${PROG}-${VER} ] && rm -rf ${PROG}-${VER}
     mv ${PROG}_$(echo ${VER} | sed s/\\./_/g) ${PROG}-${VER}
 
-    }
+}
 make_clean() {
     # because by this time we have DESTDIR
     logmsg "--- environment variables"
