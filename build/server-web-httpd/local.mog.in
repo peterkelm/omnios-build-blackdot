@@ -1,0 +1,2 @@
+<transform file path=(var|lib)/svc/manifest/network/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
+license files/license license=APACHE

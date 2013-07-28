@@ -1,13 +1,12 @@
-- cleanup OPTS_XX mess see APR as example
-  - also look into save_function and safe wrapping
+- autossh http://www.harding.motd.ca/autossh/
 - apache httpd 2.2
-  - httpd (apr/apr-util --- based omni os but in /opt/obd-apps/apache-httpd-2.2.x
+  - httpd (apr/apr-util --- based omni os but in /opt/obd-apps/apache-httpd-2.2.x *
   - mod_macro
   - mod_perl
   - mod_wsgi
   - php?
   - mod_???
-- ui package
+- ui package *
   - dep on apache, sabnzbd,...
   - installser script
     - enable all services
