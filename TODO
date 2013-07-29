@@ -1,4 +1,4 @@
-- autossh http://www.harding.motd.ca/autossh/
+- illumos-kvm-cmd iPXE patches
 - apache httpd 2.2
   - httpd (apr/apr-util --- based omni os but in /opt/obd-apps/apache-httpd-2.2.x *
   - mod_macro
