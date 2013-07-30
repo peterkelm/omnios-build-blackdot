@@ -162,10 +162,10 @@ build() {
 }
 
 make_install_extras() {
-    #logcmd rm -rf ${DESTDIR}/${PREFIX}/conf/{original/,extra/,${ISAPART}/,${ISAPART64}/} || \
-    #    logerr "-------- Failed to strip conf/."
-    #logcmd cp -r ${SRCDIR}/files/conf/* ${DESTDIR}/${PREFIX}/conf/ || \
-    #    logerr "-------- Failed to copy default configuration."
+    logcmd rm -rf ${DESTDIR}/${PREFIX}/conf/{original/,extra/,${ISAPART}/,${ISAPART64}/} || \
+        logerr "-------- Failed to strip conf/."
+    logcmd cp -r ${SRCDIR}/files/conf/* ${DESTDIR}/${PREFIX}/conf/ || \
+        logerr "-------- Failed to copy default configuration."
 
     logcmd mkdir -p $DESTDIR/var/empty || \
         logerr "-------- Failed to create apache home."                
