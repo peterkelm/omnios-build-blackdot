@@ -32,10 +32,9 @@
 # TODO
 # - include ssl
 # - include zlib
-# - look at dtrace
-# - libexec -> modules
-# - build -> share/...
-# - look into weird layout
+# - smf
+# - look at default conf file* (http://serverfault.com/questions/64656/using-variables-in-apache-config-files-to-reduce-duplication)
+# - look at dtrace (--enable-dtrace --enable-hook-probes)
 
 # apache config
 MIRROR=www.eu.apache.org
@@ -85,6 +84,7 @@ download_source () {
     logmsg "--- extracting httpd source"
     logcmd tar xvf httpd-${HTTPD_VER}.tar.gz  || \
         logerr "--------- Failed to extract httpd-${HTTPD_VER}.tar.gz!"
+    sed "s#{{PREFIX}}#${PREFIX}#g" ${SRCDIR}/files/config.layout > ${TMPDIR}/httpd-${HTTPD_VER}/config.layout
 
     popd > /dev/null
 }
@@ -97,7 +97,6 @@ build() {
     logmsg "--- environment variables (general)"
     LDFLAGS32="-L${PREFIX}/lib -R${PREFIX}/lib"
     LDFLAGS64="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}"
-    reset_configure_opts
 
     BUILD_ARCH=
     if [[ $BUILDARCH == "32" || $BUILDARCH == "both" ]]; then
@@ -114,25 +113,27 @@ build() {
         PROGS="apr apr-util httpd"
         for PROG in ${PROGS}; do
             logmsg "------ environment variables (${PROG})"
+            reset_configure_opts
             BUILDCONF="./buildconf"
             if [ "${PROG}" == "apr" ]; then
 	        VER=${APR_VER}
                 BUILDCONF="${BUILDCONF}"
                 CONFIGURE_OPTS="--enable-nonportable-atomics --enable-threads"
-                CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-installbuilddir=${PREFIX}/share/${ISAPART}/build-1"
-                CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-installbuilddir=${PREFIX}/share/${ISAPART64}/build-1"
+                CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART}"
+                CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART64}"
             elif [ "${PROG}" == "apr-util" ]; then
 	        VER=${APU_VER}
                 BUILDCONF="${BUILDCONF} --with-apr=${TMPDIR}/apr-${APR_VER}"
-                CONFIGURE_OPTS="--with-dbm=sdbm --with-ldap --without-pgsql"
-                CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-apr=${TMPDIR}/apr-${APR_VER}"
-                CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-apr=${TMPDIR}/apr-${APR_VER}"
+                CONFIGURE_OPTS="--with-dbm=sdbm --with-ldap --without-pgsql --with-apr=${TMPDIR}/apr-${APR_VER}"
+                CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART}"
+                CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART64}"
             elif [ "${PROG}" == "httpd" ]; then
 	        VER=${HTTPD_VER}
                 BUILDCONF="${BUILDCONF} --with-apr=${TMPDIR}/apr-${APR_VER} --with-apr-util=${TMPDIR}/apr-util-${APU_VER}"
-                CONFIGURE_OPTS="--enable-v4-mapped --enable-mpms-shared=all --with-mpm=event --enable-mods-shared=reallyall" # --enable-dtrace --enable-hook-probes
-                CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-apr=${TMPDIR}/apr-${APR_VER} --with-apr-util=${TMPDIR}/apr-util-${APU_VER}"
-                CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-apr=${TMPDIR}/apr-${APR_VER} --with-apr-util=${TMPDIR}/apr-util-${APU_VER}"
+                CONFIGURE_OPTS="--with-apr=${TMPDIR}/apr-${APR_VER} --with-apr-util=${TMPDIR}/apr-util-${APU_VER}"
+                CONFIGURE_OPTS="${CONFIGURE_OPTS} --enable-v4-mapped --enable-mpms-shared=all --with-mpm=event --enable-mods-static=macro --enable-mods-shared=reallyall" 
+                CONFIGURE_OPTS_32="--enable-layout=${ISAPART}"
+                CONFIGURE_OPTS_64="--enable-layout=${ISAPART64}"
             fi
 
             logmsg "------ generating buildconf (${PROG})"
@@ -146,9 +147,9 @@ build() {
 
             logmsg "------ executing extras (${PROG})"
             if [ "${PROG}" == "apr" ]; then
-                if [[ $BUILDARCH == "64" || $BUILDARCH == "both" ]]; then
-                    logcmd gsed -i -e 's/CC -shared/CC -m64 -shared/g;' $DESTDIR/${PREFIX}/share/${ISAPART64}/build-1/libtool  || \
-                        logerr "--------- Failed to patch 64-bit apr libtool!"
+                if [[ $BUILDARCH == "64" ]]; then
+                    logcmd gsed -i -e 's/CC -shared/CC -m64 -shared/g;' ${DESTDIR}/${PREFIX}/share/build-1/${ISAPART64}/libtool  || \
+                        logerr "-------- Failed to patch 64-bit apr libtool!"
                 fi
             fi
         done
@@ -156,6 +157,16 @@ build() {
     done
 
     popd > /dev/null
+}
+
+make_install_extras() {
+    logcmd rm -rf ${DESTDIR}/${PREFIX}/conf/{original/,extra/,${ISAPART}/,${ISAPART64}/} || \
+        logerr "-------- Failed to strip conf/."
+    logcmd cp -r ${SRCDIR}/files/conf/* ${DESTDIR}/${PREFIX}/conf/ || \
+        logerr "-------- Failed to copy default configuration."
+
+    logcmd mkdir -p $DESTDIR/var/empty || \
+        logerr "-------- Failed to create apache home."                
 }
 
 save_function cleanup_source cleanup_source_orig
@@ -183,12 +194,13 @@ init
 prep_build
 download_source
 build
-#make_install
-#prefix_updater
-#make_package
-#auto_publish
-#cleanup_source
-#clean_up
+make_install_extras
+make_isa_stub
+prefix_updater
+make_package
+auto_publish
+cleanup_source
+clean_up
 
 # Vim hints
 # vim:ts=4:sw=4:et:

@@ -1,0 +1,3 @@
+/conf/httpd.conf
+/conf/amd64/httpd.conf
+/conf/i386/httpd.conf
