@@ -34,6 +34,8 @@
 # - include zlib
 # - smf
 # - look at default conf file* (http://serverfault.com/questions/64656/using-variables-in-apache-config-files-to-reduce-duplication)
+#   - cleanup httpd.conf (modules -> done)
+#   - sane default vhost (403)
 # - look at dtrace (--enable-dtrace --enable-hook-probes)
 
 # apache config
@@ -160,10 +162,10 @@ build() {
 }
 
 make_install_extras() {
-    logcmd rm -rf ${DESTDIR}/${PREFIX}/conf/{original/,extra/,${ISAPART}/,${ISAPART64}/} || \
-        logerr "-------- Failed to strip conf/."
-    logcmd cp -r ${SRCDIR}/files/conf/* ${DESTDIR}/${PREFIX}/conf/ || \
-        logerr "-------- Failed to copy default configuration."
+    #logcmd rm -rf ${DESTDIR}/${PREFIX}/conf/{original/,extra/,${ISAPART}/,${ISAPART64}/} || \
+    #    logerr "-------- Failed to strip conf/."
+    #logcmd cp -r ${SRCDIR}/files/conf/* ${DESTDIR}/${PREFIX}/conf/ || \
+    #    logerr "-------- Failed to copy default configuration."
 
     logcmd mkdir -p $DESTDIR/var/empty || \
         logerr "-------- Failed to create apache home."                
