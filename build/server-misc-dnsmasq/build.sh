@@ -109,7 +109,7 @@ build
 make_install_extras
 make_isa_stub
 prefix_updater
-VER=2.67.0.7
+#VER=2.67.0.7
 make_package
 auto_publish
 cleanup_source

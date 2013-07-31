@@ -21,6 +21,7 @@
 # CDDL HEADER END
 #
 #
+# Copyright 2011-2012 OmniTI Computer Consulting, Inc.  All rights reserved.
 # Copyright 2013 Jorge Schrauwen.  All rights reserved.
 # Use is subject to license terms.
 #
@@ -134,4 +135,26 @@ prefix_updater() {
             fi
         done
     fi    
+}
+
+# fix versions with numbers (taken from openssl build file)
+_fixAlphaVer() {
+    local ASCII=$(printf '%d' "'$1")
+    ASCII=$((ASCII - 64))
+    [[ $ASCII -gt 32 ]] && ASCII=$((ASCII - 32))
+    echo $ASCII
+}
+save_function make_package make_package_obd_orig
+make_package() {
+    # fix up alpha, beta and rc tags
+    VER=$(echo ${VER} | sed "s/alpha/.0.0./g" | sed "s/beta/.0.1./g" | sed "s/rc/.0.2./g"  | sed "s/test/.0.0./g")
+
+    # turn single letter version to number
+    if [[ -n "`echo $VER | grep [a-z]`" ]]; then
+        NUMVER=${VER::$((${#VER} -1))}
+        ALPHAVER=${VER:$((${#VER} -1))}
+        VER=${NUMVER}.$(_fixAlphaVer ${ALPHAVER})
+    fi
+
+    make_package_obd_orig
 }
