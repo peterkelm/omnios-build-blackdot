@@ -30,53 +30,38 @@
 . ../myfunc.sh
 
 # main package config
-PROG=apr                                     # App name
-VER=1.4.8                                    # App version
+PROG=zlib                                    # App name
+VER=1.2.8                                    # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
-PKG=obd/server/apache/apr                    # Package name (e.g. library/foo)
-SUMMARY="Apache Portable Runtime"
+PKG=obd/server/apache/zlib                   # Package name (e.g. library/foo)
+SUMMARY="A massively spiffy yet delicately unobtrusive compression library."
 DESC="${SUMMARY}"
 
 RUN_DEPENDS_IPS="obd/server/apache/base"
-BUILD_DEPENDS_IPS="library/libxml2 developer/build/autoconf"
+BUILD_DEPENDS_IPS=""
 BUILDARCH=both
 
 PREFIX=${PREFIX}-apps/apache/shared
 
 # package specific
-MIRROR=www.eu.apache.org
-DLPATH=dist/apr
+MIRROR=zlib.net
+DLPATH=/
 
 # environment
 LDFLAGS32="-L${PREFIX}/lib -R${PREFIX}/lib"
 LDFLAGS64="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}"
 
 reset_configure_opts
-CONFIGURE_OPTS="--enable-nonportable-atomics --enable-threads"
-CONFIGURE_OPTS_32="--enable-layout=${ISAPART} --enable-layout=${ISAPART} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART}"
-CONFIGURE_OPTS_64="--enable-layout=${ISAPART64} --enable-layout=${ISAPART64} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART64}"
-
-copy_config_layout() {
-    logmsg "Copying config layout"
-    sed "s#{{PREFIX}}#${PREFIX}#g" ${SRCDIR}/files/config.layout > ${TMPDIR}/${PROG}-${VER}/config.layout || \
-        logerr "--- Failed to copy config.layout"
-
-    
-}
-
-make_install_extras() {
-    logcmd gsed -i -e 's/CC -shared/CC -m64 -shared/g;' ${DESTDIR}/${PREFIX}/share/build-1/${ISAPART64}/libtool  || \
-        logerr "-------- Failed to patch 64-bit apr libtool!"
-}
+CONFIGURE_OPTS=""
+CONFIGURE_OPTS_32="--prefix=${PREFIX} --libdir=${PREFIX}/lib --sharedlibdir=${PREFIX}/lib --includedir=${PREFIX}/include"
+CONFIGURE_OPTS_64="--prefix=${PREFIX} --libdir=${PREFIX}/lib/${ISAPART64} --sharedlibdir=${PREFIX}/lib/${ISAPART64} --includedir=${PREFIX}/include/${ISAPART64}"
 
 init
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
 patch_source
-copy_config_layout
 build
-make_install_extras
 make_isa_stub
 PREFIX=$(echo ${PREFIX} | sed "s#/shared##g")
 prefix_updater
