@@ -64,9 +64,9 @@ auto_publish() {
     if [ $WIPE -gt 0 ]; then
         logmsg "--- removing old version of $PKG"
         COUNT=1
-        MAX_COUNT=`pkgrepo list -s /export/omnios-repository | grep -c "$PKG"`
+        MAX_COUNT=`pkgrepo list -s /export/omnios-repository | grep -c "$PKG "`
         if [ $MAX_COUNT -gt 1 ]; then
-            for p in `pkgrepo list -s /export/omnios-repository | grep unrar | awk '{ print $2 "@"  $3 }'`; do
+            for p in `pkgrepo list -s /export/omnios-repository | grep "$PKG" | awk '{ print $2 "@"  $3 }'`; do
                 logcmd pkgrepo remove -s /export/omnios-repository $p || \
                     logerr "------ Failed to remove old version ${p}."
 		COUNT=`expr ${COUNT} + 1`
@@ -92,12 +92,14 @@ auto_publish() {
 
 prefix_updater() {
     logmsg "Prefix Updater"
-    logmsg "--- checking for manifests"
-    for SMF in `find $DESTDIR/{var,lib}/svc/manifest/ -type f 2> /dev/null`; do
-        logmsg "------ updating {{PREFIX}} in $(echo ${SMF} | sed s#${DESTDIR}##)"
-        sed -i s#{{PREFIX}}#${PREFIX}#g ${SMF}
-        sed -i s#{{SYSCONFDIR}}#${SYSCONFDIR}#g ${SMF}
-    done
+    if [ ! -z $DESTDIR ];  then
+        logmsg "--- checking for manifests"
+        for SMF in `find $DESTDIR/{var,lib}/svc/manifest/ -type f 2> /dev/null`; do
+            logmsg "------ updating {{PREFIX}} in $(echo ${SMF} | sed s#${DESTDIR}##)"
+            sed -i s#{{PREFIX}}#${PREFIX}#g ${SMF}
+            sed -i s#{{SYSCONFDIR}}#${SYSCONFDIR}#g ${SMF}
+        done
+    fi
 
     logmsg "--- checking for local.mog.in"
     if [ -e ${SRCDIR}/local.mog.in ]; then
