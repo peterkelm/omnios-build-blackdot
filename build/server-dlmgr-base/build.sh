@@ -33,7 +33,7 @@ PROG=dlmgr-base                              # App name
 VER=1.0                                      # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
-PKG=obd/server/dlmgr                         # Package name (e.g. library/foo)
+PKG=obd/server/dlmgr/base                    # Package name (e.g. library/foo)
 SUMMARY="Shared bits for obd/server/dlmgr range of packages."
 DESC="${SUMMARY}"
 

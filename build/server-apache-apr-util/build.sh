@@ -35,7 +35,7 @@ VER=1.5.2                                    # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/server/apache/apr-util               # Package name (e.g. library/foo)
-SUMMARY="Apache Portable Runtime"
+SUMMARY="Apache Portable Runtime Utility"
 DESC="${SUMMARY}"
 
 RUN_DEPENDS_IPS="obd/server/apache/base obd/server/apache/apr"
@@ -69,6 +69,7 @@ copy_config_layout() {
 init
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
+patch_source
 build
 make_isa_stub
 prefix_updater

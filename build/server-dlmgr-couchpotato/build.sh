@@ -37,7 +37,7 @@ PKG=obd/server/dlmgr/couchpotato             # Package name (e.g. library/foo)
 SUMMARY="An automatic NZB and torrent downloader, just fill in what you want to see and CouchPotato will add it to your 'want to watch'-list. Every day it will search through multiple NZBs & Torrents sites, looking for the best possible match."
 DESC=${SUMMARY}
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah library/python-2/pysqlite obd/server/dlmgr"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/cheetah library/python-2/pysqlite obd/server/dlmgr/base"
 BUILD_DEPENDS_IPS="developer/versioning/git"
 
 PREFIX=${PREFIX}-apps
