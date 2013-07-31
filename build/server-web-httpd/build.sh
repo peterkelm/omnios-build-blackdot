@@ -33,9 +33,6 @@
 # - include ssl
 # - include zlib
 # - smf
-# - look at default conf file* (http://serverfault.com/questions/64656/using-variables-in-apache-config-files-to-reduce-duplication)
-#   - cleanup httpd.conf (modules -> done)
-#   - sane default vhost (403)
 # - look at dtrace (--enable-dtrace --enable-hook-probes)
 
 # apache config
