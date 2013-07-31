@@ -2,4 +2,4 @@
 <transform dir path={{PREFIX}}.* -> set group apache>
 <transform file path={{PREFIX}}.* -> set owner apache>
 <transform file path={{PREFIX}}.* -> set group apache>
-license files/license license=APACHE
+license files/license license=ZLIB
