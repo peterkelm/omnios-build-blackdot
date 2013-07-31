@@ -1,0 +1,48 @@
+<Layout i386>
+    prefix: {{PREFIX}}
+    exec_prefix: ${prefix}
+    bindir: ${exec_prefix}/bin/i386
+    sbindir: ${exec_prefix}/bin/i386
+    libdir: ${exec_prefix}/lib
+    libexecdir: ${exec_prefix}/modules/i386
+    mandir: ${prefix}/share/man
+    sysconfdir: ${prefix}/conf/i386
+    datadir: ${prefix}/share
+    installbuilddir: ${datadir}/build-1/i386
+    errordir: ${datadir}/error
+    iconsdir: ${datadir}/icons
+    htdocsdir: ${datadir}/htdocs
+    manualdir: ${datadir}/manual
+    cgidir: ${datadir}/cgi-bin
+    includedir: ${prefix}/include
+    localstatedir: ${prefix}/var
+    runtimedir: ${localstatedir}/run
+    logfiledir: ${localstatedir}/logs
+    proxycachedir: ${localstatedir}/proxy
+</Layout>
+
+<Layout amd64>
+    prefix: {{PREFIX}}
+    exec_prefix: ${prefix}
+    bindir: ${exec_prefix}/bin/amd64
+    sbindir: ${exec_prefix}/bin/amd64
+    libdir: ${exec_prefix}/lib/amd64
+    libexecdir: ${exec_prefix}/modules/amd64
+    mandir: ${prefix}/share/man
+    sysconfdir: ${prefix}/conf/amd64
+    datadir: ${prefix}/share
+    installbuilddir: ${datadir}/build-1/amd64
+    errordir: ${datadir}/error
+    iconsdir: ${datadir}/icons
+    htdocsdir: ${datadir}/htdocs
+    manualdir: ${datadir}/manual
+    cgidir: ${datadir}/cgi-bin
+    includedir: ${prefix}/include
+    localstatedir: ${prefix}/var
+    runtimedir: ${localstatedir}/run
+    logfiledir: ${localstatedir}/logs
+    proxycachedir: ${localstatedir}/proxy
+</Layout>
+
+
+
