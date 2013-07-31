@@ -1,8 +1,0 @@
-group groupname=apache gid=8080
-user ftpuser=false gcos-field="Apache privsep user" group=apache login-shell=/bin/false password=NP uid=8080 username=apache home-dir=/var/empty
-<transform dir path={{PREFIX}}.* -> set owner apache>
-<transform dir path={{PREFIX}}.* -> set group apache>
-<transform file path={{PREFIX}}.* -> set owner apache>
-<transform file path={{PREFIX}}.* -> set group apache>
-<transform file path=(var|lib)/svc/manifest/network/htto/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
-license files/license license=APACHE

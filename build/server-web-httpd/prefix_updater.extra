@@ -1,5 +1,0 @@
-/conf/amd64/httpd.conf
-/conf/i386/httpd.conf
-/conf/httpd.conf.d/202-directory-handling.conf
-/conf/httpd.conf.d/204-ssl.conf
-/conf/httpd.conf.d/401-minimal-host.conf
