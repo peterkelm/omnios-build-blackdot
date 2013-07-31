@@ -42,22 +42,20 @@ RUN_DEPENDS_IPS="obd/server/apache/base obd/server/apache/apr"
 BUILD_DEPENDS_IPS="library/libxml2 developer/build/autoconf obd/server/apache/apr"
 BUILDARCH=both
 
-PREFIX=${PREFIX}-apps/apache
-
-
+PREFIX=${PREFIX}-apps/apache/shared
 
 # package specific
 MIRROR=www.eu.apache.org
 DLPATH=dist/apr
 
 # environment
-LDFLAGS32="-L${PREFIX}/shared/lib -R${PREFIX}/shared/lib"
-LDFLAGS64="-m64 -L${PREFIX}/shared/lib/${ISAPART64} -R${PREFIX}/shared/lib/${ISAPART64}"
+LDFLAGS32="-L${PREFIX}/lib -R${PREFIX}/lib"
+LDFLAGS64="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}"
 
 reset_configure_opts
 CONFIGURE_OPTS="--with-dbm=sdbm --with-ldap --without-pgsql --with-apr=${PREFIX}/bin/apr-1-config"
-CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART}"
-CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART64}"
+CONFIGURE_OPTS_32="--enable-layout=${ISAPART} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART}"
+CONFIGURE_OPTS_64="--enable-layout=${ISAPART64} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART64}"
 
 copy_config_layout() {
     logmsg "Copying config layout"
@@ -70,8 +68,10 @@ init
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
 patch_source
+copy_config_layout
 build
 make_isa_stub
+PREFIX=$(echo ${PREFIX} | sed "s#/shared##g")
 prefix_updater
 make_package
 auto_publish

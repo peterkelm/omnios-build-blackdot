@@ -42,31 +42,38 @@ RUN_DEPENDS_IPS="obd/server/apache/base"
 BUILD_DEPENDS_IPS="library/libxml2 developer/build/autoconf"
 BUILDARCH=both
 
-PREFIX=${PREFIX}-apps/apache
+PREFIX=${PREFIX}-apps/apache/shared
 
 # package specific
 MIRROR=www.eu.apache.org
 DLPATH=dist/apr
 
 # environment
-LDFLAGS32="-L${PREFIX}/shared/lib -R${PREFIX}/shared/lib"
-LDFLAGS64="-m64 -L${PREFIX}/shared/lib/${ISAPART64} -R${PREFIX}/shared/lib/${ISAPART64}"
+LDFLAGS32="-L${PREFIX}/lib -R${PREFIX}/lib"
+LDFLAGS64="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}"
 
 reset_configure_opts
 CONFIGURE_OPTS="--enable-nonportable-atomics --enable-threads"
-CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-layout=${ISAPART} --with-installbuilddir=${PREFIX}/shared/share/build-1/${ISAPART}"
-CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-layout=${ISAPART64} --with-installbuilddir=${PREFIX}/shared/share/build-1/${ISAPART64}"
+#CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --enable-layout=${ISAPART} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART}"
+#CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --enable-layout=${ISAPART64} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART64}"
+CONFIGURE_OPTS_32="--enable-layout=${ISAPART} --enable-layout=${ISAPART} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART}"
+CONFIGURE_OPTS_64="--enable-layout=${ISAPART64} --enable-layout=${ISAPART64} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART64}"
 
 copy_config_layout() {
     logmsg "Copying config layout"
-    sed "s#{{PREFIX}}#${PREFIX}/shared#g" ${SRCDIR}/files/config.layout > ${TMPDIR}/${PROG}-${VER}/config.layout || \
+    sed "s#{{PREFIX}}#${PREFIX}#g" ${SRCDIR}/files/config.layout > ${TMPDIR}/${PROG}-${VER}/config.layout || \
         logerr "--- Failed to copy config.layout"
 
     
 }
 
+save_function make_install make_install_orig
+make_install() {
+    make_install_orig
+}
+
 make_install_extras() {
-    logcmd gsed -i -e 's/CC -shared/CC -m64 -shared/g;' ${DESTDIR}/${PREFIX}/shared/share/build-1/${ISAPART64}/libtool  || \
+    logcmd gsed -i -e 's/CC -shared/CC -m64 -shared/g;' ${DESTDIR}/${PREFIX}/share/build-1/${ISAPART64}/libtool  || \
         logerr "-------- Failed to patch 64-bit apr libtool!"
 }
 
@@ -74,9 +81,11 @@ init
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
 patch_source
+copy_config_layout
 build
 make_install_extras
 make_isa_stub
+PREFIX=$(echo ${PREFIX} | sed "s#/shared##g")
 prefix_updater
 make_package
 auto_publish

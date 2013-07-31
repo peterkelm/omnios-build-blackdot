@@ -37,12 +37,9 @@
     htdocsdir: ${datadir}/htdocs
     manualdir: ${datadir}/manual
     cgidir: ${datadir}/cgi-bin
-    includedir: ${prefix}/include
+    includedir: ${prefix}/include/amd64
     localstatedir: ${prefix}/var
     runtimedir: ${localstatedir}/run
     logfiledir: ${localstatedir}/logs
     proxycachedir: ${localstatedir}/proxy
 </Layout>
-
-
-
