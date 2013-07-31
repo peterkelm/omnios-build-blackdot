@@ -1,0 +1,8 @@
+<transform dir path={{PREFIX}}.* -> set owner apache>
+<transform dir path={{PREFIX}}.* -> set group apache>
+<transform file path={{PREFIX}}.* -> set owner apache>
+<transform file path={{PREFIX}}.* -> set group apache>
+<transform dir path={{PREFIX}}/shared/ssl/man/.* -> edit path {{PREFIX}}/shared/ssl/man {{PREFIX}}/shared/share/man>
+<transform file path={{PREFIX}}/shared/ssl/man/.* -> edit path {{PREFIX}}/shared/ssl/man {{PREFIX}}/shared/share/man>
+<transform link path={{PREFIX}}/shared/ssl/man/.* -> edit path {{PREFIX}}/shared/ssl/man {{PREFIX}}/shared/share/man>
+license files/license license=OpenSSL
