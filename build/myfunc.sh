@@ -67,10 +67,11 @@ auto_publish() {
         MAX_COUNT=`pkgrepo list -s /export/omnios-repository | grep -c "$PKG "`
         if [ $MAX_COUNT -gt 1 ]; then
             for p in `pkgrepo list -s /export/omnios-repository | grep "$PKG" | awk '{ print $2 "@"  $3 }'`; do
-                logcmd pkgrepo remove -s /export/omnios-repository $p || \
-                    logerr "------ Failed to remove old version ${p}."
+                if [ $COUNT -gt 1 ]; then
+                    logcmd pkgrepo remove -s /export/omnios-repository $p || \
+                        logerr "------ Failed to remove old version ${p}."
+                fi
 		COUNT=`expr ${COUNT} + 1`
-                [ $COUNT -eq $MAX_COUNT ] && break
             done
         else
             logmsg "------ no old $PKG version found."
