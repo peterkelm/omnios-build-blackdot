@@ -1,0 +1,31 @@
+#!/bin/bash
+
+## variables
+HTTPD_OPTS=$(svcprop -p config/define svc:/network/http/httpd 2> /dev/null)
+MPM=$(svcprop -p config/mpm svc:/network/http/httpd 2> /dev/null | tr '[:lower:]' '[:upper:]')
+
+## wrapper
+# lookup httpd location
+pushd `dirname $0` > /dev/null
+HTTPD_PATH=`pwd -P`
+popd > /dev/null
+
+# fix define
+if [ "${HTTPD_OPTS}" ==	'""' ];	then
+	HTTPD_OPTS=
+else
+    	HTTPD_OPTS=$(echo ${HTTPD_OPTS}	| tr ',' ' ')
+fi
+
+# check	if we have a MPM
+if [ ! -z ${MPM} ]; then
+	HTTPD_OPTS="-DMPM_$MPM ${HTTPD_OPTS}"
+fi
+
+# run httpd
+if [ -e ${HTTPD_PATH}/httpd ]; then 
+	${HTTPD_PATH}/httpd ${HTTPD_OPTS} $*
+else
+	echo "Cannot located httpd in ${HTTPD_PATH}"
+	exit 1
+fi

@@ -79,6 +79,8 @@ make_install_extras() {
         logerr "------ Failed to create manifest directory."
     logcmd cp ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/http/httpd.xml || \
         logerr "------ Failed to copy apache httpd manifest."
+    logcmd cp ${SRCDIR}/files/svc-httpd $DESTDIR/${PREFIX}/bin/svc-httpd || \
+        logerr "------ Failed to copy apache svc-httpd wrapper."
 
     logcmd rm -rf ${DESTDIR}/${PREFIX}/conf/{original/,extra/,${ISAPART}/,${ISAPART64}/} || \
         logerr "-------- Failed to strip conf/."

@@ -1,12 +1,8 @@
 - illumos-kvm-cmd iPXE patches
 - apache httpd 2.2
-  - httpd *
-  - mod_perl
-  - mod_wsgi
-  - http://code.google.com/p/mod-auth-external/
   - php?
   - mod_???
-- ui package
+- ui package*
   - dep on apache, sabnzbd,...
   - installser script
     - enable all services
