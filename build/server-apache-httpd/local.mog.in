@@ -1,0 +1,6 @@
+<transform dir path={{PREFIX}}.* -> set owner apache>
+<transform dir path={{PREFIX}}.* -> set group apache>
+<transform file path={{PREFIX}}.* -> set owner apache>
+<transform file path={{PREFIX}}.* -> set group apache>
+<transform file path=(var|lib)/svc/manifest/network/http/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
+license files/license license=APACHE

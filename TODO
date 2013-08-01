@@ -1,6 +1,6 @@
 - illumos-kvm-cmd iPXE patches
 - apache httpd 2.2
-  - httpd (apr/apr-util --- based omni os but in /opt/obd-apps/apache-httpd-2.2.x *
+  - httpd *
   - mod_perl
   - mod_wsgi
   - http://code.google.com/p/mod-auth-external/

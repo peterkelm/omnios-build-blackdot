@@ -1,0 +1,38 @@
+####
+## httpd.conf - Dummy Configuration
+####
+# Because httpd has been compiled with both i386 and amd64 targets
+# using one configuration file would pose problems when loading
+# modules. THIS FILE IS A DUMMY! Do not use it.
+#
+#
+# How does this work then?
+# - amd64/httpd.conf: Bootstrap configuration for amd64 target
+# - i386/httpd.conf: Bootstrap configuration for i386 target
+# - httpd.conf.d/*.conf: Shared configuration spread into smaller files for easy maintance.
+# 
+# You can just replace the bootstrap with your actualy configuration if you like.
+# This has a few drawbacks, you need to load the correct modules from the correct directory
+# modules/amd64 and modules/i386 respectively, else you will get errors when loading the
+# wrong binary. So you essentially end up maintaining 2 seperate configuration files.
+#
+# Because the former is a mess to maintain, I opted for a minimal bootstrap configuration.
+# Because mod_macro is compiled statically we can define a simple macro to replace LoadModule
+# the macro is called 'LoadModule' and it will set the correct module path.
+# The minimal bootstrap configuration also imports all files in httpd.conf.d/*.conf,
+# all configuration can simple go into the former directory. They are read alphabetically.
+# We need to replace all LoadModule statements so that they use the macro instead.
+# This is easy! Example:
+# LoadModule rewrite_module modules/mod_rewrite.so ==>
+# Use LoadModule rewrite_module mod_rewrite.so
+#
+# The macro will append either 'modules/amd64/' or 'modules/i386/' to the filename.
+#
+#
+# What's with the numbers before the configuration files?
+# Basically it is to ensure the order is correct.
+# 0xx: very imporant stuff, mpm loading and configuration and module loading
+# 1xx: important stuff, some defaults are set here and stuff like logging, pid file, ...
+# 2xx: module specific stuff
+# 3xx: reserved for user configuration
+# 4xx: vhosts

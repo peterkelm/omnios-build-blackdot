@@ -39,7 +39,7 @@ SUMMARY="Apache Portable Runtime"
 DESC="${SUMMARY}"
 
 RUN_DEPENDS_IPS="obd/server/apache/base"
-BUILD_DEPENDS_IPS="library/libxml2 developer/build/autoconf"
+BUILD_DEPENDS_IPS="library/libxml2 developer/build/autoconf obd/server/apache/zlib"
 BUILDARCH=both
 
 PREFIX=${PREFIX}-apps/apache/shared
