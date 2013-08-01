@@ -30,7 +30,6 @@
 . ../myfunc.sh
 
 # TODO
-# - smf
 # - look at dtrace (--enable-dtrace --enable-hook-probes)
 
 # main package config
@@ -75,6 +74,12 @@ copy_config_layout() {
 }
 
 make_install_extras() {
+    logmsg "--- make install extras"
+    logcmd mkdir -p $DESTDIR/lib/svc/manifest/network/http || \
+        logerr "------ Failed to create manifest directory."
+    logcmd cp ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/http/httpd.xml || \
+        logerr "------ Failed to copy apache httpd manifest."
+
     logcmd rm -rf ${DESTDIR}/${PREFIX}/conf/{original/,extra/,${ISAPART}/,${ISAPART64}/} || \
         logerr "-------- Failed to strip conf/."
     logcmd cp -r ${SRCDIR}/files/conf/* ${DESTDIR}/${PREFIX}/conf/ || \

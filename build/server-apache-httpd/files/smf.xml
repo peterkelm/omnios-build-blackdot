@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<service_bundle type='manifest' name='httpd'>
+  <service name='network/http/httpd' type='service' version='1'>
+    <create_default_instance enabled='false' />
+    <single_instance />
+
+    <!-- Wait for network to be initialized. -->
+    <dependency name='loopback'  grouping='require_all' restart_on='error' type='service'>
+      <service_fmri value='svc:/network/loopback:default' />
+    </dependency>
+    <dependency name='network' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/milestone/network:default' />
+    </dependency>
+
+    <!-- Wait for all local filesystems to be mounted. -->
+    <dependency name='filesystem-local' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/system/filesystem/local:default' />
+    </dependency>
+
+    <!-- require both bootstrap configuration files -->
+    <dependency name='config-file' grouping='require_all' restart_on='none' type='path'>
+      <service_fmri value='file://localhost/{{PREFIX}}/httpd/conf/i386/httpd.conf' />
+      <service_fmri value='file://localhost/{{PREFIX}}/httpd/conf/amd64/httpd.conf' />
+    </dependency>
+
+    <exec_method type='method' name='start'   exec='{{PREFIX}}/httpd/bin/httpd -k start'    timeout_seconds='60' />
+    <exec_method type='method' name='stop'    exec='{{PREFIX}}/httpd/bin/httpd -k stop'     timeout_seconds='60' />
+    <exec_method type='method' name='refresh' exec='{{PREFIX}}/httpd/bin/httpd -k graceful' timeout_seconds='60' />
+
+    <property_group name="startd" type="framework">
+      <propval name="duration" type="astring" value="contract" />
+      <propval name="ignore_error" type="astring" value="core,signal" />
+    </property_group>
+
+    <stability value='Evolving' />
+
+    <template>
+      <common_name>
+        <loctext xml:lang='C'>Apache HTTP Server</loctext>
+      </common_name>
+      <documentation>
+        <doc_link name='apache.org' uri='http://httpd.apache.org' />
+        <manpage title='httpd' section='8M' manpath='{{PREFIX}}/httpd/share/man' />
+      </documentation>
+    </template>
+  </service>
+</service_bundle>
