@@ -60,12 +60,12 @@ make_install() {
         logerr "------ Failed to create app directory."
     logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/headphones || \
         logerr "------ Failed to create app config directory."
-    logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
+    logcmd mkdir -p $DESTDIR/lib/svc/manifest/network/dlmgr || \
         logerr "------ Failed to create manifest directory."
 
     logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/headphones/ || \
         logerr "------ Failed to copy app."
-    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/headphones.xml || \
+    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/dlmgr/headphones.xml || \
         logerr "------ Failed to copy manifest."
 }
 

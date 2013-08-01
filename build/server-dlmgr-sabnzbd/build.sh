@@ -63,14 +63,14 @@ make_install() {
         logerr "------ Failed to create app directory."
     logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/sabnzbd || \
         logerr "------ Failed to create app config directory."
-    logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
+    logcmd mkdir -p $DESTDIR/lib/svc/manifest/network/dlmgr || \
         logerr "------ Failed to create manifest directory."
 
     logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/sabnzbd/ || \
         logerr "------ Failed to copy app."
     logcmd cp -r ${SRCDIR}/files/sabnzbd.ini ${DESTDIR}${PREFIX}/dlmgr/.config/sabnzbd/ || \
         logerr "------ Failed to inject minimal config."
-    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/sabnzbd.xml || \
+    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/dlmgr/sabnzbd.xml || \
         logerr "------ Failed to copy manifest."
 
 

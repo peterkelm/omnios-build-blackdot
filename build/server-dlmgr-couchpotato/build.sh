@@ -60,14 +60,14 @@ make_install() {
         logerr "------ Failed to create app directory."
     logcmd mkdir -p ${DESTDIR}${PREFIX}/dlmgr/.config/couchpotato || \
         logerr "------ Failed to create app config directory."
-    logcmd mkdir -p $DESTDIR/lib/svc/manifest/network || \
+    logcmd mkdir -p $DESTDIR/lib/svc/manifest/network/dlmgr || \
         logerr "------ Failed to create manifest directory."
 
     logcmd cp -r ${TMPDIR}/${PROG}-${VER}/* ${DESTDIR}${PREFIX}/dlmgr/couchpotato/ || \
         logerr "------ Failed to copy app."
     logcmd cp -r ${SRCDIR}/files/settings.conf ${DESTDIR}${PREFIX}/dlmgr/.config/couchpotato/ || \
         logerr "------ Failed to inject minimal config."
-    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/couchpotato.xml || \
+    logcmd cp -r ${SRCDIR}/files/smf.xml $DESTDIR/lib/svc/manifest/network/dlmgr/couchpotato.xml || \
         logerr "------ Failed to copy manifest."
 }
 

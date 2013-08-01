@@ -12,7 +12,7 @@
   tail /var/svc/log/network-headphones\:default.log
 -->
 <service_bundle type='manifest' name='headphones'>
-  <service name='network/headphones' type='service' version='1'>
+  <service name='network/dlmgr/headphones' type='service' version='1'>
     <create_default_instance enabled='false' />
     <single_instance />
 

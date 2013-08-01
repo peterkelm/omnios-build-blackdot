@@ -12,5 +12,5 @@
 <transform file path=usr/share/icons.* -> set group other>
 <transform file path=usr/share/icons.* -> set mode 0644>
 
-<transform file path=(var|lib)/svc/manifest/network/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
+<transform file path=(var|lib)/svc/manifest/network/dlmgr/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
 license files/license license=GPL
