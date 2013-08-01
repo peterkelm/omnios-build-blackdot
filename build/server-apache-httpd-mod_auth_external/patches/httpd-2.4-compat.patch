@@ -1,0 +1,14 @@
+diff -rupN a/mod_authnz_external.c b/mod_authnz_external.c
+--- a/mod_authnz_external.c	2013-08-01 22:45:06.208341278 +0200
++++ b/mod_authnz_external.c	2013-08-01 22:46:34.109631856 +0200
+@@ -443,8 +443,8 @@ static int exec_external(const char *ext
+ 	if (remote_host != NULL)
+ 	    child_env[i++]= apr_pstrcat(p, ENV_HOST"=", remote_host,NULL);
+ 
+-	if (c->remote_ip)
+-	    child_env[i++]= apr_pstrcat(p, ENV_IP"=", c->remote_ip, NULL);
++	if (r->useragent_ip)
++	    child_env[i++]= apr_pstrcat(p, ENV_IP"=", r->useragent_ip, NULL);
+ 
+ 	if (r->uri)
+ 	    child_env[i++]= apr_pstrcat(p, ENV_URI"=", r->uri, NULL);
