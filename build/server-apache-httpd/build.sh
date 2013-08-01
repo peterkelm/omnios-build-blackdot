@@ -30,8 +30,6 @@
 . ../myfunc.sh
 
 # TODO
-# - include ssl
-# - include zlib
 # - smf
 # - look at dtrace (--enable-dtrace --enable-hook-probes)
 
@@ -56,23 +54,19 @@ MIRROR=www.eu.apache.org
 DLPATH=dist/httpd
 
 # environment
-LDFLAGS32="-L${PREFIX}/lib -R${PREFIX}/lib"
-LDFLAGS64="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}"
+LDFLAGS32="-L${PREFIX}/lib -R${PREFIX}/lib -L${PREFIX_LIB}/lib -R${PREFIX_LIB}/lib"
+LDFLAGS64="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64} -L${PREFIX_LIB}/lib/${ISAPART64} -R${PREFIX_LIB}/lib/${ISAPART64}"
 
 reset_configure_opts
 CONFIGURE_OPTS="--enable-v4-mapped --enable-mpms-shared=all --with-mpm=event --enable-mods-static=macro --enable-mods-shared=reallyall" 
 CONFIGURE_OPTS_32=\
 "--enable-layout=${ISAPART} "\
 "--with-apr=${PREFIX_LIB}/bin/${ISAPART}/apr-1-config "\
-"--with-apr-util=${PREFIX_LIB}/bin/${ISAPART}/apu-1-config "\
-"--with-z=${PREFIX_LIB}/lib "\
-"--with-ssl=${PREFIX_LIB}/lib"
+"--with-apr-util=${PREFIX_LIB}/bin/${ISAPART}/apu-1-config "
 CONFIGURE_OPTS_64=\
 "--enable-layout=${ISAPART64} "\
 "--with-apr=${PREFIX_LIB}/bin/${ISAPART64}/apr-1-config "\
-"--with-apr-util=${PREFIX_LIB}/bin/${ISAPART64}/apu-1-config "\
-"--with-z=${PREFIX_LIB}/lib/${ISAPART64} "\
-"--with-ssl=${PREFIX_LIB}/lib/${ISAPART64}"
+"--with-apr-util=${PREFIX_LIB}/bin/${ISAPART64}/apu-1-config "
 
 copy_config_layout() {
     logmsg "Copying config layout"

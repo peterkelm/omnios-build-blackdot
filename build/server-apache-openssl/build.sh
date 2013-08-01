@@ -91,6 +91,10 @@ make_install64() {
         logerr "Failed to restore amd64 headers."
     logcmd rm ${DESTDIR}${PREFIX}/include.tar ||
         logerr "Failed to cleanup header tarball."
+    logcmd sed -i "s#/lib#/lib/amd64#g" ${DESTDIR}${PREFIX}/lib/${ISAPART64}/pkgconfig/*.pc ||
+        logerror "Failed to fix pkgconfig files."
+    logcmd sed -i "s#/include#/include/amd64#g" ${DESTDIR}${PREFIX}/lib/${ISAPART64}/pkgconfig/*.pc ||
+        logerror "Failed to fix pkgconfig files."
 }
 
 init
