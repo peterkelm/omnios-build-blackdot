@@ -49,8 +49,7 @@ MIRROR=www.openssl.org
 DLPATH=source
 
 # environment
-LDFLAGS32="-L${PREFIX}/lib -R${PREFIX}/lib"
-LDFLAGS64="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}"
+CC="${CC} -L${PREFIX}/lib -R${PREFIX}/lib -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}" # openssl does not do LDFLAGS
 
 reset_configure_opts
 NO_PARALLEL_MAKE=1
