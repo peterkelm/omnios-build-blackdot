@@ -1,0 +1,23 @@
+## fcgid module
+# mod_fcgid configuration
+Use LoadModule fcgid_module mod_fcgid.so
+
+<IfModule fcgid_module>
+	FcgidIPCDir var/run/fcgid.sock
+	AddHandler fcgid-script .fcgi
+	FcgidFixPathinfo 1
+	FcgidMaxRequestLen 268435456 # set upload size to 256M
+
+	# define macro for easy use
+	# usage:
+	#  Use FcgidConnector application/x-httpd-php /usr/bin/php-cgi php
+	#  Use FcgidConnector application/x-httpd-php "/usr/bin/php-cgi -s" phps
+	<Macro FcgidConnector $type $wrapper $ext>
+		AddHandler fcgid-script .$ext
+		AddType $type .$ext
+		FcgidWrapper "$wrapper" .$ext
+		<FilesMatch "\.($ext)$">
+			Options +ExecCGI
+		</FilesMatch>
+	</Macro>
+</IfModule>
