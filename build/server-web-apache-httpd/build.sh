@@ -29,11 +29,11 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=server-web-httpd                        # App name
+PROG=server-web-apache-httpd                 # App name
 VER=1.0                                      # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
-PKG=obd/server/web/httpd                     # Package name (e.g. library/foo)
+PKG=obd/server/web/apache-httpd              # Package name (e.g. library/foo)
 SUMMARY="Stub that pulls in obd/server/apache/httpd"
 DESC="${SUMMARY}"
 
