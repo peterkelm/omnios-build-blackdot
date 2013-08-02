@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset=utf-8>
+	<title>Download Station</title>
+	<link rel="icon" type="image/png" href="downloads.png" />
+	<style type="text/css">
+		body {
+			font: 10px arial,sans-serif;
+			color: #000000;
+			background: #eeeeee;
+
+			overflow: hidden;
+		}
+
+		#menu {
+			position: absolute;
+			top: 0em;
+			left: 50%;
+			margin-left: -1.4em;
+
+			padding-top: 0.6em;
+			height: 0em;
+			width: 3.6em;
+
+			background: url(divider.gif) center top no-repeat;
+			overflow: hidden;
+		}
+
+		#menu:hover {
+			position: absolute;
+			top: 0em;
+			left: 0em;
+			right: 0em;
+			margin-left: 0em;
+
+			padding: 0.5em;
+			height: 1.6em;
+			width: 100%;
+
+			border-right: solid 1px #aaaaaa;
+			border-bottom: solid 1px #aaaaaa;
+			border-left: solid 1px #aaaaaa;
+
+			background: #cccccc;
+			text-align: center;
+		}
+
+		#menu img {
+			width: 1.6em;
+			height: 1.6em;
+		}
+
+		#app {
+			position: absolute;
+			top: 0em;
+			right: 0em;
+			bottom: 0em;
+			left: 0em;
+
+			background: #ffffff;
+			border: solid 1px #bbbbbb;
+		}
+
+		#app iframe {
+			border: none;
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<section id="app">
+		<iframe name="appFrame" src="/sabnzbd"></iframe>
+	</section>
+	<nav id="menu">
+		<a target="appFrame" href="/sabnzbd" title="SABnzbd"><img src="/sabnzbd/static/stylesheets/colorschemes/gold/images/sabnzbdplus.ico" /></a>
+		<a target="appFrame" href="/deluge" title="Deluge"><img src="/deluge/icons/deluge.png" /></a>
+		<a target="appFrame" href="/sickbeard" title="SickBeard"><img src="/sickbeard/images/ico/favicon.ico" /></a>
+		<a target="appFrame" href="/couchpotato" title="CouchPotato"><img src="/couchpotato.ico" /></a>
+		<a target="appFrame" href="/headphones" title="Headphones"><img src="/headphones/images/favicon.ico" /></a>
+	</nav>
+	<script	type="text/javascript">
+		document.title = document.title	+ " [" + location.host + "]"
+        </script>
+</body>
+</html>
+

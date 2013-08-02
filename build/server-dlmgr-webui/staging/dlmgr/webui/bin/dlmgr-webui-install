@@ -1,0 +1,294 @@
+#!/bin/bash
+
+PREFIX={{PREFIX}}
+CONFIG_DIR=${PREFIX}/dlmgr/.config
+HOST=$(hostname)
+PORT=8999
+HTTPD_OPTS=
+
+echo Welcome to the dlmgr webui installer.
+echo ---------------------------------------------
+if [ "$(id -u)" != "0" ]; then
+	echo "This script must be run as root" 1>&2
+	exit 1
+fi
+
+echo "This will wipe all existing configuration for sabnzbd, sickbeard, couchpotato, headphones and deluge!"
+read -p "Are you sure you want to install? (y/N): " RESP
+if [ "$RESP" = "y" ]; then
+	SVCS="deluged deluge-web sabnzbd sickbeard couchpotato headphones"
+	APPS="deluge sabnzbd sickbeard couchpotato headphones"
+
+	echo "=== Running webui install [`date +'%Y-%m-%d %H:%M:%S'`] ===" &>> /tmp/dlmgr-webui.log
+
+	## customize
+	if [ "$1" == "--custom" ]; then
+		echo "[..] enabling customization ..."
+		read -p "[==][??] enable SSL? (y/N): " RESP
+		if [ "$RESP" = "y" ]; then
+			read -p "[!!] please place server.crt and server.key in ${PREFIX}/dlmgr/webui/conf. (press any key to continue)" DUMMYRESP
+			HTTPD_OPTS=-DSSL
+		fi
+		read -p "[==][??] alternative hostname? (${HOST}): " RESP
+		if [ ! -z $RESP ]; then
+			HOST=$RESP
+		fi
+		read -p "[==][??] alternative port? (8999): " RESP
+		if [[ "$RESP" =~ ^[0-9]+$ ]]; then
+			PORT=$RESP
+		fi
+	fi
+
+	## configuration wipe
+	echo -n "[>>] wiping old configuration ..."
+	for svc in ${SVCS}; do
+		# make sure the stuff is not running
+		svcadm disable ${svc} &>> /tmp/dlmgr-webui.log
+	done
+	sleep 10
+	for app in ${APPS}; do
+		[ -d ${CONFIG_DIR}/${app} ] && rm -rf ${CONFIG_DIR}/${app}/* &>> /tmp/dlmgr-webui.log
+	done
+	echo -n "\r[OK]\n"
+
+	## service toggle
+	# we need this for the configuration to be initialized
+	echo -n "[>>] generating initial configuration ..."
+	for i in 1 2; do # loop twice because some stuff fails first time (yes couhcpotato! I'm looking at you)
+		for svc in ${SVCS}; do
+			svcadm clear ${svc} &>> /tmp/dlmgr-webui.log
+			svcadm enable ${svc} &>> /tmp/dlmgr-webui.log
+		done
+		sleep 10
+		for svc in ${SVCS}; do
+			svcadm disable ${svc} &>> /tmp/dlmgr-webui.log
+		done
+	done
+	echo -n "\r[OK]\n"
+
+	## preparing for reverse proxy
+	echo "[..] preparing configuration for reverse proxy ..."
+
+	for app in ${APPS}; do
+		echo -n "[==][>>] preparing ${app} ..."
+		if [ "${app}" == "sabnzbd" ]; then
+			echo "[servers]" >> ${CONFIG_DIR}/${app}/sabnzbd.ini
+			echo "[[dummy server]]" >> ${CONFIG_DIR}/${app}/sabnzbd.ini
+			echo "name = dummy server" >> ${CONFIG_DIR}/${app}/sabnzbd.ini
+		elif [ "${app}" == "couchpotato" ]; then
+			sed -i 's#url_base =#url_base = /couchpotato#g' ${CONFIG_DIR}/${app}/settings.conf
+		elif [ "${app}" == "sickbeard" ]; then
+			sed -i 's#web_root = ""#web_root = "/sickbeard"#g' ${CONFIG_DIR}/${app}/config.ini
+			sed -i 's#web_host = 0.0.0.0#web_host = 127.0.0.1#g' ${CONFIG_DIR}/${app}/config.ini
+		elif [ "${app}" == "headphones" ]; then
+			sed -i 's#http_host = 0.0.0.0#http_host = 127.0.0.1#g' ${CONFIG_DIR}/${app}/config.ini
+		elif [ "${app}" == "deluge" ]; then
+			sed -i 's#"default_daemon": ""#"default_daemon": "127.0.0.1:58845"#g' ${CONFIG_DIR}/${app}/web.conf
+		fi
+		echo -n "\r[==][OK]\n"
+	done
+
+	## enable services
+	echo -n "[>>] enabling dependant services ..."
+	for svc in ${SVCS}; do
+		svcadm clear ${svc} &>> /tmp/dlmgr-webui.log
+		svcadm enable ${svc} &>> /tmp/dlmgr-webui.log
+	done
+	echo -n "\r[OK]\n"
+
+	## creating httpd.conf
+	echo -n "[>>] creating httpd.conf file ..."
+	cat > ${PREFIX}/dlmgr/webui/conf/httpd.conf <<HTTPD_FILE
+####
+# WebUI Configuration
+####
+## modules
+Use LoadModule mpm_prefork_module mod_mpm_prefork.so
+Use LoadModule unixd_module       mod_unixd.so
+Use LoadModule proxy_module       mod_proxy.so
+Use LoadModule proxy_http_module  mod_proxy_http.so
+Use LoadModule dir_module         mod_dir.so
+Use LoadModule rewrite_module     mod_rewrite.so
+Use LoadModule log_config_module  mod_log_config.so
+Use LoadModule authz_core_module  mod_authz_core.so
+Use LoadModule alias_module       mod_alias.so
+Use LoadModule filter_module      mod_filter.so
+Use LoadModule headers_module     mod_headers.so
+Use LoadModule mime_module        mod_mime.so
+Use LoadModule mime_magic_module  mod_mime_magic.so
+
+## mpm
+User                    dlmgr
+Group                   dlmgr
+PidFile                 "var/run/httpd.pid"
+StartServers            1
+MinSpareServers         1
+MaxSpareServers         5
+MaxRequestWorkers       150
+MaxConnectionsPerChild  0
+
+## base configuration
+ServerName  ${HOST}
+ServerTokens Minor
+ServerSignature Off
+
+HostnameLookups Off
+
+Timeout 120
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 30
+UseCanonicalName Off
+LogLevel Error
+ErrorLog "var/logs/error_log"
+
+AccessFileName .htaccess
+
+<Directory />
+        AllowOverride none
+        Require all denied
+</Directory>
+
+<Files ".ht*">
+        Require all denied
+</Files>
+
+TypesConfig conf/mime.types
+MIMEMagicFile conf/magic
+
+## create main host
+<IfDefine !SSL>
+        Listen ${PORT} http
+</IfDefine>
+<IfDefine SSL>
+        Listen ${PORT} https
+</IfDefine>
+<VirtualHost _default_:${PORT}>
+        ServerName  ${HOST}
+        ErrorLog    "var/logs/error_log"
+        TransferLog "var/logs/access_log"
+
+        DirectoryIndex index.html
+        DocumentRoot "${PREFIX}/dlmgr/webui/htdocs"
+        <Directory   "${PREFIX}/dlmgr/webui/htdocs">
+                Options FollowSymLinks
+                AllowOverride None
+                Require all granted
+        </Directory>
+
+        ## reverse proxy configuration
+        ProxyRequests off
+        ProxyVia On
+
+        <Location /sabnzbd>
+                ProxyPass        http://127.0.0.1:8080/sabnzbd
+                ProxyPassReverse http://127.0.0.1:8080/sabnzbd
+        </Location>
+
+        <Location /couchpotato/>
+                ProxyPass        http://127.0.0.1:5050/couchpotato/
+                ProxyPassReverse http://127.0.0.1:5050/couchpotato/
+        </Location>
+
+        <Location /sickbeard/>
+                ProxyPass        http://127.0.0.1:8081/sickbeard/
+                ProxyPassReverse http://127.0.0.1:8081/sickbeard/
+        </Location>
+
+        <Location /headphones>
+                ProxyPass        http://127.0.0.1:8181
+                ProxyPassReverse http://127.0.0.1:8181
+        </Location>
+
+        <Location /deluge>
+                RequestHeader    append X-Deluge-Base "/deluge"
+                ProxyPass        http://127.0.0.1:8112
+                ProxyPassReverse http://127.0.0.1:8112
+        </Location>
+
+        ## small redirections
+        redirect  /sickbeard     /sickbeard/home/
+        redirect  /couchpotato   /couchpotato/wanted/
+
+        <IfDefine SSL>
+                # certificates
+                SSLEngine on
+                SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
+
+                SSLCertificateFile    "${PREFIX}/dlmgr/webui/conf/ssl/server.crt"
+                SSLCertificateKeyFile "${PREFIX}/dlmgr/webui/conf/ssl/server.key"
+                #SSLCACertificateFile  "${PREFIX}/dlmgr/webui/conf/ssl/ca.crt"
+
+                BrowserMatch ".*MSIE.*" \
+                        nokeepalive ssl-unclean-shutdown \
+                        downgrade-1.0 force-response-1.0
+        </IfDefine>
+</VirtualHost>
+HTTPD_FILE
+	chown dlmgr:dlmgr ${PREFIX}/dlmgr/webui/conf/httpd.conf
+	echo -n "\r[OK]\n"
+
+	## install dlmgr-webui
+	echo -n "[>>] creating webui service ..."
+	svcadm disable network/dlmgr/webui &>> /tmp/dlmgr-webui.log
+	svccfg delete -f network/dlmgr/webui &>> /tmp/dlmgr-webui.log
+	cat > /tmp/webui-dlmgr.xml <<SMF_FILE
+<?xml version="1.0"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<service_bundle type='manifest' name='webui'>
+  <service name='network/dlmgr/webui' type='service' version='1'>
+    <create_default_instance enabled='true' />
+    <single_instance />
+
+    <!-- Wait for network to be initialized. -->
+    <dependency name='loopback'  grouping='require_all' restart_on='error' type='service'>
+      <service_fmri value='svc:/network/loopback:default' />
+    </dependency>
+    <dependency name='network' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/milestone/network:default' />
+    </dependency>
+
+    <!-- Wait for all local filesystems to be mounted. -->
+    <dependency name='filesystem-local' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/system/filesystem/local:default' />
+    </dependency>
+
+    <!-- We want our apps to be ready  -->
+    <dependency name='proxied-apps' grouping='require_all' restart_on='none' type='service'>
+      <service_fmri value='svc:/network/dlmgr/deluged:default' />
+      <service_fmri value='svc:/network/dlmgr/deluge-web:default' />
+      <service_fmri value='svc:/network/dlmgr/sabnzbd:default' />
+      <service_fmri value='svc:/network/dlmgr/sickbeard:default' />
+      <service_fmri value='svc:/network/dlmgr/couchpotato:default' />
+      <service_fmri value='svc:/network/dlmgr/headphones:default' />
+    </dependency>
+
+    <!-- require both bootstrap configuration files -->
+    <dependency name='config-file' grouping='require_all' restart_on='none' type='path'>
+      <service_fmri value='file://localhost${PREFIX}/dlmgr/webui/conf/i386/httpd.conf' />
+      <service_fmri value='file://localhost${PREFIX}/dlmgr/webui/conf/amd64/httpd.conf' />
+      <service_fmri value='file://localhost${PREFIX}/dlmgr/webui/conf/httpd.conf' />
+    </dependency>
+
+    <exec_method type='method' name='start'   exec='${PREFIX}/dlmgr/webui/bin/httpd -d ${PREFIX}/dlmgr/webui ${HTTPD_OPTS} -k start'    timeout_seconds='60' />
+    <exec_method type='method' name='stop'    exec='${PREFIX}/dlmgr/webui/bin/httpd -d ${PREFIX}/dlmgr/webui ${HTTPD_OPTS} -k stop'     timeout_seconds='60' />
+    <exec_method type='method' name='refresh' exec='${PREFIX}/dlmgr/webui/bin/httpd -d ${PREFIX}/dlmgr/webui ${HTTPD_OPTS} -k graceful' timeout_seconds='60' />
+
+    <property_group name="startd" type="framework">
+      <propval name="duration" type="astring" value="contract" />
+      <propval name="ignore_error" type="astring" value="core,signal" />
+    </property_group>
+
+    <stability value='Evolving' />
+
+    <template>
+      <common_name>
+        <loctext xml:lang='C'>Web Interface for dlmgr</loctext>
+      </common_name>
+    </template>
+  </service>
+</service_bundle>
+SMF_FILE
+	svccfg import /tmp/webui-dlmgr.xml
+	echo -n "\r[OK]\n"
+fi
