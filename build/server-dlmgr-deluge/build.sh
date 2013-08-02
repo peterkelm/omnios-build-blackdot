@@ -35,8 +35,8 @@ PKG=obd/server/dlmgr/deluge
 SUMMARY="Deluge is a full-featured  BitTorrent client for Linux, OS X, Unix and Windows."
 DESC="$SUMMARY It uses  libtorrent in its backend and features multiple user-interfaces including: GTK+, web and console. It has been designed using the client server model with a daemon process that handles all the bittorrent activity. The Deluge daemon is able to run on headless machines with the user-interfaces being able to connect remotely from any platform."
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/chardet library/python-2/pyxdg library/python-2/twisted library/python-2/zope.interface library/python-2/pyopenssl-26 library/python-2/mako library/python-2/gettext library/python-2/setproctitle obd/file/intltool obd/library/libtorrent obd/server/dlmgr/base"
-BUILD_DEPENDS_IPS="runtime/python-26 obd/library/libtorrent obd/file/intltool"
+RUN_DEPENDS_IPS="runtime/python-26 library/ncurses library/python-2/chardet library/python-2/pyxdg library/python-2/twisted library/python-2/zope.interface library/python-2/pyopenssl-26 library/python-2/mako library/python-2/gettext library/python-2/setproctitle obd/file/intltool obd/library/libtorrent obd/server/dlmgr/base"
+BUILD_DEPENDS_IPS="runtime/python-26 library/ncurses obd/library/libtorrent obd/file/intltool"
 
 PREFIX=${PREFIX}-apps
 
