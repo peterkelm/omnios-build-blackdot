@@ -54,8 +54,12 @@ LDFLAGS64="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}"
 
 reset_configure_opts
 CONFIGURE_OPTS="--enable-nonportable-atomics --enable-threads"
-CONFIGURE_OPTS_32="--enable-layout=${ISAPART} --enable-layout=${ISAPART} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART}"
-CONFIGURE_OPTS_64="--enable-layout=${ISAPART64} --enable-layout=${ISAPART64} --with-installbuilddir=${PREFIX}/share/build-1/${ISAPART64}"
+CONFIGURE_OPTS_32=\
+"--enable-layout=${ISAPART} "\
+"--with-installbuilddir=${PREFIX}/share/${ISAPART}/build-1"
+CONFIGURE_OPTS_64=\
+"--enable-layout=${ISAPART64} "\
+"--with-installbuilddir=${PREFIX}/share/${ISAPART64}/build-1"
 
 copy_config_layout() {
     logmsg "Copying config layout"
@@ -66,7 +70,7 @@ copy_config_layout() {
 }
 
 make_install_extras() {
-    logcmd gsed -i -e 's/CC -shared/CC -m64 -shared/g;' ${DESTDIR}/${PREFIX}/share/build-1/${ISAPART64}/libtool  || \
+    logcmd gsed -i -e 's/CC -shared/CC -m64 -shared/g;' ${DESTDIR}/${PREFIX}/share/${ISAPART64}/build-1/libtool  || \
         logerr "-------- Failed to patch 64-bit apr libtool!"
 }
 

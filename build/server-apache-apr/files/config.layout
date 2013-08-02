@@ -8,7 +8,7 @@
     mandir: ${prefix}/share/man
     sysconfdir: ${prefix}/conf/i386
     datadir: ${prefix}/share
-    installbuilddir: ${datadir}/build-1/i386
+    installbuilddir: ${datadir}/i386/build-1
     errordir: ${datadir}/error
     iconsdir: ${datadir}/icons
     htdocsdir: ${datadir}/htdocs
@@ -31,7 +31,7 @@
     mandir: ${prefix}/share/man
     sysconfdir: ${prefix}/conf/amd64
     datadir: ${prefix}/share
-    installbuilddir: ${datadir}/build-1/amd64
+    installbuilddir: ${datadir}/amd64/build-1
     errordir: ${datadir}/error
     iconsdir: ${datadir}/icons
     htdocsdir: ${datadir}/htdocs
