@@ -53,10 +53,12 @@ CFLAGS32="${CFLAGS32} -I/opt/omni/include"
 CFLAGS64="${CFLAGS64} -I/usr/include/libxml2 -I/opt/omni/include/amd65"
 LDFLAGS32=\
 "-L${PREFIX}/lib -R${PREFIX}/lib "\
+"-L$(echo ${PREFIX} | sed 's#php#apache/shared#g')/lib -L$(echo ${PREFIX} | sed 's#php#apache/shared#g')/lib "\
 "-L/opt/omni/lib -R/opt/omni/lib "\
 "-L/opt/omni/lib/mysql -R/opt/omni/lib/mysql"
 LDFLAGS64=\
 "-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64} "\
+"-L$(echo ${PREFIX} | sed 's#php#apache/shared#g')/lib/${ISAPART64} -L$(echo ${PREFIX} | sed 's#php#apache/shared#g')/lib/${ISAPART64} "\
 "-L/opt/omni/lib/$ISAPART64 -R/opt/omni/lib/$ISAPART64 "\
 "-L/opt/omni/lib/$ISAPART64/mysql -R/opt/omni/lib/$ISAPART64/mysql"
 
@@ -94,12 +96,12 @@ CONFIGURE_OPTS=\
 "--with-sqlite "\
 "--enable-pcntl "\
 "--with-openssl"
+#"--enable-dtrace "\
 #"--enable-sockets "\
 
 
-CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-mysqli=/opt/omni/bin/${ISAPART}/mysql_config"
-CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-mysqli=/opt/omni/bin/${ISAPART64}/mysql_config"
-
+CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-mysqli=/opt/omni/bin/${ISAPART}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART}/apxs"
+CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-mysqli=/opt/omni/bin/${ISAPART64}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART64}/apxs"
 
 save_function download_source download_source_orig
 download_source() {
@@ -111,6 +113,23 @@ download_source() {
     tar xvf ${PROG}-${VER}.tar.gz
 }
 
+make_httpd_conf() {
+    logmsg "Generating fake httpd.conf file"
+    logcmd mkdir -p ${DESTDIR}$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/conf/{${ISAPART},${ISAPART64}}/
+    echo -e "\n\n\nLoadModule access_module modules/mod_access.so\n\n\n" > \
+        ${DESTDIR}$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/conf/${ISAPART}/httpd.conf
+    echo -e "\n\n\nLoadModule access_module modules/mod_access.so\n\n\n" > \
+        ${DESTDIR}$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/conf/${ISAPART64}/httpd.conf	
+
+    [ -d ${TMPDIR}/php-apache-module/ ] && logcmd rm -rf ${TMPDIR}/php-apache-module/
+}
+
+remove_httpd_conf() {
+    logmsg "Removing Generated httpd.conf file"
+    logcmd rm -rf ${DESTDIR}$(echo ${PREFIX} | sed 's#php#apache#g') ||
+        logerr "Failed to remove httpd config"
+}
+
 save_function make_install make_install_orig
 make_install() {
     logmsg "--- make install"
@@ -118,15 +137,23 @@ make_install() {
         logerr "--- Make install failed"
 
     logmsg "--- Cleaning up dotfiles in destination directory"
-    logcmd rm -rf $DESTDIR/.??* || \
+    logcmd rm -rf ${DESTDIR}/.??* || \
         logerr "--- Unable to clean up destination directory"
+
+    logmsg "--- Relocating apache modules"
+    logcmd mv ${DESTDIR}$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/modules ${TMPDIR}/php-apache-module/ || \
+        logerr "--- Unable to relocate apache modules."
+
+
 }
 
 init
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
 patch_source
+make_httpd_conf
 build
+remove_httpd_conf
 make_isa_stub
 PREFIX=$(echo ${PREFIX} | sed "s#/${PROG}##g")
 prefix_updater
