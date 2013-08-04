@@ -1,6 +1,3 @@
-- illumos-kvm-cmd iPXE patches
-- apache httpd 2.2
-  - php?
-  - mod_???
+- netatalk
 - multri threaded par2 replacement
   - intel tbb for solaris 
