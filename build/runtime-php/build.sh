@@ -113,7 +113,7 @@ download_source() {
     tar xvf ${PROG}-${VER}.tar.gz
 }
 
-make_httpd_conf() {
+prep_httpd() {
     logmsg "Generating fake httpd.conf file"
     logcmd mkdir -p ${DESTDIR}$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/conf/{${ISAPART},${ISAPART64}}/
     echo -e "\n\n\nLoadModule access_module modules/mod_access.so\n\n\n" > \
@@ -124,7 +124,10 @@ make_httpd_conf() {
     [ -d ${TMPDIR}/php-apache-module/ ] && logcmd rm -rf ${TMPDIR}/php-apache-module/
 }
 
-remove_httpd_conf() {
+clean_httpd() {
+    logmsg "--- Relocating apache modules"
+    logcmd mv ${DESTDIR}$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/modules ${TMPDIR}/php-apache-module/ || \
+        logerr "--- Unable to relocate apache modules."
     logmsg "Removing Generated httpd.conf file"
     logcmd rm -rf ${DESTDIR}$(echo ${PREFIX} | sed 's#php#apache#g') ||
         logerr "Failed to remove httpd config"
@@ -139,28 +142,51 @@ make_install() {
     logmsg "--- Cleaning up dotfiles in destination directory"
     logcmd rm -rf ${DESTDIR}/.??* || \
         logerr "--- Unable to clean up destination directory"
-
-    logmsg "--- Relocating apache modules"
-    logcmd mv ${DESTDIR}$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/modules ${TMPDIR}/php-apache-module/ || \
-        logerr "--- Unable to relocate apache modules."
-
-
 }
 
+make_install_module() {
+    logmsg "Copying HTTPd module"
+    logmsg "--- sataging directory"
+    logcmd mkdir -p ${DESTDIR}${PREFIX}/apache/httpd/modules/{${ISAPART},${ISAPART64}} || \
+        logerr "--- Unable to create module directory."
+    logcmd mkdir -p ${DESTDIR}${PREFIX}/apache/httpd/conf/httpd.conf.d/ || \
+        logerr "--- Unable to create module directory."
+    logmsg "--- relocating apache modules"
+    logcmd mv ${TMPDIR}/php-apache-module/${ISAPART}/libphp5.so ${DESTDIR}${PREFIX}/apache/httpd/modules/${ISAPART}/mod_php5.so || \
+        logerr "--- Unable to relocate apache 32-bit modules."
+    logcmd mv ${TMPDIR}/php-apache-module/${ISAPART64}/libphp5.so ${DESTDIR}${PREFIX}/apache/httpd/modules/${ISAPART64}/mod_php5.so || \
+        logerr "--- Unable to relocate apache 64-bit modules."
+    logcmd cp -r ${SRCDIR}/files/conf/httpd.conf.d/* ${DESTDIR}${PREFIX}/apache/httpd/conf/httpd.conf.d/ || \
+        logerr "-------- Failed to copy default configuration."
+}
+
+## runtime/php
 init
 prep_build
 download_source ${DLPATH} ${PROG} ${VER}
 patch_source
-make_httpd_conf
+prep_httpd
 build
-remove_httpd_conf
+clean_httpd
 make_isa_stub
 PREFIX=$(echo ${PREFIX} | sed "s#/${PROG}##g")
 prefix_updater
 make_package
 auto_publish
+
+## server/apache/httpd/mod_php
+PKG=obd/server/apache/httpd/mod_php5
+SUMMARY="Apache HTTPd module for PHP ${VER}"
+RUN_DEPENDS_IPS="obd/runtime/php"
+
+prep_build
+make_install_module
+prefix_updater
+make_package
+auto_publish
 cleanup_source
 clean_up
+
 
 # Vim hints
 # vim:ts=4:sw=4:et:

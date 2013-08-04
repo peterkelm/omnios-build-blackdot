@@ -1,1 +1,5 @@
+<transform dir path={{PREFIX}}/apache.* -> set owner apache>
+<transform dir path={{PREFIX}}/apache.* -> set group apache>
+<transform file path={{PREFIX}}/apache.* -> set owner apache>
+<transform file path={{PREFIX}}/apache.* -> set group apache>
 license files/license license=PHP
