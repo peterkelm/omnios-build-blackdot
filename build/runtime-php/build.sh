@@ -50,7 +50,7 @@ PREFIX=${PREFIX}-apps/${PROG}
 # environment
 reset_configure_opts
 CFLAGS32="${CFLAGS32} -I/opt/omni/include"
-CFLAGS64="${CFLAGS64} -I/usr/include/libxml2 -I/opt/omni/include/amd65"
+CFLAGS64="${CFLAGS64} -I/usr/include/libxml2 -I/opt/omni/include/${ISAPART64}"
 LDFLAGS32=\
 "-L${PREFIX}/lib -R${PREFIX}/lib "\
 "-L$(echo ${PREFIX} | sed 's#php#apache/shared#g')/lib -L$(echo ${PREFIX} | sed 's#php#apache/shared#g')/lib "\
