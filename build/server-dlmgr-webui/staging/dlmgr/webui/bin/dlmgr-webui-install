@@ -26,7 +26,7 @@ if [ "$RESP" = "y" ]; then
 		echo "[..] enabling customization ..."
 		read -p "[==][??] enable SSL? (y/N): " RESP
 		if [ "$RESP" = "y" ]; then
-			read -p "[!!] please place server.crt and server.key in ${PREFIX}/dlmgr/webui/conf. (press any key to continue)" DUMMYRESP
+			read -p "[!!] please place server.crt and server.key in ${PREFIX}/dlmgr/webui/conf/ssl. (press any key to continue)" DUMMYRESP
 			HTTPD_OPTS=-DSSL
 		fi
 		read -p "[==][??] alternative hostname? (${HOST}): " RESP
@@ -36,6 +36,13 @@ if [ "$RESP" = "y" ]; then
 		read -p "[==][??] alternative port? (8999): " RESP
 		if [[ "$RESP" =~ ^[0-9]+$ ]]; then
 			PORT=$RESP
+		fi
+
+		if [[ $PORT -eq 443 ]]; then
+			read -p "[==][??] Redirect HTTP to HTTPS? (y/N): " RESP
+			if [ "$RESP" = "y" ]; then
+				HTTPD_OPTS="${HTTPD_OPTS} -DHTTPREDIRECT"
+			fi
 		fi
 	fi
 
@@ -117,6 +124,7 @@ Use LoadModule headers_module     mod_headers.so
 Use LoadModule mime_module        mod_mime.so
 Use LoadModule mime_magic_module  mod_mime_magic.so
 <IfDefine SSL>
+	Use LoadModule setenvif_module mod_setenvif.so
 	Use LoadModule ssl_module  mod_ssl.so
 </IfDefine>
 
@@ -165,6 +173,9 @@ MIMEMagicFile conf/magic
 </IfDefine>
 <IfDefine SSL>
         Listen ${PORT} https
+	<IfDefine HTTPREDIRECT>
+		Listen 80 http
+	</IfDefine>
 </IfDefine>
 <VirtualHost _default_:${PORT}>
         ServerName  ${HOST}
@@ -227,6 +238,15 @@ MIMEMagicFile conf/magic
                         downgrade-1.0 force-response-1.0
         </IfDefine>
 </VirtualHost>
+<IfDefine HTTPREDIRECT>
+	<VirtualHost _default_:80>
+	        ServerName  ${HOST}
+        	ErrorLog    "var/logs/error_log"
+	        TransferLog "var/logs/access_log"
+
+		Redirect permanent / https://${HOST}/
+	</VirtualHost>
+</IfDefine>
 HTTPD_FILE
 	chown dlmgr:dlmgr ${PREFIX}/dlmgr/webui/conf/httpd.conf
 	echo -n "\r[OK]\n"
