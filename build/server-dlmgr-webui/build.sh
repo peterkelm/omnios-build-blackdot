@@ -38,7 +38,7 @@
 # - include UI
 
 PROG=webui                                   # App name
-VER=1.5                                      # App version
+VER=1.6                                      # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/server/dlmgr/webui                   # Package name (e.g. library/foo)
