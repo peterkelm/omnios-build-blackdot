@@ -195,29 +195,29 @@ MIMEMagicFile conf/magic
         ProxyVia On
 
         <Location /sabnzbd>
-                ProxyPass        http://127.0.0.1:8080/sabnzbd
-                ProxyPassReverse http://127.0.0.1:8080/sabnzbd
+                ProxyPass        http://localhost:8080/sabnzbd
+                ProxyPassReverse http://localhost:8080/sabnzbd
         </Location>
 
         <Location /couchpotato/>
-                ProxyPass        http://127.0.0.1:5050/couchpotato/
-                ProxyPassReverse http://127.0.0.1:5050/couchpotato/
+                ProxyPass        http://localhost:5050/couchpotato/
+                ProxyPassReverse http://localhost:5050/couchpotato/
         </Location>
 
         <Location /sickbeard/>
-                ProxyPass        http://127.0.0.1:8081/sickbeard/
-                ProxyPassReverse http://127.0.0.1:8081/sickbeard/
+                ProxyPass        http://localhost:8081/sickbeard/
+                ProxyPassReverse http://localhost:8081/sickbeard/
         </Location>
 
         <Location /headphones>
-                ProxyPass        http://127.0.0.1:8181
-                ProxyPassReverse http://127.0.0.1:8181
+                ProxyPass        http://localhost:8181
+                ProxyPassReverse http://localhost:8181
         </Location>
 
         <Location /deluge>
                 RequestHeader    append X-Deluge-Base "/deluge"
-                ProxyPass        http://127.0.0.1:8112
-                ProxyPassReverse http://127.0.0.1:8112
+                ProxyPass        http://localhost:8112
+                ProxyPassReverse http://localhost:8112
         </Location>
 
         ## small redirections
