@@ -1,5 +1,5 @@
 group groupname=znc gid=7666
-user ftpuser=false gcos-field="ZNC Bouncer privsep user" group=znc login-shell=/bin/false password=NP uid=7666 username=znc home-dir={{PREFIX}}/share/znc/service
+user ftpuser=false gcos-field="ZNC Bouncer privsep user" group=znc login-shell=/bin/false password=NP uid=7666 username=znc home-dir=/{{PREFIX}}/share/znc/service
 <transform dir path={{PREFIX}}/share/znc/service -> set owner znc>
 <transform dir path={{PREFIX}}/share/znc/service -> set group znc>
 <transform dir path={{PREFIX}}/share/znc/service -> set mode 0750>
