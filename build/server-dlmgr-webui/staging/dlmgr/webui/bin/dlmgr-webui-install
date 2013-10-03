@@ -116,6 +116,9 @@ Use LoadModule filter_module      mod_filter.so
 Use LoadModule headers_module     mod_headers.so
 Use LoadModule mime_module        mod_mime.so
 Use LoadModule mime_magic_module  mod_mime_magic.so
+<IfDefine SSL>
+	Use LoadModule ssl_module  mod_ssl.so
+</IfDefine>
 
 ## mpm
 User                    dlmgr
