@@ -54,7 +54,7 @@ DLPATH=dist/src
 
 # compile flags
 NO_PARALLEL_MAKE=1
-CONFIGURE_OPTS="--enable-pthread-support --disable-ndbm-db --with-sqlite3-include=/usr/include"
+CONFIGURE_OPTS="--enable-pthread-support --with-sqlite3-include=/usr/include"
 CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --libexecdir=${PREFIX}/sbin/${ISAPART} --with-sqlite3-lib=/usr/lib"
 CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --libexecdir=${PREFIX}/sbin/${ISAPART64} --with-sqlite3-lib=/usr/lib/${ISAPART64}"
 ISAEXEC_DIRS="bin sbin sbin/heimdal"
@@ -71,6 +71,8 @@ make_install_extras() {
         logerr "-------- Failed to move ${ISAPART}/heimdal."
     logcmd mv ${DESTDIR}/${PREFIX}/sbin/${ISAPART64}/heimdal ${DESTDIR}/${PREFIX}/sbin/heimdal/${ISAPART64} || \
         logerr "-------- Failed to move ${ISAPART64}/heimdal."
+    logcmd mkdir -p ${DESTDIR}/var/heimdal/ || \
+        logerr "-------- Failed to create var directory."
     logcmd mkdir -p ${DESTDIR}/lib/svc/manifest/network/security/ || \
         logerr "-------- Failed to create svc directory."
     logcmd cp -r ${SRCDIR}/files/smf/heimdal ${DESTDIR}/lib/svc/manifest/network/security/ || \
