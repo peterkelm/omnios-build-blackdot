@@ -52,11 +52,16 @@ BUILDARCH=both
 MIRROR=www.h5l.org
 DLPATH=dist/src
 
+# compile flags
 NO_PARALLEL_MAKE=1
 CONFIGURE_OPTS="--enable-pthread-support --disable-ndbm-db --with-sqlite3-include=/usr/include"
 CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --libexecdir=${PREFIX}/sbin/${ISAPART} --with-sqlite3-lib=/usr/lib"
 CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --libexecdir=${PREFIX}/sbin/${ISAPART64} --with-sqlite3-lib=/usr/lib/${ISAPART64}"
 ISAEXEC_DIRS="bin sbin sbin/heimdal"
+
+# magic to fix sysconfig
+CONFIGURE_OPTS_32=$(echo ${CONFIGURE_OPTS_32} | /bin/sed 's#/etc#/etc/heimdal#g')
+CONFIGURE_OPTS_64=$(echo ${CONFIGURE_OPTS_64} | /bin/sed 's#/etc#/etc/heimdal#g')
 
 make_install_extras() {
     logmsg "--- make install extras"
