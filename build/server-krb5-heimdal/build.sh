@@ -43,7 +43,7 @@ PKG=obd/server/krb5/heimdal                # Package name (e.g. library/foo)
 SUMMARY="Heimdal is an implementation of Kerberos 5 (and some more stuff) largely written in Sweden (which was important when we started writing it, less so now). It is freely available under a three clause BSD style license."
 DESC="${SUMMARY}"
 
-RUN_DEPENDS_IPS=""
+RUN_DEPENDS_IPS="omniti/database/bdb"
 BUILD_DEPENDS_IPS="developer/lexer/flex"
 
 BUILDARCH=both
@@ -55,8 +55,8 @@ DLPATH=dist/src
 # compile flags
 NO_PARALLEL_MAKE=1
 CONFIGURE_OPTS="--enable-pthread-support --with-sqlite3-include=/usr/include"
-CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --libexecdir=${PREFIX}/sbin/${ISAPART} --with-sqlite3-lib=/usr/lib"
-CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --libexecdir=${PREFIX}/sbin/${ISAPART64} --with-sqlite3-lib=/usr/lib/${ISAPART64}"
+CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --libexecdir=${PREFIX}/sbin/${ISAPART} --with-sqlite3-lib=/usr/lib --with-berkeley-db-include=/opt/omni/include"
+CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --libexecdir=${PREFIX}/sbin/${ISAPART64} --with-sqlite3-lib=/usr/lib/${ISAPART64} -with-berkeley-db-include=/opt/omni/include/${ISAPART64}"
 ISAEXEC_DIRS="bin sbin sbin/heimdal"
 
 # magic to fix sysconfig
