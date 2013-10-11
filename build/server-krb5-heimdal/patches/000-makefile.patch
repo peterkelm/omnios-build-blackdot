@@ -1,0 +1,12 @@
+diff -rupN a/po/Makefile.in b/po/Makefile.in
+--- a/po/Makefile.in	2013-10-11 21:18:28.691596625 +0200
++++ b/po/Makefile.in	2013-10-11 21:19:56.037015295 +0200
+@@ -558,7 +558,7 @@ mo:
+ 	   echo $$t | sed 's@\./@@' >> localefiles ; \
+ 	done
+ 
+-install-data-hook:
++install-data-hook: mo
+ 	@for x in `cat $(srcdir)/localefiles` ; do \
+ 	    domain=`echo $$x | sed 's@/.*@@'`; \
+ 	    lang=`echo $$x | sed 's@.*/\(.*\)\\.mo$$@\1@'`; \
