@@ -79,7 +79,7 @@ auto_publish() {
     fi
 
     logmsg "--- stopping pkg/server"
-    logcmd pfexec svcadm disable pkg/server || \
+    logcmd pfexec /usr/sbin/svcadm disable pkg/server || \
             logerr "------ Failed to stop pkg/server."
 
     logmsg "--- clearing cache"
@@ -87,7 +87,7 @@ auto_publish() {
             logerr "------ Failed clear cache."
 
     logmsg "--- starting pkg/server"
-    logcmd pfexec svcadm enable pkg/server || \
+    logcmd pfexec /usr/sbin/svcadm enable pkg/server || \
             logerr "------ Failed to start pkg/server."
 }
 
