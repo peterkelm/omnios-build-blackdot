@@ -1,0 +1,8 @@
+license files/license license=GPL
+<transform dir path=/usr/lib/security.* -> set owner root>
+<transform dir path=/usr/lib/security.* -> set group bin>
+<transform dir path=/usr/lib/security.* -> set mode 0750>
+<transform dir path=/usr/lib/security.* -> set owner root>
+<transform dir path=/usr/lib/security.* -> set group sys>
+<transform dir path=/usr/lib/security.* -> set mode 0750>
+<transform file path=(var|lib)/svc/manifest/network/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
