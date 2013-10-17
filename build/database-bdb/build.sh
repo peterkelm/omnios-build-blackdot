@@ -31,61 +31,70 @@
 # - fix libexec/sbin 
 # -- also isastub heimdal sub folder
 
-# Load support functions
-. ../../lib/functions.sh
-. ../myfunc.sh
+BASEDIR=$(pwd)
+VERSIONS="6.0.20 5.3.28 4.8.30"
+for VER in ${VERSIONS}; do
+  cd ${BASEDIR}
 
-PROG=db                                     # App name
-VER=6.0.20                                  # App version
-VERHUMAN=$VER-1                             # Human-readable version
-#PVER=                                      # Branch (set in config.sh, override here if needed)
-PKG=obd/database/bdb                        # Package name (e.g. library/foo)
-SUMMARY="Berkeley DB (BDB) is a software library that provides a high-performance embedded database for key/value data."
-DESC="${SUMMARY}"
+  # Load support functions
+  . ../../lib/functions.sh
+  . ../myfunc.sh
 
-RUN_DEPENDS_IPS=""
-BUILD_DEPENDS_IPS=""
+	PROG=db                                     # App name
+  MAJ_VER=${VER:0:1}
+	VERHUMAN=$VER-1                             # Human-readable version
+	#PVER=                                      # Branch (set in config.sh, override here if needed)
+	PKG=obd/database/bdb-${MAJ_VER}             # Package name (e.g. library/foo)
+	SUMMARY="Berkeley DB (BDB) is a software library that provides a high-performance embedded database for key/value data."
+	DESC="${SUMMARY}"
 
-BUILDARCH=both
+	RUN_DEPENDS_IPS=""
+	BUILD_DEPENDS_IPS=""
 
-# package specific
-MIRROR=download.oracle.com
-DLPATH=berkeley-db
+	BUILDARCH=both
 
-BUILDDIR=db-$VER/build_unix
-CONFIGURE_CMD="../dist/configure"
-CONFIGURE_OPTS="--enable-dtrace --enable-dbm --enable-sql --enable-cxx --docdir=${PREFIX}/share/docs"
-LDFLAGS32="$LDFLAGS32 -L${PREFIX}/lib -R${PREFIX}/lib"
-LDFLAGS64="$LDFLAGS64 -L${PREFIX}/lib/$ISAPART64 -R${PREFIX}/lib/$ISAPART64"
+	# package specific
+	MIRROR=download.oracle.com
+	DLPATH=berkeley-db
 
-export EXTLIBS=-lm
+	BUILDDIR=db-$VER/build_unix
+	CONFIGURE_CMD="../dist/configure"
+	CONFIGURE_OPTS="--enable-dtrace --enable-sql --enable-cxx --program-suffix=${MAJ_VER} --enable-compat185"
+	CONFIGURE_OPTS_32=$(echo ${CONFIGURE_OPTS_32} | sed "s#/lib #/lib/db${MAJ_VER} #g" | sed "s#/include #/include/db${MAJ_VER} #g")
+	CONFIGURE_OPTS_64=$(echo ${CONFIGURE_OPTS_64} | sed "s#/lib/#/lib/db${MAJ_VER}/#g" | sed "s#/include/#/include/db${MAJ_VER}/#g")
 
-save_function build64 build64_orig
-build64() {
-  export DLDFLAGS="-L${PREFIX}/lib/$ISAPART64 -R${PREFIX}/lib/$ISAPART64"
-  build64_orig
-}
+	LDFLAGS32="$LDFLAGS32 -L${PREFIX}/lib/db${MAJ_VER} -R${PREFIX}/lib/db${MAJ_VER}"
+	LDFLAGS64="$LDFLAGS64 -L${PREFIX}/lib/db${MAJ_VER}/$ISAPART64 -R${PREFIX}/lib/db${MAJ_VER}/$ISAPART64"
 
-make_install_extras() {
+	export EXTLIBS=-lm
+
+	save_function build64 build64_orig
+	build64() {
+    export DLDFLAGS="-L${PREFIX}/lib/db${MAJ_VER}/$ISAPART64 -R${PREFIX}/lib/db${MAJ_VER}/$ISAPART64"
+    build64_orig
+  }
+
+  make_install_extras() {
     logmsg "--- make install extras"
     logcmd mkdir -p ${DESTDIR}/${PREFIX}/share || \
-        logerr "-------- Failed to create share directory."
+      logerr "-------- Failed to create share directory."
     logcmd mv ${DESTDIR}/${PREFIX}/docs  ${DESTDIR}/${PREFIX}/share || \
-        logerr "-------- Failed to move docs directory."
-}
+      logerr "-------- Failed to move docs directory."
+  }
 
-init
-prep_build
-download_source ${DLPATH} ${PROG} ${VER}
-patch_source
-build
-make_install_extras
-make_isa_stub
-prefix_updater
-make_package
-auto_publish
-cleanup_source
-clean_up
+  init
+  prep_build
+  download_source ${DLPATH} ${PROG} ${VER}
+  patch_source
+  build
+  make_install_extras
+  make_isa_stub
+  prefix_updater
+  make_package
+  auto_publish
+  cleanup_source
+  clean_up
 
+done
 # Vim hints
 # vim:ts=4:sw=4:et:
