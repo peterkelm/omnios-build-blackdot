@@ -76,10 +76,12 @@ for VER in ${VERSIONS}; do
 
   make_install_extras() {
     logmsg "--- make install extras"
-    logcmd mkdir -p ${DESTDIR}/${PREFIX}/share || \
+    logcmd mkdir -p ${DESTDIR}/${PREFIX}/share/docs/db${MAJ_VER} || \
       logerr "-------- Failed to create share directory."
-    logcmd mv ${DESTDIR}/${PREFIX}/docs  ${DESTDIR}/${PREFIX}/share || \
+    logcmd mv ${DESTDIR}/${PREFIX}/docs/*  ${DESTDIR}/${PREFIX}/share/docs/db${MAJ_VER}/ || \
       logerr "-------- Failed to move docs directory."
+    logcmd rmdir ${DESTDIR}/${PREFIX}/docs || \
+      logerr "-------- Failed to cleqn docs directory."
   }
 
   init
