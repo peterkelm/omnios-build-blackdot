@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=boost                                  # App name
-VER=1.54.0                                  # App version
+VER=1.55.0                                  # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/developer/library/boost             # Package name (e.g. library/foo)
