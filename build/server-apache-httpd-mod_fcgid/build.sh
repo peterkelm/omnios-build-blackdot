@@ -31,7 +31,7 @@
 
 # main package config
 PROG=mod_fcgid                               # App name
-VER=2.3.7                                    # App version
+VER=2.3.9                                    # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/server/apache/httpd/mod_fcgid        # Package name (e.g. library/foo)

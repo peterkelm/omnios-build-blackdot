@@ -31,7 +31,7 @@
 
 # main package config
 PROG=mod_authnz_external                      # App name
-VER=3.3.1                                     # App version
+VER=3.3.2                                     # App version
 VERHUMAN=$VER-1                               # Human-readable version
 #PVER=                                        # Branch (set in config.sh, override here if needed)
 PKG=obd/server/apache/httpd/mod_authnz_external # Package name (e.g. library/foo)

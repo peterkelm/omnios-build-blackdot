@@ -34,7 +34,7 @@
 
 # main package config
 PROG=php                                     # App name
-VER=5.5.1                                    # App version
+VER=5.5.7                                    # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/runtime/php                          # Package name (e.g. library/foo)
@@ -170,7 +170,6 @@ build
 clean_httpd
 make_isa_stub
 PREFIX=$(echo ${PREFIX} | sed "s#/${PROG}##g")
-prefix_updater
 make_package
 auto_publish
 
