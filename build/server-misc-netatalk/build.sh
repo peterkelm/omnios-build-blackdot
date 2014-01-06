@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=netatalk                               # App name
-VER=3.0.4                                   # App version
+VER=3.0.6                                   # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/server/misc/netatalk                # Package name (e.g. library/foo)
