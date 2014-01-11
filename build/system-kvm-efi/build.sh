@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=kvm-efi                                # App name
-VER=1.0                                     # App version
+VER=1.1                                     # App version
 VERHUMAN=${VER}-1                           # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/system/kvm/efi                      # Package name (e.g. library/foo)

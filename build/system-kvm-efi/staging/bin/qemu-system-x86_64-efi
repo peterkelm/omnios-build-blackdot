@@ -1,0 +1,3 @@
+#!/bin/sh
+OPTS=$(echo $* | gsed -e 's/-vga \(std\|vmware\|cirrus\|qxl\|xenfb\|none\) //g')
+/usr/bin/qemu-system-x86_64 ${OPTS} -vga cirrus -L {{PREFIX}}/share/qemu-efi
