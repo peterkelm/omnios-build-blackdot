@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=dnsmasq                                # App name
-VER=2.67test7                               # App version
+VER=2.68                                    # App version
 VERHUMAN=${VER}-1                           # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/server/misc/dnsmasq                 # Package name (e.g. library/foo)
