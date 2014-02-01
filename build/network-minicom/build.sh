@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=minicom                                # App name
-VER=2.6.2                                   # App version
+VER=2.7                                     # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/network/minicom                     # Package name (e.g. library/foo)
@@ -43,8 +43,9 @@ BUILD_DEPENDS_IPS=""
 BUILDARCH=both
 
 # package specific
-MIRROR=alioth.debian.org
-DLPATH=frs/download.php/file/3869
+
+MIRROR=pkgs.fedoraproject.org
+DLPATH=repo/pkgs/minicom/minicom-2.7.tar.gz/7044ca3e291268c33294f171d426dc2d
 
 init
 prep_build
