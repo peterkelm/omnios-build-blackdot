@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=setproctitle
-VER=1.1.7
+VER=1.1.8
 PKG=library/python-2/setproctitle
 SUMMARY="A library to allow customization of the process title."
 DESC="$SUMMARY"

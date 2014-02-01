@@ -42,11 +42,10 @@ download_source() {
     logmsg "Downloading Source"
 
     cd ${TMPDIR}
-    wget -c http://pysqlite.googlecode.com/files/${PROG}-${VER}.tar.gz
+    wget -c https://pypi.python.org/packages/source/${PROG:0:1}/${PROG}/${PROG}-${VER}.tar.gz
 
     tar xvf ${PROG}-${VER}.tar.gz
 }
-
 
 init
 download_source $PROG $PROG $VER

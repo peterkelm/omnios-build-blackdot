@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=pycrypto
-VER=2.6
+VER=2.6.1
 PKG=library/python-2/pycrypto
 SUMMARY="Cryptographic modules for Python."
 DESC="$SUMMARY"
