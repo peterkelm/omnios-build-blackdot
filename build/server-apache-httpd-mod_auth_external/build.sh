@@ -48,7 +48,7 @@ PREFIX_LIB=$(echo ${PREFIX} | sed "s#/httpd#/shared#g")
 # package specific
 MIRROR=mod-auth-external.googlecode.com
 DLPATH=files
-
+n
 # environment
 LDFLAGS32="-L${PREFIX_LIB}/lib -R${PREFIX_LIB}/lib"
 LDFLAGS64="-m64 -L${PREFIX_LIB}/lib/${ISAPART64} -R${PREFIX_LIB}/lib/${ISAPART64}"
@@ -67,7 +67,7 @@ make_install64() {
     MOD_DIR=${DESTDIR}${PREFIX}/modules/${ISAPART64}
     logcmd mkdir -p ${MOD_DIR} ||
         logerr "-------- Failed to create ${MOD_DIR}."
-    ${PREFIX}/share/build-1/${ISAPART64}/instdso.sh SH_LIBTOOL="${PREFIX_LIB}/share/build-1/${ISAPART64}/libtool" mod_authnz_external.la ${MOD_DIR}
+    ${PREFIX}/share/${ISAPART64}/build/instdso.sh SH_LIBTOOL="${PREFIX_LIB}/share/${ISAPART64}/build-1/libtool" mod_authnz_external.la ${MOD_DIR}
 }
 
 make_install32() {
@@ -75,7 +75,7 @@ make_install32() {
     MOD_DIR=${DESTDIR}${PREFIX}/modules/${ISAPART}
     logcmd mkdir -p ${MOD_DIR} ||
         logerr "-------- Failed to create ${MOD_DIR}."
-    ${PREFIX}/share/build-1/${ISAPART}/instdso.sh SH_LIBTOOL="${PREFIX_LIB}/share/build-1/${ISAPART}/libtool" mod_authnz_external.la ${MOD_DIR}
+    ${PREFIX}/share/${ISAPART}/build/instdso.sh SH_LIBTOOL="${PREFIX_LIB}/share/${ISAPART}/build-1/libtool" mod_authnz_external.la ${MOD_DIR}
 }
 
 make_install_extras() {
