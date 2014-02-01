@@ -34,7 +34,7 @@
 
 # main package config
 PROG=php                                     # App name
-VER=5.5.7                                    # App version
+VER=5.5.8                                    # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/runtime/php                          # Package name (e.g. library/foo)
@@ -108,7 +108,7 @@ download_source() {
     logmsg "Downloading Source"
 
     cd ${TMPDIR}
-    wget -c http://be1.php.net/get/${PROG}-${VER}.tar.gz/from/this/mirror -O ${PROG}-${VER}.tar.gz
+    wget -c http://be2.php.net/get/${PROG}-${VER}.tar.gz/from/this/mirror -O ${PROG}-${VER}.tar.gz
 
     tar xvf ${PROG}-${VER}.tar.gz
 }
