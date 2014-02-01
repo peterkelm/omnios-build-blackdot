@@ -49,8 +49,6 @@ MIRROR=www.openssl.org
 DLPATH=source
 
 # environment
-CC="${CC} -L${PREFIX}/lib -R${PREFIX}/lib -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}" # openssl does not do LDFLAGS
-
 reset_configure_opts
 NO_PARALLEL_MAKE=1
 CONFIGURE_CMD="./Configure"
@@ -59,6 +57,24 @@ CONFIGURE_OPTS_32="solaris-x86-gcc --prefix=${PREFIX} --with-zlib-lib=${PREFIX}/
 CONFIGURE_OPTS_64="solaris64-x86_64-gcc --prefix=${PREFIX} --with-zlib-lib=${PREFIX}/lib/${ISAPART64} --with-zlib-include=${PREFIX}/include/${ISAPART64}"
 
 # override some functions
+save_function build build_orig
+build() {
+	pfexec pkg uninstall -v $(pkg list | grep obd/server/apache/httpd | awk '{ print $1 }' | xargs) ${PKG}
+	build_orig
+}
+
+save_function build32 build32_orig
+build32() {
+	CC="${CC} -L${PREFIX}/lib -R${PREFIX}/lib" # openssl does not do LDFLAGS
+	build32_orig
+}
+
+save_function build64 build64_orig
+build64() {
+	CC="${CC} -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}" # openssl does not do LDFLAGS
+	build64_orig
+}
+
 make_install32() {
     logmsg "--- make install"
     logcmd $MAKE INSTALL_PREFIX=$DESTDIR LIBDIR=lib install ||
