@@ -49,6 +49,7 @@ MIRROR=zlib.net
 DLPATH=/
 
 # environment
+CFLAGS="$CFLAGS -fpic"
 LDFLAGS32="-L${PREFIX}/lib -R${PREFIX}/lib"
 LDFLAGS64="-m64 -L${PREFIX}/lib/${ISAPART64} -R${PREFIX}/lib/${ISAPART64}"
 
