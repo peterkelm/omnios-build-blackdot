@@ -50,6 +50,7 @@ MIRROR=www.eu.apache.org
 DLPATH=dist/httpd/${PROG}
 
 # environment
+CFLAGS="$CFLAGS -fpic"
 LDFLAGS32="-L${PREFIX_LIB}/lib -R${PREFIX_LIB}/lib"
 LDFLAGS64="-m64 -L${PREFIX_LIB}/lib/${ISAPART64} -R${PREFIX_LIB}/lib/${ISAPART64}"
 

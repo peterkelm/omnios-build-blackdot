@@ -48,8 +48,9 @@ PREFIX_LIB=$(echo ${PREFIX} | sed "s#/httpd#/shared#g")
 # package specific
 MIRROR=mod-auth-external.googlecode.com
 DLPATH=files
-n
+
 # environment
+CFLAGS="$CFLAGS -fpic"
 LDFLAGS32="-L${PREFIX_LIB}/lib -R${PREFIX_LIB}/lib"
 LDFLAGS64="-m64 -L${PREFIX_LIB}/lib/${ISAPART64} -R${PREFIX_LIB}/lib/${ISAPART64}"
 CLEAN_PATH=$PATH
