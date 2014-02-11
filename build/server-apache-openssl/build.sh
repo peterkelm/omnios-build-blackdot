@@ -51,6 +51,7 @@ DLPATH=source
 # environment
 reset_configure_opts
 NO_PARALLEL_MAKE=1
+CFLAGS="$CFLAGS -fpic"
 CONFIGURE_CMD="./Configure"
 CONFIGURE_OPTS="shared threads zlib-dynamic"
 CONFIGURE_OPTS_32="solaris-x86-gcc --prefix=${PREFIX} --with-zlib-lib=${PREFIX}/lib --with-zlib-include=${PREFIX}/include"
