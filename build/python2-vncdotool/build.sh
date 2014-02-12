@@ -35,7 +35,7 @@ PKG=library/python-2/vncdotool
 SUMMARY="Command line VNC client and library."
 DESC="vncdotool is a command line VNC client. It can be useful to automating interactions with virtual machines or hardware devices that are otherwise difficult to control."
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/imaging"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/imaging library/python-2/twisted"
 BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
