@@ -29,22 +29,22 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=vncdotool
-VER=0.8.0
-PKG=library/python-2/vncdotool
-SUMMARY="Command line VNC client and library."
-DESC="vncdotool is a command line VNC client. It can be useful to automating interactions with virtual machines or hardware devices that are otherwise difficult to control."
+PROG=Imaging
+VER=1.1.7
+PKG=library/python-2/imaging
+SUMMARY="The Python Imaging Library (PIL) adds image processing capabilities to your Python interpreter."
+DESC="$SUMMARY"
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/imaging"
+RUN_DEPENDS_IPS="runtime/python-26"
 BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
     logmsg "Downloading Source"
 
     cd ${TMPDIR}
-    wget -c https://pypi.python.org/packages/source/${PROG:0:1}/${PROG}/${PROG}-${VER}.tar.gz
+    wget -c http://effbot.org/downloads/${PROG}-${VER}.tar.gz
 
-    tar xvpf ${PROG}-${VER}.tar.gz
+    tar xvf ${PROG}-${VER}.tar.gz
 }
 
 make_install_extras() {
