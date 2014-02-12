@@ -43,8 +43,11 @@ download_source() {
 
     cd ${TMPDIR}
     wget -c https://pypi.python.org/packages/source/${PROG:0:1}/${PROG}/${PROG}-${VER}.tar.gz
-
     tar xvpf ${PROG}-${VER}.tar.gz
+
+    #wget https://github.com/sibson/vncdotool/archive/master.zip
+    #unzip master.zip
+    #mv vncdotool-master ${PROG}-${VER}
 }
 
 make_install_extras() {
