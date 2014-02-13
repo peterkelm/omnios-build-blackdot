@@ -29,11 +29,11 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=vncdotool
-VER=0.8.0
-PKG=library/python-2/vncdotool
-SUMMARY="Command line VNC client and library."
-DESC="vncdotool is a command line VNC client. It can be useful to automating interactions with virtual machines or hardware devices that are otherwise difficult to control."
+PROG=websockify
+VER=`date +%Y%m%d`
+PKG=library/python-2/websockify
+SUMMARY="Websockify is a WebSocket to TCP proxy/bridge. This allows a browser to connect to any application/server/service. Implementations in Python, C, Node.js and Ruby."
+DESC="${SUMMARY}"
 
 RUN_DEPENDS_IPS="runtime/python-26 library/python-2/imaging library/python-2/twisted library/python-2/zope.interface"
 BUILD_DEPENDS_IPS="runtime/python-26"
@@ -42,13 +42,10 @@ download_source() {
     logmsg "Downloading Source"
 
     cd ${TMPDIR}
-    wget -c https://pypi.python.org/packages/source/${PROG:0:1}/${PROG}/${PROG}-${VER}.tar.gz
-    tar xvpf ${PROG}-${VER}.tar.gz
-
-    #wget https://github.com/sibson/vncdotool/archive/master.zip
-    #unzip master.zip
-    #mv vncdotool-master ${PROG}-${VER}
-    #rm master.zip
+    wget https://github.com/kanaka/websockify/archive/master.zip
+    unzip master.zip
+    mv ${PROG}-master ${PROG}-${VER}
+    rm master.zip
 }
 
 make_install_extras() {
@@ -57,6 +54,8 @@ make_install_extras() {
         logerr "------ Failed to create destination directory."
     logcmd mv ${DESTDIR}/usr/bin ${DESTDIR}${PREFIX}/ || \
         logerr "------ Failed to move bin directory."
+    logcmd mv ${DESTDIR}/usr/share ${DESTDIR}${PREFIX}/ || \
+        logerr "------ Failed to move share directory."
 
 }
 
