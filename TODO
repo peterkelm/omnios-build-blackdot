@@ -1,4 +1,7 @@
-- mod_nss
+- libusb (https://github.com/joyent/pkgsrc-joyent/)
+- sslh (https://github.com/yrutschle/sslh)
+- mod_pLua (https://modules.apache.org/modules.lua?id=1)
+- python vnc/sock/thingy
 - samba4 ivp6
 - sshuttle http://xmodulo.com/2013/06/how-to-set-up-vpn-over-ssh-in-linux.html
-- apachetop
+- mod_nss (very hard)

@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=bottle
-VER=0.11.6
+VER=0.12.5
 PKG=library/python-2/bottle
 SUMMARY="Bottle is a fast, simple and lightweight WSGI micro web-framework for Python."
 DESC="${SUMMARY} It is distributed as a single file module and has no dependencies other than the Python Standard Library."

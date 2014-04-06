@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=wakeonlan
-VER=0.1.1
+VER=0.2.2
 PKG=library/python-2/wakeonlan
 SUMMARY="A small python module for wake on lan."
 DESC="$SUMMARY"

@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=paramiko
-VER=1.12.1
+VER=1.13.0
 PKG=library/python-2/paramiko
 SUMMARY="This is a library for making SSH2 connections (client or server). Emphasis is on using SSH2 as an alternative to SSL for making secure connections between python scripts. All major ciphers and hash methods are supported. SFTP client and server mode are both supported too."
 DESC="$SUMMARY"

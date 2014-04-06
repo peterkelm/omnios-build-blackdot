@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=zope.interface
-VER=4.0.5
+VER=4.1.1
 PKG=library/python-2/zope.interface
 SUMMARY="This package is intended to be independently reusable in any Python project. It is maintained by the Zope Toolkit project."
 DESC="$SUMMARY"
@@ -42,9 +42,8 @@ download_source() {
     logmsg "Downloading Source"
 
     cd ${TMPDIR}
-    wget -c https://pypi.python.org/packages/source/${PROG:0:1}/${PROG}/${PROG}-${VER}.zip
-
-    unzip ${PROG}-${VER}.zip
+    wget -c https://pypi.python.org/packages/source/${PROG:0:1}/${PROG}/${PROG}-${VER}.tar.gz
+    tar xvf ${PROG}-${VER}.tar.gz
 }
 
 

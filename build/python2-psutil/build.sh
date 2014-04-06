@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=psutil
-VER=1.2.1
+VER=2.0.0
 PKG=library/python-2/psutil
 SUMMARY="A process and system utilities module for Python."
 DESC="psutil is a module providing an interface for retrieving information on all running processes and system utilization (CPU, memory, disks, network, users) in a portable way by using Python, implementing many functionalities offered by command line tools such as: ps, top, df, kill, free, lsof, free, netstat, ifconfig, nice, ionice, iostat, iotop, uptime, pidof, tty, who, taskset, pmap."

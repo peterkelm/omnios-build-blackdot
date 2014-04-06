@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=chardet
-VER=2.1.1
+VER=2.2.1
 PKG=library/python-2/chardet
 SUMMARY="Universal encoding detector"
 DESC="$SUMMARY, chardet guesses the encoding of text files."
