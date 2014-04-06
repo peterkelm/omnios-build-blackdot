@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=unrar                                  # App name
-VER=4.0.7                                   # App version
+VER=5.1.2                                   # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/compress/unrar                          # Package name (e.g. library/foo)
@@ -62,15 +62,16 @@ download_source () {
 }
 
 configure32() {
-    cp makefile.unix makefile.illumos32
-    patch < makefile-i386.patch
-    cp makefile.illumos32 Makefile
+    cp makefile makefile.clean
+    logmsg "--- patch makefile"
+    patch < makefile-i386.patch > /dev/null
 }
 configure64() {
-    cp makefile.unix makefile.illumos64
-    patch < makefile-amd64.patch
-    cp makefile.illumos64 Makefile
+    [ -e makefile.clean ] && cp makefile.clean makefile
+    logmsg "--- patch makefile"
+    patch < makefile-amd64.patch > /dev/null
 }
+
 make_install() {
     logmsg "--- make install"
     mkdir -p ${DESTDIR}${PREFIX}/share/man/man1/ &> /dev/null
