@@ -1,0 +1,46 @@
+--- a/Makefile	2014-02-11 22:06:01.000000000 +0100
++++ b/Makefile	2014-04-08 22:32:09.038272532 +0200
+@@ -1,11 +1,11 @@
+ # Configuration
+ 
+ VERSION=$(shell ./genver.sh -r)
+-USELIBCONFIG=1	# Use libconfig? (necessary to use configuration files)
++USELIBCONFIG=	# Use libconfig? (necessary to use configuration files)
+ USELIBWRAP=	# Use libwrap?
+ USELIBCAP=	# Use libcap?
+ COV_TEST= 	# Perform test coverage?
+-PREFIX=/usr/local
++PREFIX={{PREFIX}}
+ 
+ MAN=sslh.8.gz	# man page name
+ 
+@@ -16,8 +16,8 @@
+     CFLAGS_COV=-fprofile-arcs -ftest-coverage
+ endif
+ 
+-CC ?= gcc
+-CFLAGS ?=-Wall -g $(CFLAGS_COV)
++CC=gcc
++CFLAGS=-g $(CFLAGS_COV) -lresolv -lsocket -lnsl
+ 
+ LIBS=
+ OBJS=common.o sslh-main.o probe.o
+@@ -68,7 +68,8 @@
+ 
+ # generic install: install binary and man page
+ install: sslh $(MAN)
+-	install -pD sslh-fork $(DESTDIR)$(PREFIX)/sbin/sslh
++	install -pD sslh-fork $(DESTDIR)$(PREFIX)/sbin/{{ARCH}}/sslh
++	install -pD sslh-select $(DESTDIR)$(PREFIX)/sbin/{{ARCH}}/sslh-threaded
+ 	install -pD -m 0644 $(MAN) $(DESTDIR)$(PREFIX)/share/man/man8/$(MAN)
+ 
+ # "extended" install for Debian: install startup script
+@@ -79,7 +80,7 @@
+ 	update-rc.d sslh defaults
+ 
+ uninstall:
+-	rm -f $(DESTDIR)$(PREFIX)/sbin/sslh $(DESTDIR)$(PREFIX)/share/man/man8/$(MAN) $(DESTDIR)/etc/init.d/sslh $(DESTDIR)/etc/default/sslh
++	rm -f $(DESTDIR)$(PREFIX)/sbin/{{ARCH}}/sslh $(DESTDIR)$(PREFIX)/sbin/{{ARCH}}/sslh-threaded $(DESTDIR)$(PREFIX)/share/man/man8/$(MAN) $(DESTDIR)/etc/init.d/sslh $(DESTDIR)/etc/default/sslh
+ 	update-rc.d sslh remove
+ 
+ distclean: clean

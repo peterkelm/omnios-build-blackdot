@@ -1,0 +1,4 @@
+- smf manifest
+  - sslh-fork -> network/sslh:default
+  - sslh-select -> network/sslh:threaded
+- sslh.8.gz -> man pages dir
