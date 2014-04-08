@@ -31,7 +31,7 @@
 
 # main package config
 PROG=openssl                                 # App name
-VER=1.0.1f                                   # App version
+VER=1.0.1g                                   # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/server/apache/openssl                # Package name (e.g. library/foo)
