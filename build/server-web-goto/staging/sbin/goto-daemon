@@ -209,6 +209,8 @@ class GoToDaemon():
               server.ssl_private_key = listener[2]
             server.subscribe()
 
+          cherrypy.engine.timeout_monitor.unsubscribe()
+          cherrypy.engine.autoreload.unsubscribe()
           cherrypy.engine.start()
           cherrypy.engine.block()
 
