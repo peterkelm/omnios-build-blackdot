@@ -5,16 +5,20 @@ import atexit
 import os
 import sys
 import socket
+import cherrypy
+from cherrypy.process.plugins import DropPrivileges
 from time import strftime
 from bottle import *
+from pwd import getpwnam
 
-## goto daemon
+## GoTo Daemon
 class GoToDaemon():
   """GoTo Daemon"""
   ## locals
   bottle = None
   basepath = ""
-  port = 80
+  listener = []
+  runas = None
 
   def __init__(self, basepath="/"):
     ## fork
@@ -24,19 +28,19 @@ class GoToDaemon():
         os.setsid()
         os.umask(0)
       except OSError:
-        sys.stderr.write("%s Warning: unable to start new process group and set working directory.\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+        sys.stderr.write("%s GOTO Warning: unable to start new process group and set working directory.\n" % strftime("[%d/%b/%Y:%H:%M:%S]"))
         pass
       finally:
         try:
           pid = os.fork()
           if pid > 0:
-            sys.stdout.write("%s Info: forked! PID = %d\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), pid))
+            sys.stdout.write("%s GOTO Info: forked! PID = %d\n" % (strftime("[%d/%b/%Y:%H:%M:%S]"), pid))
             sys.exit(0)
         except OSError, e:
-          sys.stderr.write("%s Error: unable to fork! (%d - %s)\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), e.errno, e.strerror))
+          sys.stderr.write("%s GOTO Error: unable to fork! (%d - %s)\n" % (strftime("[%d/%b/%Y:%H:%M:%S]"), e.errno, e.strerror))
           sys.exit(1)
     else:
-      sys.stdout.write("%s Info: running in foreground. (forced by --foreground)\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
+      sys.stdout.write("%s GOTO Info: running in foreground. (forced by --foreground)\n" % strftime("[%d/%b/%Y:%H:%M:%S]"))
 
     ## hooks
     atexit.register(self.gracefulExit)
@@ -44,8 +48,8 @@ class GoToDaemon():
     ## set variables
     self.bottle = Bottle()
     self.basepath = basepath
-    self.port = 80
-    self.hostname = '0.0.0.0'
+    self.listeners = [ ['0.0.0.0', 80], ]
+    self.runas = None
 
   def getMap(self):
     map = {}
@@ -109,32 +113,108 @@ class GoToDaemon():
     )
 
   def gracefulExit(self):
-    self.bottle.close()
-    sys.exit(0)
+    try:
+      self.bottle.close()
+      sys.exit(0)
+    except: pass
 
   def run(self):
     ## check for goto.map
     if not os.path.exists(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.map')):
-      sys.stderr.write("%s Warning: configuration not found at %s!\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.map')))
+      sys.stderr.write("%s GOTO Warning: configuration not found at %s!\n" % (strftime("[%d/%b/%Y:%H:%M:%S]"), os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.map')))
       sys.exit(3)
 
     ## check for goto.hostname
     if os.path.exists(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.hostname')):
       # update hostname and port
       with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.hostname')) as config_hostname:
+        listeners = []
         for host in config_hostname:
-          listen = host.strip().split(':')
+          bind = []
+          host = host.strip()
+          if len(host) > 0 and host[0] <> "#":
+            # parse host
+            if host[0] == '[': # IPv6
+              if host.find(']') > 0:
+                bind.append(host[1:host.find(']')]) # add addr
+                host = host[(host.find(']')+2):].split(':')
+            else: # IPv4
+              if host.find(':') > 0:
+                bind.append(host[0:host.find(':')])
+                host = host[(host.find(':')+1):].split(':')
+              else:
+                bind.append(host)
+                host = ['']
+            # parse port / cert         
+            if host[0] == '': # add default port
+              bind.append(80)
+            else: # parse port / cert
+              if host[0].isdigit(): # add port
+                bind.append(host[0])
+              else: # check for cert
+                if os.path.exists(host[0]): # add default port + cert
+                  bind.append(443)
+                  bind.append(host[0])
+                else: # cert does not exit reset bind
+                  bind = []
+            if len(host) > 1:
+              if os.path.exists(host[1]): # add cert
+                bind.append(host[1])
+              else: # cert does not exit reset bind
+                bind = []
 
-          self.hostname = listen[0]
-          self.port = listen[1] if len(listen) > 1 else 80
+          if len(bind) > 0:
+            listeners.append(bind)
+
+        # replace default listener if we parsed valid ones
+        if len(listeners) > 0:
+          self.listeners = listeners
+
+    if os.path.exists(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.runas')):
+      with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/goto.runas')) as config_runas:
+        for privs in config_runas:
+          try:
+            self.runas = privs.strip()
+          except: pass
+          finally: break
 
     ## start app server
     try:
       self.bottle.route('/', method="GET", callback=self.manager)
       self.bottle.error(404)(self.redirector)
-      self.bottle.run(host=self.hostname, port=self.port)
+
+      class MultiCherryPyServer(ServerAdapter):
+        quiet = True
+        def __init__(self, listeners, runas, **kargs):
+          ServerAdapter.__init__(self, **kargs)
+          self.listeners = listeners
+          self.runas = runas
+
+        def run(self, handler):
+          cherrypy.tree.graft(handler, '/')
+          if os.geteuid() == 0 and self.runas <> None: # try to drop privileges
+            try:
+              DropPrivileges(cherrypy.engine, uid=getpwnam(privs.strip()).pw_uid, gid=getpwnam(privs.strip()).pw_gid).subscribe()
+            except:
+              sys.stderr.write("%s GOTO Error: failed to drop privileges to %s\n" % (strftime("[%d/%b/%Y:%H:%M:%S]"), self.runas))
+              sys.exit(8)
+          cherrypy.server.unsubscribe()
+          for listener in self.listeners:
+            server = cherrypy._cpserver.Server()
+            server.socket_port = int(listener[1])
+            server.socket_host = listener[0]
+            if len(listener) > 2:
+              server.ssl_module = 'builtin'
+              server.ssl_certificate = listener[2]
+              server.ssl_private_key = listener[2]
+            server.subscribe()
+
+          cherrypy.engine.start()
+          cherrypy.engine.block()
+
+      self.bottle.run(server=MultiCherryPyServer, listeners=self.listeners, runas=self.runas)
     except socket.error, e:
-      sys.stderr.write("Error: Unable to open socket! (%d - %s)\n" % (e.errno, e.strerror))
+      sys.stderr.write("GOTO Error: Unable to open socket! (%d - %s)\n" % (e.errno, e.strerror))
       sys.exit(1)
 
 ## init

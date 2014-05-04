@@ -30,14 +30,14 @@
 . ../myfunc.sh
 
 PROG=goto                                    # App name
-VER=1.3                                      # App version
+VER=2.0                                      # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/server/web/goto                      # Package name (e.g. library/foo)
 SUMMARY="Small http server that provide URI redirection (short URL)."
 DESC=${SUMMARY}
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/bottle"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/bottle library/python-2/cherrypy"
 BUILD_DEPENDS_IPS=""
 
 BUILDARCH=both
