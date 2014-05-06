@@ -29,22 +29,22 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=Gnotty
-VER=0.2.6
-PKG=library/python-2/gnotty
-SUMMARY="Gnotty ties the knot between the web and IRC."
-DESC="${SUMMARY} It is designed to assist open source projects that host an IRC channel for collaboration on their project."
+PROG=irc
+VER=8.9
+PKG=library/python-2/irc
+SUMMARY="IRC (Internet Relay Chat) protocol client library for Python."
+DESC="${SUMMARY}"
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/gevent library/python-2/sphinx-me library/python-2/daemon library/python-2/irc"
+RUN_DEPENDS_IPS="runtime/python-26"
 BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
     logmsg "Downloading Source"
 
     cd ${TMPDIR}
-    wget -c https://pypi.python.org/packages/source/${PROG:0:1}/${PROG}/${PROG}-${VER}.tar.gz
+    wget -c https://pypi.python.org/packages/source/${PROG:0:1}/${PROG}/${PROG}-${VER}.zip
 
-    tar xvf ${PROG}-${VER}.tar.gz
+    unzip -x ${PROG}-${VER}.zip
 }
 
 
