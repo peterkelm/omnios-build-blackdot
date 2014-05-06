@@ -5,6 +5,7 @@ import atexit
 import urllib2, zipfile
 import os, sys, time
 import subprocess, signal, shutil
+import platform
 from tempfile import gettempdir
 from time import sleep, time, strftime
 from sched import scheduler
@@ -14,13 +15,14 @@ from subprocess import *
 class AdblockUpdaterDaemon(object):
   """Adblock Updater"""
   ## constants
-  SPYWARE_URL = "http://mirror3.malwaredomains.com/files/spywaredomains.zones.zip" 
+  SPYWARE_URL = "http://mirror3.malwaredomains.com/files/spywaredomains.zones.zip"
   MALWARE_URL = "http://mirror3.malwaredomains.com/files/malwaredomains.zones.zip"
   ADWARE_URL  = "http://pgl.yoyo.org/adservers/serverlist.php?hostformat=nohtml&showintro=0"
   RESTART_FMRI = ['network/adblock/dnsmasq']
 
   ## locals
   scheduler = scheduler(time, sleep)
+  listener = []
   basepath = '/'
 
   def __init__(self, basepath="/"):
@@ -111,10 +113,10 @@ class AdblockUpdaterDaemon(object):
 
       # cleanup
       os.unlink(tmpfile)
-    
+
     ## generate adblock-blacklist.conf
     sys.stdout.write("%s Info: generating adblock-blacklist.conf ...\n" % strftime("[%Y/%m/%d %H:%M:%S]"))
-    
+
     # load whitelist
     whitelist = []
     with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/dns/ignore.dns'), 'r') as ignorefile:
@@ -122,12 +124,50 @@ class AdblockUpdaterDaemon(object):
         whitelist.append(entry.strip())
 
     # lookup ip
-    serverip = '127.0.0.1'
+    self.listeners = [ ['0.0.0.0', 80], ]
     if os.path.exists("%s/etc/adblock/adserv.hostname" % (self.basepath if self.basepath <> '/usr' else '')):
       with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/adserv.hostname'), 'r') as config_hostname:
+        listeners = []
         for host in config_hostname:
-          listen = host.strip().split(':')
-          serverip = listen[0]
+          bind = []
+          host = host.strip()
+          if len(host) > 0 and host[0] <> "#":
+            # parse host
+            if host[0] == '[': # IPv6
+              if host.find(']') > 0:
+                bind.append(host[1:host.find(']')]) # add addr
+                host = host[(host.find(']')+2):].split(':')
+            else: # IPv4
+              if host.find(':') > 0:
+                bind.append(host[0:host.find(':')])
+                host = host[(host.find(':')+1):].split(':')
+              else:
+                bind.append(host)
+                host = ['']
+            # parse port / cert
+            if host[0] == '': # add default port
+              bind.append(80)
+            else: # parse port / cert
+              if host[0].isdigit(): # add port
+                bind.append(host[0])
+              else: # check for cert
+                if os.path.exists(host[0]): # add default port + cert
+                  bind.append(443)
+                  bind.append(host[0])
+                else: # cert does not exit reset bind
+                  bind = []
+            if len(host) > 1:
+              if os.path.exists(host[1]): # add cert
+                bind.append(host[1])
+              else: # cert does not exit reset bind
+                bind = []
+
+          if len(bind) > 0:
+            listeners.append(bind)
+
+        # replace default listener if we parsed valid ones
+        if len(listeners) > 0:
+          self.listeners = listeners
     else:
       with open(os.path.join(self.basepath if self.basepath <> '/usr' else '', 'etc/adblock/adblock-dnsmasq.conf'), 'r') as dnsmasqconf:
         for line in dnsmasqconf:
@@ -135,7 +175,7 @@ class AdblockUpdaterDaemon(object):
           if line[:1] <> '#' and line <> '':
             line = line.split('=')
             if line[0] == 'listen-address':
-              serverip = line[1]
+              self.listeners = [ [ line[1], 80], ]
               break
 
     # open blacklist
@@ -150,14 +190,20 @@ class AdblockUpdaterDaemon(object):
                 entry = entry.strip()
                 # filter out whitelisted entries
                 if entry not in whitelist:
-                  # write entry to blacklist
-                  blacklist.write("address=/%s/%s\n" % (entry, serverip))
-                  blacklist.write("address=/*.%s/%s\n" % (entry, serverip))
+                  for listener in self.listeners:
+                    # write entry to blacklist
+                    blacklist.write("address=/%s/%s\n" % (entry, listener[0]))
+                    blacklist.write("address=/*.%s/%s\n" % (entry, listener[0]))
 
     ## restart services
-    for fmri in self.RESTART_FMRI:
-      sys.stdout.write("%s Info: Restarting %s ...\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), fmri))
-      Popen(['svcadm', 'restart', fmri], stdout=PIPE)
+    if platform.system() == 'SunOS':
+      for fmri in self.RESTART_FMRI:
+        sys.stdout.write("%s Info: Restarting %s ...\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), fmri))
+        Popen(['svcadm', 'restart', fmri], stdout=PIPE)
+    if platform.system() == 'OpenBSD':
+      if os.path.exists('/etc/rc.d/dnsmasq'):
+        sys.stdout.write("%s Info: Restarting %s ...\n" % (strftime("[%Y/%m/%d %H:%M:%S]"), '/etc/rc.d/dnsmasq'))
+        Popen(['/etc/rc.d/dnsmasq', 'restart'], stdout=PIPE)
 
   def updateBlacklistTimer(self):
     try:
