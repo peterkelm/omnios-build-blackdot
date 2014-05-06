@@ -36,7 +36,7 @@ SUMMARY="qwebirc is a fast, easy to use, free and open source IRC client designe
 DESC="$SUMMARY"
 PREFIX=${PREFIX}-apps/
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/zope.interface library/python-2/pyopenssl library/python-2/twisted"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/zope.interface python-2/pyopenssl-26 library/python-2/twisted"
 BUILD_DEPENDS_IPS=""
 
 BUILDARCH=32
