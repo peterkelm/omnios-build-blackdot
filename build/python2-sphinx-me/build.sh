@@ -29,13 +29,13 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=Gnotty
-VER=0.2.6
-PKG=library/python-2/gnotty
-SUMMARY="Gnotty ties the knot between the web and IRC."
-DESC="${SUMMARY} It is designed to assist open source projects that host an IRC channel for collaboration on their project."
+PROG=sphinx-me
+VER=0.2.1
+PKG=library/python-2/sphinx-me
+SUMMARY="Wraps your README-only projects in a dynamic Sphinx shell for hosting on http://readthedocs.org."
+DESC="${SUMMARY}"
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/gevent library/python-2/sphinx-me"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/gevent"
 BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
