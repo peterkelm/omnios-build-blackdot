@@ -31,7 +31,7 @@
 
 PROG=Gnotty
 VER=0.2.6
-PKG=library/python-2/gnutty
+PKG=library/python-2/gnotty
 SUMMARY="Gnotty ties the knot between the web and IRC."
 DESC="${SUMMARY} It is designed to assist open source projects that host an IRC channel for collaboration on their project."
 
