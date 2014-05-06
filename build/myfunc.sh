@@ -151,6 +151,7 @@ save_function make_package make_package_obd_orig
 make_package() {
     # fix up alpha, beta and rc tags
     VER=$(echo ${VER} | sed "s/alpha/.0.0./g" | sed "s/beta/.0.1./g" | sed "s/rc/.0.2./g"  | sed "s/test/.0.0./g")
+    VER=$(echo ${VER} | sed "s/-././g)
 
     # turn single letter version to number
     if [[ -n "`echo $VER | grep [a-z]`" ]]; then
