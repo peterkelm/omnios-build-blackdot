@@ -34,7 +34,7 @@
 
 # main package config
 PROG=php                                     # App name
-VER=5.5.8                                    # App version
+VER=5.5.12                                   # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/runtime/php                          # Package name (e.g. library/foo)
@@ -49,8 +49,8 @@ PREFIX=${PREFIX}-apps/${PROG}
 
 # environment
 reset_configure_opts
-CFLAGS32="${CFLAGS32} -I/opt/omni/include"
-CFLAGS64="${CFLAGS64} -I/usr/include/libxml2 -I/opt/omni/include/${ISAPART64}"
+CFLAGS32="${CFLAGS32} -std=gnu99 -I/opt/omni/include"
+CFLAGS64="${CFLAGS64} -std=gnu99 -I/usr/include/amd64 -I/usr/include/libxml2 -I/opt/omni/include/${ISAPART64}"
 LDFLAGS32=\
 "-L${PREFIX}/lib -R${PREFIX}/lib "\
 "-L$(echo ${PREFIX} | sed 's#php#apache/shared#g')/lib -L$(echo ${PREFIX} | sed 's#php#apache/shared#g')/lib "\
@@ -62,7 +62,7 @@ LDFLAGS64=\
 "-L/opt/omni/lib/$ISAPART64 -R/opt/omni/lib/$ISAPART64 "\
 "-L/opt/omni/lib/$ISAPART64/mysql -R/opt/omni/lib/$ISAPART64/mysql"
 
-#NO_PARALLEL_MAKE=1
+NO_PARALLEL_MAKE=1
 FREETYPE_PATH="/opt/omni"
 CONFIGURE_OPTS=\
 "--mandir=${PREFIX}/man "\
