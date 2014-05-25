@@ -1,7 +1,0 @@
-#!/bin/sh
-
-arcsas_cli sys ncqmode p=1
-sleep 1
-arcsas_cli sys cachemode p=0
-sleep 1
-arcsas_cli sys smartmode p=1
