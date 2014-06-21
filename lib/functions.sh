@@ -227,6 +227,10 @@ case "$RELVER" in
         GCCPKG="developer/gcc48"
         GCCPATH="/opt/gcc-4.8.1/bin"
         ;;
+    151010)
+        GCCPKG="developer/gcc48"
+        GCCPATH="/opt/gcc-4.8.1/bin"
+        ;;
     *)
         echo "update lib/functions.sh this for unrecognized release $RELVER"
         exit 2
