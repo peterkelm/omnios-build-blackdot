@@ -5,4 +5,4 @@
 <transform file path={{PREFIX}}/dlmgr.* -> set group dlmgr>
 <transform file path={{PREFIX}}/dlmgr.* -> set mode 0640>
 <transform file path=(var|lib)/svc/manifest/network/dlmgr/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
-license files/license license=LGPL
+license files/license license=GPL

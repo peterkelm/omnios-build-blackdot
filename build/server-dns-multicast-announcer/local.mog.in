@@ -1,4 +1,4 @@
 group groupname=mdns gid=5353
 user ftpuser=false gcos-field="Multicast DNS privsep user" group=mdns login-shell=/bin/false password=NP uid=5353 username=mdns home-dir=/var/empty
 <transform file path=(var|lib)/svc/manifest/network/dns/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
-license files/license license=BSD
+license files/license license=ASIS
