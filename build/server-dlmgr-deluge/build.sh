@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=deluge
-VER=1.3.6
+VER=1.3.7
 PKG=obd/server/dlmgr/deluge
 SUMMARY="Deluge is a full-featured  BitTorrent client for Linux, OS X, Unix and Windows."
 DESC="$SUMMARY It uses  libtorrent in its backend and features multiple user-interfaces including: GTK+, web and console. It has been designed using the client server model with a daemon process that handles all the bittorrent activity. The Deluge daemon is able to run on headless machines with the user-interfaces being able to connect remotely from any platform."

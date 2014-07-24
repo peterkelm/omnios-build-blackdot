@@ -56,12 +56,12 @@ download_source() {
 make_clean() {
     # because by this time we have DESTDIR
     logmsg "--- environment variables"
-    export CFLAGS32="-pthread"
-    export CXXFLAGS32="-pthread"
-    export CFLAGS64="-pthread"
-    export CXXFLAGS64="-pthread"
+    export CFLAGS32="-pthread -pthreads"
+    export CXXFLAGS32="-pthread -pthreads"
+    export CFLAGS64="-pthread -pthreads"
+    export CXXFLAGS64="-pthread -pthreads"
     
-    export CONFIGURE_CMD="./bootstrap.sh"
+    export CONFIGURE_CMD="./bootstrap.sh --without-icu --without-libraries=mpi,locale"
     export CONFIGURE_OPTS_32="--prefix=${DESTDIR}${PREFIX} --includedir=${DESTDIR}${PREFIX}/include --libdir=${DESTDIR}${PREFIX}/lib"
     export CONFIGURE_OPTS_64="--prefix=${DESTDIR}${PREFIX} --includedir=${DESTDIR}${PREFIX}/include/${ISAPART64} --libdir=${DESTDIR}${PREFIX}/lib/${ISAPART64}"
 
