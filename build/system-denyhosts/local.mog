@@ -1,2 +1,0 @@
-<transform file path=(var|lib)/svc/manifest/system/.*\.xml -> add restart_fmri svc:/system/manifest-import:default>
-license files/license license=GPL
