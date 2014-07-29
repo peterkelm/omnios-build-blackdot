@@ -30,14 +30,15 @@
 . ../myfunc.sh
 
 PROG=netatalk                               # App name
-VER=3.1.1                                   # App version
+VER=3.1.3                                   # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/server/misc/netatalk                # Package name (e.g. library/foo)
 SUMMARY="Netatalk is a freely-available Open Source AFP fileserver."
 DESC="${SUMMARY} A *NIX/*BSD system running Netatalk is capable of serving many Macintosh clients simultaneously as an AppleShare file server (AFP)."
 
-RUN_DEPENDS_IPS="omniti/database/bdb service/network/dns/mdns system/library/security/libgcrypt"
+RUN_DEPENDS_IPS="omniti/database/bdb service/network/dns/mdns"
+#system/library/security/libgcrypt
 BUILD_DEPENDS_IPS="${RUN_DEPENDS_IPS}"
 
 BUILDARCH=both

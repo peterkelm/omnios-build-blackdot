@@ -31,7 +31,7 @@
 
 # main package config
 PROG=apr                                     # App name
-VER=1.5.0                                    # App version
+VER=1.5.1                                    # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/server/apache/apr                    # Package name (e.g. library/foo)

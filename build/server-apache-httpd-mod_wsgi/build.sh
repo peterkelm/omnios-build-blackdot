@@ -31,7 +31,7 @@
 
 # main package config
 PROG=mod_wsgi                                # App name
-VER=3.4                                      # App version
+VER=4.2.6                                    # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/server/apache/httpd/mod_wsgi         # Package name (e.g. library/foo)
@@ -46,8 +46,9 @@ PREFIX=${PREFIX}-apps/apache/httpd
 PREFIX_LIB=$(echo ${PREFIX} | sed "s#/httpd#/shared#g")
 
 # package specific
-MIRROR=modwsgi.googlecode.com
-DLPATH=files
+https://github.com/GrahamDumpleton/mod_wsgi/archive/4.2.6.tar.gz
+MIRROR=github.com
+DLPATH=GrahamDumpleton/mod_wsgi/archive
 
 # environment
 CFLAGS="$CFLAGS -fpic"
@@ -58,6 +59,18 @@ reset_configure_opts
 CONFIGURE_OPTS="" 
 CONFIGURE_OPTS_32="--with-apxs=${PREFIX}/bin/${ISAPART}/apxs"
 CONFIGURE_OPTS_64="--with-apxs=${PREFIX}/bin/${ISAPART64}/apxs"
+
+download_source () {
+    # tar and prog name disagreement
+    pushd $TMPDIR > /dev/null
+
+    logmsg "--- download source"
+    wget -c https://${MIRROR}/${DLPATH}/${VER}.tar.gz
+    mv ${VER}.tar.gz ${PROG}-${VER}.tar.gz
+    tar xvpf ${PROG}-${VER}.tar.gz
+
+    popd > /dev/null
+}
 
 make_install_extras() {
     logmsg "--- make install extras"

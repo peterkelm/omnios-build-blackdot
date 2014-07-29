@@ -46,8 +46,8 @@ PREFIX=${PREFIX}-apps/apache/httpd
 PREFIX_LIB=$(echo ${PREFIX} | sed "s#/httpd#/shared#g")
 
 # package specific
-MIRROR=perl.apache.org
-DLPATH=dist
+MIRROR=apache.cu.be
+DLPATH=perl
 
 # environment
 LDFLAGS32="-L${PREFIX}/lib -R${PREFIX}/lib -L${PREFIX_LIB}/lib -R${PREFIX_LIB}/lib"
@@ -59,7 +59,7 @@ build32() {
     make_clean
     logmsg "--- Makefile.PL"
     export ISALIST=i386
-    logcmd /usr/bin/perl Makefile.PL MP_APXS=${PREFIX}/bin/${ISAPART}/apxs INSTALLDIRS=vendor || \
+    logcmd /usr/bin/perl Makefile.PL MP_APXS=${PREFIX}/bin/${ISAPART64}/apxs MP_APR_CONFIG=${PREFIX_LIB}/bin/${ISAPART64}/apr-1-config INSTALLDIRS=vendor || \
         logerr "--- Makefile.PL failed"
     logmsg "--- make"
     logcmd $MAKE || logerr "--- make failed"
@@ -75,7 +75,7 @@ build64() {
     make_clean
     logmsg "--- Makefile.PL"
     export ISALIST=amd64
-    logcmd /usr/bin/perl Makefile.PL MP_APXS=${PREFIX}/bin/${ISAPART64}/apxs INSTALLDIRS=vendor || \
+    logcmd /usr/bin/perl Makefile.PL MP_APXS=${PREFIX}/bin/${ISAPART64}/apxs MP_APR_CONFIG=${PREFIX_LIB}/bin/${ISAPART64}/apr-1-config INSTALLDIRS=vendor || \
         logerr "--- Makefile.PL failed"
     logmsg "--- make"
     logcmd $MAKE || logerr "--- make failed"
