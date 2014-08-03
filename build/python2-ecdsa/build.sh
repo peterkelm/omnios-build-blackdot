@@ -29,13 +29,13 @@
 . ../../lib/functions.sh
 . ../myfunc.sh
 
-PROG=paramiko
-VER=1.14.0
-PKG=library/python-2/paramiko
-SUMMARY="This is a library for making SSH2 connections (client or server). Emphasis is on using SSH2 as an alternative to SSL for making secure connections between python scripts. All major ciphers and hash methods are supported. SFTP client and server mode are both supported too."
+PROG=ecdsa
+VER=0.11
+PKG=library/python-2/ecdsa
+SUMMARY="ECDSA cryptographic signature library (pure python)"
 DESC="$SUMMARY"
 
-RUN_DEPENDS_IPS="runtime/python-26 library/python-2/pycrypto library/python-2/ecdsa"
+RUN_DEPENDS_IPS="runtime/python-26"
 BUILD_DEPENDS_IPS="runtime/python-26"
 
 download_source() {
