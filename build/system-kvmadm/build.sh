@@ -70,6 +70,9 @@ make_install_extras() {
     logcmd /usr/bin/gsed -i 's#FindBin::Bin/../lib#FindBin::Bin/../../lib/amd64#g' $DESTDIR/$PREFIX/bin/amd64/system-kvm ||
         logerr "------ Failed to patch system-kvm."
 
+    logcmd mkdir -p $DESTDIR/var/run/kvm || \
+        logerr "------ Failed to create var directory."
+
     logcmd mkdir -p $DESTDIR/lib/svc/manifest/system/ || \
         logerr "------ Failed to create manifest directory."
     logcmd cp -r ${TMPDIR}/${PROG}-${VER}/smf/system-kvm.xml $DESTDIR/lib/svc/manifest/system/kvm.xml || \
