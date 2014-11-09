@@ -59,14 +59,20 @@ download_source() {
     wget -c https://github.com/hadfl/kvmadm/archive/master.zip -O ${PROG}-${VER}.zip
 
     logmsg "--- unpacking source"
-    unzip master.zip
+    unzip ${PROG}-${VER}.zip
 
     popd > /dev/null
 }
+
 make_install_extras() {
-    logcmd mkdir -p $DESTDIR/lib/svc/manifest/ || \
+    logcmd /usr/bin/gsed -i 's#FindBin::Bin/../lib#FindBin::Bin/../../lib/amd64#g' $DESTDIR/$PREFIX/bin/amd64/kvmadm ||
+        logerr "------ Failed to patch kvmadm."
+    logcmd /usr/bin/gsed -i 's#FindBin::Bin/../lib#FindBin::Bin/../../lib/amd64#g' $DESTDIR/$PREFIX/bin/amd64/system-kvm ||
+        logerr "------ Failed to patch system-kvm."
+
+    logcmd mkdir -p $DESTDIR/lib/svc/manifest/system/ || \
         logerr "------ Failed to create manifest directory."
-    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/smf/system-kvm.xml $DESTDIR/lib/svc/manifest/system-kvm.xml || \
+    logcmd cp -r ${TMPDIR}/${PROG}-${VER}/smf/system-kvm.xml $DESTDIR/lib/svc/manifest/system/kvm.xml || \
         logerr "------ Failed to copy manifest."
 }
 
