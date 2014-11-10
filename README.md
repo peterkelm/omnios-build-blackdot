@@ -10,6 +10,8 @@ work. Provided AS-IS. This is work is done in my spare time and is not affiliate
 
 CHANGES
 =====================
+- 20141109: added kvmadm
+- 201411##: updated sabnzbd
 - 20140807: update openssl
 - 201408##: some version bumps
 - 20140710: corrected all the license files I forgot to update along the way
