@@ -1,0 +1,115 @@
+#!/bin/sh
+
+## paths
+MINICOM=/opt/obd/bin/minicom
+NETCAT=/usr/bin/nc
+SOCAT=/opt/obd/bin/socat
+
+KVM_RUN_PATH=/var/run/kvm
+
+## init
+# check our paths
+HAVECON=1
+HAVEVNC=1
+[ ! -e ${MINICOM} ] && [ ! -e ${NETCAT} ] && HAVECON=0
+[ ! -e ${SOCAT} ] && HAVEVNC=0
+
+# actions
+case $1 in
+  console)
+    VM=$2
+
+    if [ ${HAVECON} -eq 0 ]; then
+       echo "ERROR: Please install minicom or netcat!"
+       exit 1
+    fi
+
+    if [ -z ${VM} ]; then
+      echo "ERROR: Please provide a kvm_name!"
+      exit 2
+    fi
+
+    SOCK=
+    [ -S "$KVM_RUN_PATH/$VM.ttyA" ] && SOCK="$KVM_RUN_PATH/$VM.ttyA"
+    [ -S "$KVM_RUN_PATH/$VM.ttya" ] && SOCK="$KVM_RUN_PATH/$VM.ttya"
+    [ -S "$KVM_RUN_PATH/$VM.com0" ] && SOCK="$KVM_RUN_PATH/$VM.com0"
+    [ -S "$KVM_RUN_PATH/$VM.console" ] && SOCK="$KVM_RUN_PATH/$VM.console"
+
+
+    if [ -z ${SOCK} ]; then
+      echo "ERROR: Could not find a socket named console, ttya or com0 for $VM!"
+      exit 3
+    else
+      if [ -e ${MINICOM} ]; then
+        ${MINICOM} -8 -m -c on -D unix\#${SOCK}
+      else
+        ${NETCAT} -U ${SOCK}
+      fi
+    fi
+  ;;
+  monitor)
+    VM=$2
+
+    if [ ${HAVECON} -eq 0 ]; then
+       echo "ERROR: Please install minicom or netcat!"
+       exit 1
+    fi
+
+    if [ -z ${VM} ]; then
+      echo "ERROR: Please provide a kvm_name!"
+      exit 2
+    fi
+
+    SOCK=
+    [ -S "$KVM_RUN_PATH/$VM.monitor" ] && SOCK="$KVM_RUN_PATH/$VM.monitor"
+
+
+    if [ -z ${SOCK} ]; then
+      echo "ERROR: Could not find a socket named monitor for $VM!"
+      exit 3
+    else
+      if [ -e ${MINICOM} ]; then
+        ${MINICOM} -8 -m -c on -D unix\#${SOCK}
+      else
+        ${NETCAT} -U ${SOCK}
+      fi
+    fi
+  ;;
+  vnc)
+    VM=$2
+    PORT=$3
+
+    [ -z ${PORT} ] && PORT=1
+
+    if [ ${HAVEVNC} -eq 0 ]; then
+      echo "ERROR: Please install socat!"
+      exit 1
+    fi
+
+    if [ -z ${VM} ]; then
+      echo "ERROR: Please provide a kvm_name!"
+      exit 2
+    fi
+
+    SOCK=
+    [ -S "$KVM_RUN_PATH/$VM.vnc" ] && SOCK="$KVM_RUN_PATH/$VM.vnc"
+
+
+    if [ -z ${SOCK} ]; then
+      echo "ERROR: Could not find a socket named vnc for $VM!\nThe KVM could not have a display configured or already be listening."
+      exit 3
+    else
+      echo "Listening on $(expr 5900 + ${PORT}) for ${VM} ..."
+      ${SOCAT} tcp-listen:$(expr 5900 + ${PORT}),reuseaddr,fork unix-client:/var/run/kvm/dyon.vnc
+    fi
+  ;;
+  *)
+    echo "Usage: $(basename $0) <command> <kvm_name> [port]"
+    echo "  console :: try to open serial console for <kvm_name>"
+    echo "  vnc     :: try to open vnc port for <kvm_name>"
+    echo "  monitor :: try to open qemu monitor for <kvm_name>"
+  ;;
+esac
+
+exit 0
+
