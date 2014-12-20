@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=SABnzbd                                 # App name
-VER=0.7.19                                   # App version
+VER=0.7.20                                   # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/server/dlmgr/sabnzbd                 # Package name (e.g. library/foo)
