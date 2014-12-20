@@ -10,6 +10,8 @@ work. Provided AS-IS. This is work is done in my spare time and is not affiliate
 
 CHANGES
 =====================
+- 20141220: fix kvmcon vnc option
+- 20141220: updated sabnzbd
 - 20141111: added kvmcon - wrapper to make dealing with kvmadm sockets easier
 - 20141109: added kvmadm
 - 201411##: updated sabnzbd

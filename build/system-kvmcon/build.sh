@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=kvmcon
-VER=0.1
+VER=0.2
 VERHUMAN=$VER-1
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/system/kvmcon                       # Package name (e.g. library/foo)

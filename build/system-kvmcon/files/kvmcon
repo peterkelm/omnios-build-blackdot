@@ -100,7 +100,7 @@ case $1 in
       exit 3
     else
       echo "Listening on $(expr 5900 + ${PORT}) for ${VM} ..."
-      ${SOCAT} tcp-listen:$(expr 5900 + ${PORT}),reuseaddr,fork unix-client:/var/run/kvm/dyon.vnc
+      ${SOCAT} tcp-listen:$(expr 5900 + ${PORT}),reuseaddr,fork unix-client:${KVM_RUN_PATH}/${VM}.vnc
     fi
   ;;
   *)
