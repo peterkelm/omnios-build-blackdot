@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=daemon
-VER=1.0
+VER=1.1
 PKG=library/python-2/daemon
 SUMMARY="A library for running Python programs as Unix daemons."
 DESC="${SUMMARY}"
