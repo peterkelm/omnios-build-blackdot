@@ -10,6 +10,7 @@ work. Provided AS-IS. This is work is done in my spare time and is not affiliate
 
 CHANGES
 =====================
+- 20141224: added entropy
 - 20141224: updated python libraries
 - 20141224: add pyasn1 for twisted 
 - 20141220: fix kvmcon vnc option
