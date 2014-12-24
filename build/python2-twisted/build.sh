@@ -30,12 +30,12 @@
 . ../myfunc.sh
 
 PROG=Twisted
-VER=13.2.0
+VER=14.0.2
 PKG=library/python-2/twisted
 SUMMARY="An asynchronous networking framework written in Python."
 DESC="$SUMMARY"
 
-RUN_DEPENDS_IPS="runtime/python-26"
+RUN_DEPENDS_IPS="runtime/python-26 library/python-2/pyasn1"
 BUILD_DEPENDS_IPS="runtime/python-26"
 
 # fix some compile issues
