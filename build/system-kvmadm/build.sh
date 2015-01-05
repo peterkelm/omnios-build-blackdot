@@ -67,6 +67,8 @@ download_source() {
 make_install_extras() {
     logcmd /usr/bin/gsed -i 's#FindBin::Bin/../lib#FindBin::Bin/../../lib/amd64#g' $DESTDIR/$PREFIX/bin/amd64/kvmadm ||
         logerr "------ Failed to patch kvmadm."
+    logcmd /usr/bin/gsed -i 's#FindBin::Bin/../lib#FindBin::Bin/../../lib/amd64#g' $DESTDIR/$PREFIX/bin/amd64/kvmcli ||
+        logerr "------ Failed to patch kvmcli."
     logcmd /usr/bin/gsed -i 's#FindBin::Bin/../lib#FindBin::Bin/../../lib/amd64#g' $DESTDIR/$PREFIX/bin/amd64/system-kvm ||
         logerr "------ Failed to patch system-kvm."
 

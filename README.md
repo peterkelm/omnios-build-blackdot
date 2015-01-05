@@ -1,6 +1,5 @@
 omnios-build-blackdot
 =====================
-
 Additional packages for OmniOS 
 http://omnios.blackdot.be
 
@@ -10,6 +9,7 @@ work. Provided AS-IS. This is work is done in my spare time and is not affiliate
 
 CHANGES
 =====================
+- 20150105: update kvmadm to also patch kvmcli
 - 20141225: fixed twisted dep on zope.interface
 - 20141224: added common
 - 20141224: added entropy
