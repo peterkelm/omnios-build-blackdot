@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=yasm                                   # App name
-VER=1.2.0                                   # App version
+VER=1.3.0                                   # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/developer/build/yasm                # Package name (e.g. library/foo)
