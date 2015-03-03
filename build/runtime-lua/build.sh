@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=lua                                    # App name
-VER=5.2.3                                   # App version
+VER=5.3.0                                   # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/runtime/lua                         # Package name (e.g. library/foo)

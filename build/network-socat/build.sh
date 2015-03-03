@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=socat                                  # App name
-VER=1.7.1.3                                 # App version
+VER=1.7.3.0                                 # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/network/socat                           # Package name (e.g. library/foo)
