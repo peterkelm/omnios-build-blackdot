@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=six
-VER=1.8.0
+VER=1.9.0
 PKG=library/python-2/six
 SUMMARY="Six is a Python 2 and 3 compatibility library. It provides utility functions for smoothing over the differences between the Python versions with the goal of writing Python code that is compatible on both Python versions. See the documentation for more information on what is provided."
 DESC="$SUMMARY"
