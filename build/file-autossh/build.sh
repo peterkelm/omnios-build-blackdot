@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=autossh                                # App name
-VER=1.4c                                    # App version
+VER=1.4e                                    # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/file/autossh                        # Package name (e.g. library/foo)
