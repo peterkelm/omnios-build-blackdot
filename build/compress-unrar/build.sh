@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=unrar                                  # App name
-VER=5.1.2                                   # App version
+VER=5.2.6                                   # App version
 VERHUMAN=$VER-1                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/compress/unrar                          # Package name (e.g. library/foo)
