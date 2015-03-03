@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=Twisted
-VER=14.0.2
+VER=15.0.0
 PKG=library/python-2/twisted
 SUMMARY="An asynchronous networking framework written in Python."
 DESC="$SUMMARY"
