@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=sshtunnel
-VER=0.0.1
+VER=0.0.3
 PKG=library/python-2/sshtunnel
 SUMMARY="Initiate SSH tunnels using paramiko"
 DESC="$SUMMARY"
