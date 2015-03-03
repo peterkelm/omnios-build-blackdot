@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=ecdsa
-VER=0.11
+VER=0.13
 PKG=library/python-2/ecdsa
 SUMMARY="ECDSA cryptographic signature library (pure python)"
 DESC="$SUMMARY"
