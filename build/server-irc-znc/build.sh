@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=znc                                    # App name
-VER=1.4                                     # App version
+VER=1.6.0                                     # App version
 VERHUMAN=$VER-4                             # Human-readable version
 #PVER=                                      # Branch (set in config.sh, override here if needed)
 PKG=obd/server/irc/znc                      # Package name (e.g. library/foo)

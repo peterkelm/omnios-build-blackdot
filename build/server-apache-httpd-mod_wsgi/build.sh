@@ -31,7 +31,7 @@
 
 # main package config
 PROG=mod_wsgi                                # App name
-VER=4.2.6                                    # App version
+VER=4.4.9                                    # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/server/apache/httpd/mod_wsgi         # Package name (e.g. library/foo)
