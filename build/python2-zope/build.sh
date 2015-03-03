@@ -30,7 +30,7 @@
 . ../myfunc.sh
 
 PROG=zope.interface
-VER=4.1.1
+VER=4.1.2
 PKG=library/python-2/zope.interface
 SUMMARY="This package is intended to be independently reusable in any Python project. It is maintained by the Zope Toolkit project."
 DESC="$SUMMARY"
