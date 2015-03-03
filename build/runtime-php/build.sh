@@ -34,7 +34,7 @@
 
 # main package config
 PROG=php                                     # App name
-VER=5.5.12                                   # App version
+VER=5.5.22                                   # App version
 VERHUMAN=$VER-1                              # Human-readable version
 #PVER=                                       # Branch (set in config.sh, override here if needed)
 PKG=obd/runtime/php                          # Package name (e.g. library/foo)
