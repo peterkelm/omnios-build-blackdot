@@ -42,7 +42,7 @@ SUMMARY="PHP ${VER} runtime"
 DESC="PHP is a widely-used general-purpose scripting language that is especially suited for Web development and can be embedded into HTML."
 
 RUN_DEPENDS_IPS="compress/bzip2 database/sqlite-3 library/libtool/libltdl library/libxml2 library/libxslt web/curl omniti/database/mysql-55/library omniti/library/freetype2 omniti/library/gd  omniti/library/libjpeg omniti/library/libmcrypt omniti/library/libpng omniti/library/libpq5 omniti/library/libssh2 omniti/library/mhash obd/server/apache/httpd obd/server/apache/zlib obd/server/apache/openssl"
-BUILD_DEPENDS_IPS="${RUN_DEPENDS_IPS}"
+BUILD_DEPENDS_IPS="${RUN_DEPENDS_IPS} developer/parser/bison"
 BUILDARCH=both
 
 PREFIX=${PREFIX}-apps/${PROG}
@@ -94,7 +94,6 @@ CONFIGURE_OPTS=\
 "--enable-ftp "\
 "--enable-mbstring "\
 "--with-gettext "\
-"--with-sqlite "\
 "--enable-pcntl "\
 "--enable-zip "\
 "--with-openssl"
@@ -102,8 +101,8 @@ CONFIGURE_OPTS=\
 #"--enable-dtrace "\
 
 
-CONFIGURE_OPTS_32="${CONFIGURE_OPTS} --with-mysqli=/opt/omni/bin/${ISAPART}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART}/apxs"
-CONFIGURE_OPTS_64="${CONFIGURE_OPTS} --with-mysqli=/opt/omni/bin/${ISAPART64}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART64}/apxs"
+CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-mysqli=/opt/omni/bin/${ISAPART}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART}/apxs"
+CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-mysqli=/opt/omni/bin/${ISAPART64}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART64}/apxs"
 
 save_function download_source download_source_orig
 download_source() {
