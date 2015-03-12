@@ -71,6 +71,7 @@ CONFIGURE_OPTS=\
 "--with-jpeg-dir=/opt/omni "\
 "--with-png-dir=/opt/omni "\
 "--with-freetype-dir=$FREETYPE_PATH "\
+"--enable-shared=yes "\
 "--with-zlib "\
 "--enable-pdo "\
 "--with-mysql=/opt/omni "\
@@ -95,13 +96,14 @@ CONFIGURE_OPTS=\
 "--with-gettext "\
 "--with-sqlite "\
 "--enable-pcntl "\
+"--enable-zip "\
 "--with-openssl"
-#"--enable-dtrace "\
 #"--enable-sockets "\
+#"--enable-dtrace "\
 
 
-CONFIGURE_OPTS_32="${CONFIGURE_OPTS_32} --with-mysqli=/opt/omni/bin/${ISAPART}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART}/apxs"
-CONFIGURE_OPTS_64="${CONFIGURE_OPTS_64} --with-mysqli=/opt/omni/bin/${ISAPART64}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART64}/apxs"
+CONFIGURE_OPTS_32="${CONFIGURE_OPTS} --with-mysqli=/opt/omni/bin/${ISAPART}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART}/apxs"
+CONFIGURE_OPTS_64="${CONFIGURE_OPTS} --with-mysqli=/opt/omni/bin/${ISAPART64}/mysql_config --with-apxs2=$(echo ${PREFIX} | sed 's#php#apache/httpd#g')/bin/${ISAPART64}/apxs"
 
 save_function download_source download_source_orig
 download_source() {
