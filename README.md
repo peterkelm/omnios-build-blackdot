@@ -1,3 +1,7 @@
+DEPRECATED
+=====================
+Source remains available but actualy repository has been deprecated in favor of http://pkg.blackdot.be
+
 omnios-build-blackdot
 =====================
 Additional packages for OmniOS 
@@ -9,6 +13,7 @@ work. Provided AS-IS. This is work is done in my spare time and is not affiliate
 
 CHANGES
 =====================
+- 20150523: DEPRECATED
 - 20150105: update kvmadm to also patch kvmcli
 - 20141225: fixed twisted dep on zope.interface
 - 20141224: added common
